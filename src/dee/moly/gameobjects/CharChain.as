@@ -13,12 +13,11 @@
 	 * controls used throughout the game that have the look and feel
 	 * of DOS input lines. This class is a custom flash control created to further mimic the look
 	 * and feel of the original Gorilla game.
-	 * @author moly
+	 * @author moly, but copied largely from Chris King
      */
 	
 	public class CharChain extends GameObject{
 
-		// CONSTANTS
 		// Stop lock interval is the amount of time we lock out the text object before it accepts another character.
 		// Set in milliseconds.
 		private static const STOP_LOCK_INTERVAL:int = 75;
@@ -30,13 +29,13 @@
 		// Cursor state machine items
 		private static const CURSOR_HIDE:Boolean  = false;
 		private static const CURSOR_SHOW:Boolean = true;
+		
 		// cursors location on the font sheet
 		private static const CURSOR_X:int = 240;
 		private static const CURSOR_Y:int = 48;
 		
 		private static const TILE_WIDTH:int = 16;
 		private static const TILE_HEIGHT:int = 16;
-		
 		private static const CHAR_WIDTH:int = 8;
 		private static const CHAR_HEIGHT:int = 14;
 		
@@ -56,14 +55,12 @@
 		private var filter:int;
 		
 		//What is the number of characters in this box?
-		public function get length():int
-		{
+		public function get length():int {
 			return string.length;
 		}
 		
 		//Set the maximum amout of characters for this box
-		public function set maxLength(value:int):void
-		{
+		public function set maxLength(value:int):void {
 			maxStringLength = value;
 		}
 		

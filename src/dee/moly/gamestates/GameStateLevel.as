@@ -1,5 +1,6 @@
 ﻿package dee.moly.gamestates {
 	
+	import dee.moly.gameobjects.CharChain;
 	import dee.moly.gameobjects.CityScape;
 	import dee.moly.gameobjects.Gorilla;
 	import flash.display.BitmapData;
@@ -24,6 +25,10 @@
 		private var gorilla1:Gorilla;
 		private var gorilla2:Gorilla;
 		
+		// names
+		private var player1NameText:CharChain;
+		private var player2NameText:CharChain;
+		
 		// a smiley sun
 		private var sun:Sun;
 		
@@ -34,6 +39,9 @@
 			gorilla1 = new Gorilla();
 			gorilla2 = new Gorilla();
 			
+			player1NameText = new CharChain(gameSettings.player1Name, 0, 3);
+			player2NameText = new CharChain(gameSettings.player2Name, Main.SCREEN_WIDTH - (gameSettings.player2Name.length * 8) - 8, 3);
+			
 			sun = new Sun();
 			
 			cityScape = new CityScape();
@@ -41,6 +49,7 @@
 			
 		}
 		
+		// put the gorillas on either the second or third building from either end
 		private function placeGorillas(buildingCoords:Array):void {
 
 			const xAdj:int = 15;
@@ -55,7 +64,7 @@
 					
 				var bWidth:int = buildingCoords[bNum + 1][0] - buildingCoords[bNum][0];
 				
-				if (i==1){
+				if (i == 1){
 					gorilla1.x = buildingCoords[bNum][0] + bWidth / 2 - xAdj;
 					gorilla1.y = buildingCoords[bNum][1] - yAdj;
 				}else{
@@ -67,10 +76,13 @@
 			
 		}
 		
+		// draw everything to the screen
 		override public function draw(canvas:BitmapData):void {
 			
 			canvas.fillRect(canvas.rect, 0xFF0000AD);
 			cityScape.draw(canvas);
+			player1NameText.draw(canvas);
+			player2NameText.draw(canvas);
 			gorilla1.draw(canvas);
 			gorilla2.draw(canvas);
 			sun.draw(canvas);
@@ -79,7 +91,7 @@
 		
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
-			
+			cityScape.buildSkyline();
 			
 		}
 		

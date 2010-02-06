@@ -18,6 +18,18 @@
 			
 		}
 		
+		public function shock():void {
+			
+			texture = ContentManager.sunS;
+			
+		}
+		
+		public function reset():void {
+			
+			texture = ContentManager.sunH;
+			
+		}
+		
 	}
 
 }

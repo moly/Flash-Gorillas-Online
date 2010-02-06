@@ -6,7 +6,7 @@
 	
 	/**
 	 * generates a random skyline
-	 * @author moly
+	 * @author moly, borrowed heavily from Chris King
 	 */
 	
 	public class CityScape extends GameObject{
@@ -20,7 +20,7 @@
 		private static const UNLIT_WINDOW_COLOUR:uint = 0xFF545454;
 		private static const SKY_COLOUR:uint = 0x0000AD;
 		
-		// Measurment Constants
+		// measurment Constants
 		private static const BUILDING_SEPARATION:int = 1;
 		private static const UPPER_DRAWING_LIMIT:int = 65;
 		private static const WIDTH_AGGREGATE:int = 70;
@@ -28,15 +28,21 @@
 		private static const WINDOW_WIDTH:int = 4;
 		private static const WINDOW_HEIGHT:int = 7;
 		
-		//All new heights generated will increase or decrease by this amount
+		// all new heights generated will increase or decrease by this amount
 		private static const HEIGHT_TREND:int = 18;
 		
-		//All new widths generated will increase or decrease by this amount
+		// all new widths generated will increase or decrease by this amount
 		private static const WIDTH_TREND:int = 32;
 		
 		private static const WINDOW_HEIGHT_SEPARATION:int = 15;
 		private static const WINDOW_WIDTH_SEPARATION:int = 10;
 		private static const BUILDING_MINIMUM_HEIGHT:int = 25;
+		
+		// the level's wind speed
+		private var wind:int;
+		public function get windSpeed():int {
+			return wind;
+		}
 		
 		public function CityScape() {
 			
@@ -173,7 +179,50 @@
 				drawingXLocation += currentBuildingWidth + BUILDING_SEPARATION;
 			}
 		
+			setWindSpeed();
+			drawWindLine();
+			
 			return buildingCoordinates;
+		}
+		
+		// decide a random wind speed/direction for each cityscape
+		private function setWindSpeed():void {
+			
+			wind = int(Math.random() * 11) - 5;
+			
+			if (int(Math.random() * 3) == 2) {
+				if (wind > 0)
+					wind += int(Math.random() * 11);
+				else
+					wind -= int(Math.random() * 11);
+			}
+			
+		}
+		
+		// draw a line along the bottom of the screen relative to the wind's strength
+		private function drawWindLine():void {
+			
+			if (wind == 0)
+				return;
+			
+			var windLine:int = wind * 3 * (Main.SCREEN_WIDTH / 320);
+		
+			if (wind > 0) {
+				for (var px:int = Main.SCREEN_WIDTH / 2; px <= Main.SCREEN_WIDTH / 2 + windLine; px++)
+					texture.setPixel(px, Main.SCREEN_HEIGHT - 5, 0xFF0052);
+				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine - 1, Main.SCREEN_HEIGHT - 6, 0xFF0052);
+				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine - 2, Main.SCREEN_HEIGHT - 7, 0xFF0052);
+				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine - 1, Main.SCREEN_HEIGHT - 4, 0xFF0052);
+				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine - 2, Main.SCREEN_HEIGHT - 3, 0xFF0052);
+			}else {
+				for (px = Main.SCREEN_WIDTH / 2; px >= Main.SCREEN_WIDTH / 2 + windLine; px--)
+					texture.setPixel(px, Main.SCREEN_HEIGHT - 5, 0xFF0052);
+				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine + 1, Main.SCREEN_HEIGHT - 6, 0xFF0052);
+				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine + 2, Main.SCREEN_HEIGHT - 7, 0xFF0052);
+				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine + 1, Main.SCREEN_HEIGHT - 4, 0xFF0052);
+				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine + 2, Main.SCREEN_HEIGHT - 3, 0xFF0052);
+			}
+			
 		}
 		
 	}
