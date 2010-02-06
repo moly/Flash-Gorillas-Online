@@ -1,6 +1,5 @@
 ﻿package dee.moly.textures {
 	
-	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	
 	/**
@@ -9,7 +8,7 @@
 	 * @author moly
 	 */
 	
-	public class Gorilla extends BitmapData{
+	public class Gorilla extends DrawingBitmap{
 		
 		public static const LEFT_ARM:int = 0;
 		public static const RIGHT_ARM:int = 1;
@@ -51,22 +50,22 @@
 			fillRect(new Rectangle(17, 29, 5, 1), 0xFFFFAD51);
 
 			// chest
-			circle(10, 11, 4, 0x0000AD, 150, 270);
-			circle(18, 11, 4, 0x0000AD, 90, 210);
+			circle(10, 11, 4, 0x0000AD);
+			circle(18, 11, 4, 0x0000AD);
 			
 			for (i = -5; i <= -1; i++) {
 				switch(arms) {
 					case RIGHT_ARM:
-						circle(13 + i, 15, 8, 0xFFAD51, 45, 135);
-						circle(20 + i, 5, 8, 0xFFAD51, 225, 315);
+						circle(13 + i, 15, 8, 0xFFAD51);
+						circle(20 + i, 5, 8, 0xFFAD51);
 						break;
 					case LEFT_ARM:
-						circle(13 + i, 5, 8, 0xFFAD51, 45, 135);
-						circle(20 + i, 15, 8, 0xFFAD51, 225, 315);
+						circle(13 + i, 5, 8, 0xFFAD51);
+						circle(20 + i, 15, 8, 0xFFAD51);
 						break;
 					case ARMS_DOWN:
-						circle(13 + i, 15, 8, 0xFFAD51, 45, 135);
-						circle(20 + i, 15, 8, 0xFFAD51, 225, 315);
+						circle(13 + i, 15, 8, 0xFFAD51);
+						circle(20 + i, 15, 8, 0xFFAD51);
 						break;						
 				}
 			}
@@ -107,44 +106,6 @@
 				setPixel(6, 1, 0xFFAD51);
 			}
 
-		}
-		
-		// qbasic-ish circle drawing algorithm. there's probably a better implementation
-		private function circle(x:int, y:int, radius:int, colour:uint, startAngle:Number = 0, endAngle:Number = 360):void {
-		
-			for (var u:int = radius, v:int = 0; u > v; v++) {
-				
-				var angle:Number = Math.atan2(v, u) * (180/3.142);
-		
-				if (angle >= startAngle && angle <= endAngle)
-					setPixel(x - v, y - u, colour);
-
-				if (90 - angle >= startAngle && 90 - angle <= endAngle)
-					setPixel(x - u, y - v, colour);
-				
-				if (angle + 90 >= startAngle && angle + 90 <= endAngle)
-					setPixel(x - u, y + v, colour);
-					
-				if (180 - angle >= startAngle && 180 - angle <= endAngle)
-					setPixel(x - v, y + u, colour);
-			
-				if (angle + 180 >= startAngle && angle + 180 <= endAngle)
-					setPixel(x + v, y + u, colour);
-					
-				if (angle + 270 >= startAngle && angle + 270 <= endAngle)
-					setPixel(x + u, y - v, colour);
-				
-				if (270 - angle >= startAngle && 270 - angle <= endAngle)
-					setPixel(x + u, y + v, colour);
-					
-				if (360 - angle >= startAngle && 360 - angle <= endAngle)
-					setPixel(x + v, y - u, colour);
-
-				if ((u * u) + (v * v) > ((radius) * radius))
-					u--;
-					
-			}
-		
 		}
 		
 	}

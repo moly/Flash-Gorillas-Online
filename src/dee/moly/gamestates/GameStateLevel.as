@@ -5,6 +5,7 @@
 	import flash.display.BitmapData;
 	import dee.moly.textures.ContentManager;
 	import flash.events.KeyboardEvent;
+	import dee.moly.gameobjects.Sun;
 	
 	/**
 	 * the main level with the gorillas and the buildings and such
@@ -23,12 +24,17 @@
 		private var gorilla1:Gorilla;
 		private var gorilla2:Gorilla;
 		
+		// a smiley sun
+		private var sun:Sun;
+		
 		public function GameStateLevel(gameSettings:GameSettings) {
 			
 			this.gameSettings = gameSettings;
 			
 			gorilla1 = new Gorilla();
 			gorilla2 = new Gorilla();
+			
+			sun = new Sun();
 			
 			cityScape = new CityScape();
 			placeGorillas(cityScape.buildSkyline());
@@ -67,6 +73,7 @@
 			cityScape.draw(canvas);
 			gorilla1.draw(canvas);
 			gorilla2.draw(canvas);
+			sun.draw(canvas);
 			
 		}
 		

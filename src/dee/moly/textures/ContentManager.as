@@ -21,6 +21,9 @@
 		public static const gorillaR:BitmapData = new Gorilla(Gorilla.RIGHT_ARM);
 		public static const gorillaD:BitmapData = new Gorilla(Gorilla.ARMS_DOWN);
 		
+		public static const sunH:BitmapData = new Sun(Sun.HAPPY);
+		public static const sunS:BitmapData = new Sun(Sun.SHOCKED);
+		
 		public function ContentManager() {
 			throw new Error("Static class, do not instantiate");
 		}
