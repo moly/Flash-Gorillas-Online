@@ -15,7 +15,7 @@
 		
 		public function Sun(mouth:int) {
 			
-			super(41, 31, false, 0xFF0000AD);
+			super(41, 31, true, 0x000000AD);
 			
 			// body
 			circle(20, 15, 12, 0xFFFF00);

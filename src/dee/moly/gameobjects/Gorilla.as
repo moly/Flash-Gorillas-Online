@@ -10,29 +10,31 @@
 	
 	public class Gorilla extends GameObject{
 		
+		private var textures:Array = [ContentManager.gorillaL, ContentManager.gorillaR, ContentManager.gorillaD];
+		
 		public function Gorilla(x:int = 0, y:int = 0) {
 			
 			position = new Point(x, y);
 			
-			texture = ContentManager.gorillaD;
+			texture = textures[2];
 			
 		}
 		
 		public function raiseLeftArm():void {
 			
-			texture = ContentManager.gorillaL;
+			texture = textures[0];
 			
 		}
 		
 		public function raiseRightArm():void {
 			
-			texture = ContentManager.gorillaR;
+			texture = texures[1];
 			
 		}
 		
 		public function swapArms():void {
 			
-			texture = texture == ContentManager.gorillaR ? ContentManager.gorillaL : ContentManager.gorillaR;
+			texture = texture == textures[0] ? textures[1] : textures[0];
 			
 		}
 		

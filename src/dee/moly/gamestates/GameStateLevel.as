@@ -1,5 +1,6 @@
 ﻿package dee.moly.gamestates {
 	
+	import dee.moly.gameobjects.Banana;
 	import dee.moly.gameobjects.CharChain;
 	import dee.moly.gameobjects.CityScape;
 	import dee.moly.gameobjects.Gorilla;
@@ -7,6 +8,8 @@
 	import dee.moly.textures.ContentManager;
 	import flash.events.KeyboardEvent;
 	import dee.moly.gameobjects.Sun;
+	import flash.geom.Rectangle;
+	import flash.ui.Keyboard;
 	
 	/**
 	 * the main level with the gorillas and the buildings and such
@@ -29,6 +32,21 @@
 		private var player1NameText:CharChain;
 		private var player2NameText:CharChain;
 		
+		// score
+		private var scoreText:CharChain;
+		
+		// angle/velocity prompts
+		private var angleText:CharChain;
+		private var angleInput:CharChain;
+		private var velocityText:CharChain;
+		private var velocityInput:CharChain;
+		
+		private var currentInput:CharChain;
+		
+		private var playerTurn:int;
+		
+		private var banana:Banana;
+		
 		// a smiley sun
 		private var sun:Sun;
 		
@@ -42,10 +60,37 @@
 			player1NameText = new CharChain(gameSettings.player1Name, 0, 3);
 			player2NameText = new CharChain(gameSettings.player2Name, Main.SCREEN_WIDTH - (gameSettings.player2Name.length * 8) - 8, 3);
 			
+			scoreText = new CharChain("0>Score<0", 0, Main.SCREEN_HEIGHT - 38);
+			scoreText.centre();
+			
+			angleText = new CharChain("Angle:", 0, 18);
+			angleInput = new CharChain("", 0, 18, CharChain.SOLID, CharChain.NUMERIC);
+			
+			velocityText = new CharChain("Velocity:", 0, 33);
+			velocityInput = new CharChain("", 0, 33, CharChain.SOLID, CharChain.NUMERIC);
+			
 			sun = new Sun();
 			
+			banana = new Banana();
+			banana.x = 300;
+			banana.y = 150;
+			
 			cityScape = new CityScape();
+			
+			playerTurn = 0;
+			
+			newGame();
+			
+		}
+		
+		// reset everything, build a new skyline etc
+		private function newGame():void {
+			
+			sun.reset();
 			placeGorillas(cityScape.buildSkyline());
+			angleText.x = playerTurn * 520;
+			currentInput = angleInput;
+			currentInput.x = (playerTurn * 520) + 50; 
 			
 		}
 		
@@ -76,6 +121,8 @@
 			
 		}
 		
+		// plot the banana's path
+		
 		// draw everything to the screen
 		override public function draw(canvas:BitmapData):void {
 			
@@ -83,16 +130,55 @@
 			cityScape.draw(canvas);
 			player1NameText.draw(canvas);
 			player2NameText.draw(canvas);
+			canvas.fillRect(new Rectangle(scoreText.x - 3, scoreText.y - 2, (scoreText.length * 8) + 5, 14), 0xFF0000AD);
+			scoreText.draw(canvas);
 			gorilla1.draw(canvas);
 			gorilla2.draw(canvas);
+			angleText.draw(canvas);
+			angleInput.draw(canvas);
+			if(currentInput == velocityInput){
+				velocityText.draw(canvas);
+				velocityInput.draw(canvas);
+			}
 			sun.draw(canvas);
 			
 		}
 		
+		// put the input into the right places
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
-			cityScape.buildSkyline();
+			currentInput.addChar(e.charCode);
 			
+			if (e.keyCode == Keyboard.ENTER)
+				nextStep();
+				
+			if (e.keyCode == Keyboard.BACKSPACE)
+				currentInput.backspace();
+			
+		}
+		
+		// move on to the next step in the level
+		private function nextStep():void {
+			
+			if (currentInput == angleInput) {
+				angleInput.removeCursor();
+				currentInput = velocityInput;
+				var disp:int = 74;
+			}
+			
+			else if (currentInput == velocityInput) {
+				//plo
+				currentInput = angleInput;
+				disp = 50;
+				playerTurn = 1 - playerTurn;
+				angleInput.text = "";
+				velocityInput.text = "";
+			}
+			
+			angleText.x = 520 * playerTurn;
+			velocityText.x = 520 * playerTurn;
+			currentInput.x = (520 * playerTurn) + disp;
+						
 		}
 		
 	}

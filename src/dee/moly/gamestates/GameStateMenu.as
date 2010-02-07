@@ -28,20 +28,20 @@
 		private static const STEP_DONE:int = 5;
 		
 		//text
-		private static const numPlayersText:CharChain = new CharChain("1 or 2 players (Default = 1): ", 170, 51, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const numPlayersInput:CharChain = new CharChain("", 170 + numPlayersText.length * 8, 51, true, CharChain.NUMERIC, 0xA8A8A8);
-		private static const player1NameText:CharChain = new CharChain("Name of Player 1 (Default = 'Player 1'): ", 121, 80, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const player1NameInput:CharChain = new CharChain("", 121 + player1NameText.length * 8, 80, true, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const player2NameText:CharChain = new CharChain("Name of Player 2 (Default = 'Player 2'): ", 121, 109, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const player2NameInput:CharChain = new CharChain("", 121 + player2NameText.length * 8, 109, true, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const totalPointsText:CharChain = new CharChain("Play to how many total points (Default = 3)? ", 110, 135, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const totalPointsInput:CharChain = new CharChain("", 110 + totalPointsText.length * 8, 135, true, CharChain.NUMERIC, 0xA8A8A8);
-		private static const gravityText:CharChain = new CharChain("Gravity in Meters/Sec (Earth = 9.8)? ", 126, 164, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const gravityInput:CharChain = new CharChain("", 126 + gravityText.length * 8, 164, true, CharChain.NUMERIC, 0xA8A8A8);
-		private static const lineDash:CharChain = new CharChain("--------------", 265, 210, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const viewIntroText:CharChain = new CharChain("V = View Intro", 265, 246, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const playGameText:CharChain = new CharChain("P = Play Game", 265, 262, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const yourChoiceText:CharChain = new CharChain("Your Choice?", 273, 294, false, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const numPlayersText:CharChain = new CharChain("1 or 2 players (Default = 1): ", 170, 51, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const numPlayersInput:CharChain = new CharChain("", 170 + numPlayersText.length * 8, 51, CharChain.BLINKING, CharChain.NUMERIC, 0xA8A8A8);
+		private static const player1NameText:CharChain = new CharChain("Name of Player 1 (Default = 'Player 1'): ", 121, 80, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const player1NameInput:CharChain = new CharChain("", 121 + player1NameText.length * 8, 80, CharChain.BLINKING, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const player2NameText:CharChain = new CharChain("Name of Player 2 (Default = 'Player 2'): ", 121, 109, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const player2NameInput:CharChain = new CharChain("", 121 + player2NameText.length * 8, 109, CharChain.BLINKING, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const totalPointsText:CharChain = new CharChain("Play to how many total points (Default = 3)? ", 110, 135, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const totalPointsInput:CharChain = new CharChain("", 110 + totalPointsText.length * 8, 135, CharChain.BLINKING, CharChain.NUMERIC, 0xA8A8A8);
+		private static const gravityText:CharChain = new CharChain("Gravity in Meters/Sec (Earth = 9.8)? ", 126, 164, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const gravityInput:CharChain = new CharChain("", 126 + gravityText.length * 8, 164, CharChain.BLINKING, CharChain.NUMERIC, 0xA8A8A8);
+		private static const lineDash:CharChain = new CharChain("--------------", 265, 210, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const viewIntroText:CharChain = new CharChain("V = View Intro", 265, 246, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const playGameText:CharChain = new CharChain("P = Play Game", 265, 262, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const yourChoiceText:CharChain = new CharChain("Your Choice?", 273, 294, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		
 		private var gameSettings:GameSettings;
 		private var menuStep:int;

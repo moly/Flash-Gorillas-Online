@@ -24,6 +24,11 @@
 		public static const sunH:BitmapData = new Sun(Sun.HAPPY);
 		public static const sunS:BitmapData = new Sun(Sun.SHOCKED);
 		
+		public static const bananaL:BitmapData = new Banana(Banana.LEFT);
+		public static const bananaR:BitmapData = new Banana(Banana.RIGHT);
+		public static const bananaU:BitmapData = new Banana(Banana.UP);
+		public static const bananaD:BitmapData = new Banana(Banana.DOWN);
+		
 		public function ContentManager() {
 			throw new Error("Static class, do not instantiate");
 		}

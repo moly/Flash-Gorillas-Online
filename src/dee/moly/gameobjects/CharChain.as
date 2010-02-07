@@ -26,9 +26,14 @@
 		public static const ALPHANUMERIC:int = 0;
 		public static const NUMERIC:int = 1;
 		
-		// Cursor state machine items
-		private static const CURSOR_HIDE:Boolean  = false;
-		private static const CURSOR_SHOW:Boolean = true;
+		// cursor types
+		public static const NONE:int = 0;
+		public static const BLINKING:int = 1;
+		public static const SOLID:int = 2;
+		
+		// cursor state machine items
+		private static const CURSOR_HIDEN:Boolean = false;
+		private static const CURSOR_SHOWING:Boolean = true;
 		
 		// cursors location on the font sheet
 		private static const CURSOR_X:int = 240;
@@ -39,32 +44,32 @@
 		private static const CHAR_WIDTH:int = 8;
 		private static const CHAR_HEIGHT:int = 14;
 		
-		//Current state. The cursor is blinking by default.
+		// current state. The cursor is blinking by default.
 		private var cursorState:Boolean;
 		
 		private var blinkTimer:Timer;
 		
-		//The string we are displaying
+		// the string we are displaying
 		private var string:String = "";
-		//Is this chain read only? 
+		// is this chain read only? 
 		private var locked:Boolean = false;
 		
-		//What is the maximum number of characters allowed in this string?  -1 for unlimited.
+		// what is the maximum number of characters allowed in this string?  -1 for unlimited.
 		private var maxStringLength:int = -1;
-		//What input filter is set on this box?  0=everything, 1=numeric only
+		// what input filter is set on this box?  0=everything, 1=numeric only
 		private var filter:int;
 		
-		//What is the number of characters in this box?
+		// what is the number of characters in this box?
 		public function get length():int {
 			return string.length;
 		}
 		
-		//Set the maximum amout of characters for this box
+		// set the maximum amout of characters for this box
 		public function set maxLength(value:int):void {
 			maxStringLength = value;
 		}
 		
-		//Return the string representation of this text box
+		// return the string representation of this text box
 		public function get text():String {
 			return string;
 		}
@@ -75,7 +80,7 @@
 		// font colour
 		private var colour:ColorTransform;
 		
-		public function CharChain(text:String = "", x:int = 0, y:int = 0, showCursor:Boolean = false, type:int = 1, colour:uint = 0xFFFFFF, maxLength:int = -1) {
+		public function CharChain(text:String = "", x:int = 0, y:int = 0, cursor:int = NONE, type:int = 1, colour:uint = 0xFFFFFF, maxLength:int = -1) {
 			
 			texture = ContentManager.fontTex;
 			this.colour = new ColorTransform(0, 0, 0, 1, colour >> 16 & 0xFF, colour >> 8 & 0xFF, colour & 0xFF);
@@ -85,12 +90,22 @@
 			filter = type;
 			maxStringLength = maxLength;
 			
-			if (showCursor == true) {
-				blinkTimer = new Timer(700);
-				blinkTimer.addEventListener(TimerEvent.TIMER, blinkCursor);
-				blinkTimer.start();
-			} else {
-				cursorState = CURSOR_HIDE;
+			switch(cursor) {
+				
+				case BLINKING:
+					blinkTimer = new Timer(700);
+					blinkTimer.addEventListener(TimerEvent.TIMER, blinkCursor);
+					blinkTimer.start();
+					break;
+					
+				case NONE:
+					cursorState = CURSOR_HIDEN;
+					break;
+				
+				case SOLID:
+					cursorState = CURSOR_SHOWING;
+					break;
+					
 			}
 				
 		}
@@ -107,20 +122,20 @@
 				blinkTimer.removeEventListener(TimerEvent.TIMER, blinkCursor);
 				blinkTimer.stop();
 			}
-			cursorState = CURSOR_HIDE;
+			cursorState = CURSOR_HIDEN;
 		}
 		
-		//Show the blinking underscore cursor
+		// show the blinking underscore cursor
 		private function blinkCursor(e:TimerEvent):void {
 			cursorState = !cursorState;					
 		}
 
-		//stops locking and cancels the set interval that called it
+		// stops locking and cancels the set interval that called it
 		private function stopLock(e:TimerEvent = null):void {
 			locked = false;
 		}
 		
-		//Add a character to the end of this string
+		// add a character to the end of this string
 		public function addChar(charCode:int):void {
 					
 			if(locked) return;
@@ -152,7 +167,7 @@
 			string = string.concat(String.fromCharCode(charCode));
 		}
 		
-		//This function removes the last character from the string
+		// this function removes the last character from the string
 		public function backspace():void {
 			//Check if this box even has any characters in it
 			if(string.length > 0) {
@@ -160,7 +175,7 @@
 			}
 		}
 		
-		//draw the string from a spritesheet
+		// draw the string from a spritesheet
 		override public function draw(canvas:BitmapData):void {
 			
 			texture.colorTransform(texture.rect, colour);
@@ -169,7 +184,7 @@
 				var code:int = string.charCodeAt(i) - 32;
 				canvas.copyPixels(texture, new Rectangle(int(code % 16) * TILE_WIDTH + 4, int(code / 16) * TILE_HEIGHT + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(position.x + (i * CHAR_WIDTH), position.y));
 			}
-			if (cursorState == CURSOR_SHOW)
+			if (cursorState == CURSOR_SHOWING)
 				canvas.copyPixels(texture, new Rectangle(CURSOR_X + 4, CURSOR_Y + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(position.x + (string.length * CHAR_WIDTH), position.y));
 				
 		}
