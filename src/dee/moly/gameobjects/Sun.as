@@ -10,9 +10,11 @@
 	
 	public class Sun extends GameObject{
 		
+		private var textures:Array = [ContentManager.sunH, ContentManager.sunS];
+		
 		public function Sun() {
 			
-			texture = ContentManager.sunH;
+			texture = textures[0];
 			
 			position = new Point((Main.SCREEN_WIDTH / 2) - (texture.width / 2), 20);
 			
@@ -20,13 +22,13 @@
 		
 		public function shock():void {
 			
-			texture = ContentManager.sunS;
+			texture = textures[1];
 			
 		}
 		
 		public function reset():void {
 			
-			texture = ContentManager.sunH;
+			texture = textures[0];
 			
 		}
 		

@@ -22,10 +22,10 @@
 			switch(direction) {
 				// (
 				case LEFT:
-					fillRect(new Rectangle(1, 2, 1, 3), 0xFFFFFE51);
-					fillRect(new Rectangle(2, 1, 2, 5), 0xFFFFFE51);
-					fillRect(new Rectangle(3, 0, 2, 2), 0xFFFFFE51);
-					fillRect(new Rectangle(3, 5, 2, 2), 0xFFFFFE51);
+					fillRect(new Rectangle(2, 2, 1, 3), 0xFFFFFE51);
+					fillRect(new Rectangle(3, 1, 2, 5), 0xFFFFFE51);
+					fillRect(new Rectangle(4, 0, 2, 2), 0xFFFFFE51);
+					fillRect(new Rectangle(4, 5, 2, 2), 0xFFFFFE51);
 					break;
 				// )	
 				case RIGHT:
@@ -43,10 +43,10 @@
 					break;
 				// \_/
 				case DOWN:
-					fillRect(new Rectangle(0, 2, 2, 2), 0xFFFFFE51);
-					fillRect(new Rectangle(5, 2, 2, 2), 0xFFFFFE51);
-					fillRect(new Rectangle(1, 3, 5, 2), 0xFFFFFE51);
-					fillRect(new Rectangle(2, 5, 3, 1), 0xFFFFFE51);
+					fillRect(new Rectangle(0, 1, 2, 2), 0xFFFFFE51);
+					fillRect(new Rectangle(5, 1, 2, 2), 0xFFFFFE51);
+					fillRect(new Rectangle(1, 2, 5, 2), 0xFFFFFE51);
+					fillRect(new Rectangle(2, 4, 3, 1), 0xFFFFFE51);
 					break;
 					
 			}

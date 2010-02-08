@@ -7,6 +7,7 @@
 	 * A basic game object. All game objects should inherit from this.
 	 * @author moly
 	 */
+	
 	public class GameObject{
 		
 		// The object's texture
@@ -37,7 +38,7 @@
 		
 		// copy the texture to the canvas
 		public function draw(canvas:BitmapData):void {
-			canvas.copyPixels(texture, texture.rect, position);
+			canvas.copyPixels(texture, texture.rect, position, null, null, true);
 		}
 		
 	}

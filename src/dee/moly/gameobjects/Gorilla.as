@@ -28,7 +28,7 @@
 		
 		public function raiseRightArm():void {
 			
-			texture = texures[1];
+			texture = textures[1];
 			
 		}
 		

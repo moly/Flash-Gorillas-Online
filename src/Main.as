@@ -14,7 +14,8 @@
 	 * Main class
 	 * @author moly
 	 */
-	[SWF(width = "640", height = "350", frameRate = "50")]
+
+	[SWF(width = "640", height = "350", frameRate = "20")]
 	public class Main extends Sprite {
 		
 		// screen width/height
@@ -41,7 +42,7 @@
 			
 			currentState = new GameStateIntro();
 			
-			var gameTimer:Timer = new Timer(20);
+			var gameTimer:Timer = new Timer(30);
 			gameTimer.addEventListener(TimerEvent.TIMER, update);
 			gameTimer.start();
 			

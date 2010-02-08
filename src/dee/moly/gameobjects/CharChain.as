@@ -17,10 +17,6 @@
      */
 	
 	public class CharChain extends GameObject{
-
-		// Stop lock interval is the amount of time we lock out the text object before it accepts another character.
-		// Set in milliseconds.
-		private static const STOP_LOCK_INTERVAL:int = 75;
 		
 		// types of chain
 		public static const ALPHANUMERIC:int = 0;
@@ -51,8 +47,6 @@
 		
 		// the string we are displaying
 		private var string:String = "";
-		// is this chain read only? 
-		private var locked:Boolean = false;
 		
 		// what is the maximum number of characters allowed in this string?  -1 for unlimited.
 		private var maxStringLength:int = -1;
@@ -94,7 +88,7 @@
 				
 				case BLINKING:
 					blinkTimer = new Timer(700);
-					blinkTimer.addEventListener(TimerEvent.TIMER, blinkCursor);
+					blinkTimer.addEventListener(TimerEvent.TIMER, blinkCursor, false, 0, true);
 					blinkTimer.start();
 					break;
 					
@@ -125,20 +119,19 @@
 			cursorState = CURSOR_HIDEN;
 		}
 		
+		public function showCursor():void {
+			
+			cursorState = CURSOR_SHOWING;
+			
+		}
+		
 		// show the blinking underscore cursor
 		private function blinkCursor(e:TimerEvent):void {
 			cursorState = !cursorState;					
 		}
-
-		// stops locking and cancels the set interval that called it
-		private function stopLock(e:TimerEvent = null):void {
-			locked = false;
-		}
 		
 		// add a character to the end of this string
 		public function addChar(charCode:int):void {
-					
-			if(locked) return;
 			
 			// check some basic parameters.  If the ascii number is less than 32 or greater than 126 it's not a character
 			// we support so exit
@@ -153,18 +146,9 @@
 				if (charCode > 57) return;
 				if (charCode < 48) if (charCode != 46) return;
 			}
-		
-			// set the lock so we only can enter one character for a certain period of time.				
-			locked = true;
-			
-			// we set the stopLock event to fire after 1 second.  That stops the input box from
-			// getting hundreds of the same character if the user holds the keyboard button down 
-			// for too long.		
-			var lockTimer:Timer = new Timer(STOP_LOCK_INTERVAL, 1);
-			lockTimer.addEventListener(TimerEvent.TIMER_COMPLETE, stopLock);
-			lockTimer.start();
 			
 			string = string.concat(String.fromCharCode(charCode));
+			
 		}
 		
 		// this function removes the last character from the string
@@ -182,10 +166,10 @@
 			
 			for (var i:int = 0; i < string.length; i++) {
 				var code:int = string.charCodeAt(i) - 32;
-				canvas.copyPixels(texture, new Rectangle(int(code % 16) * TILE_WIDTH + 4, int(code / 16) * TILE_HEIGHT + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(position.x + (i * CHAR_WIDTH), position.y));
+				canvas.copyPixels(texture, new Rectangle(int(code % 16) * TILE_WIDTH + 4, int(code / 16) * TILE_HEIGHT + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(position.x + (i * CHAR_WIDTH), position.y), null, null, true);
 			}
 			if (cursorState == CURSOR_SHOWING)
-				canvas.copyPixels(texture, new Rectangle(CURSOR_X + 4, CURSOR_Y + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(position.x + (string.length * CHAR_WIDTH), position.y));
+				canvas.copyPixels(texture, new Rectangle(CURSOR_X + 4, CURSOR_Y + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(position.x + (string.length * CHAR_WIDTH), position.y), null, null, true);
 				
 		}
 	}

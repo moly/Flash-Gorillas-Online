@@ -43,11 +43,11 @@
 			for (var x:int = x0; x <= x1; x++) {
 				
 				if (steep)
-					setPixel(y, x, colour);
+					setPixel32(y, x, colour);
 				else
-					setPixel(x, y, colour);
+					setPixel32(x, y, colour);
 					
-				error  -= deltay;
+				error -= deltay;
 			
 				if (error < 0){
 					y += ystep;
@@ -117,10 +117,10 @@
 		
 		private function plot4EllipsePoints(x:int, y:int, px:int, py:int, colour:uint):void{
 			
-			setPixel(x + px, y + py, colour);
-			setPixel(x - px, y + py, colour);
-			setPixel(x - px, y - py, colour);
-			setPixel(x + px, y - py, colour);
+			setPixel32(x + px, y + py, colour);
+			setPixel32(x - px, y + py, colour);
+			setPixel32(x - px, y - py, colour);
+			setPixel32(x + px, y - py, colour);
 			
 		}
 		

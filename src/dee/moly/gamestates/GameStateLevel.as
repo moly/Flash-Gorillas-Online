@@ -8,6 +8,7 @@
 	import dee.moly.textures.ContentManager;
 	import flash.events.KeyboardEvent;
 	import dee.moly.gameobjects.Sun;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	
@@ -40,15 +41,22 @@
 		private var angleInput:CharChain;
 		private var velocityText:CharChain;
 		private var velocityInput:CharChain;
+		private var angle:Number;
+		private var velocity:Point;
 		
+		// the input to add to
 		private var currentInput:CharChain;
 		
+		// which players turn it is
 		private var playerTurn:int;
 		
+		// the projectile
 		private var banana:Banana;
 		
 		// a smiley sun
 		private var sun:Sun;
+		
+		private var t:Number;
 		
 		public function GameStateLevel(gameSettings:GameSettings) {
 			
@@ -77,7 +85,7 @@
 			
 			cityScape = new CityScape();
 			
-			playerTurn = 0;
+			playerTurn = 1;
 			
 			newGame();
 			
@@ -88,9 +96,9 @@
 			
 			sun.reset();
 			placeGorillas(cityScape.buildSkyline());
-			angleText.x = playerTurn * 520;
+			angleText.x = (playerTurn - 1) * 520;
 			currentInput = angleInput;
-			currentInput.x = (playerTurn * 520) + 50; 
+			currentInput.x = ((playerTurn - 1) * 520) + 50; 
 			
 		}
 		
@@ -121,7 +129,50 @@
 			
 		}
 		
-		// plot the banana's path
+		// start the banana moving
+		private function doShot():void {
+			
+			angle = int(angleInput.text);
+			
+			if (playerTurn == 2)
+				angle = 180 - angle;
+				
+			angle = angle / 180 * 3.142;
+			
+			velocity = new Point(Math.cos(angle) * int(velocityInput.text), Math.sin(angle) * int(velocityInput.text));
+			
+			if (playerTurn == 1){
+				gorilla1.raiseLeftArm();
+				banana.startX = gorilla1.x;
+				banana.startY = gorilla1.y - 7;
+			}else{
+				gorilla2.raiseRightArm();
+				banana.startX = gorilla2.x + 25;
+				banana.startY = gorilla2.y - 7;
+			}
+			
+			t = 0;
+			
+			banana.inMotion = true;
+			
+		}
+		
+		// move the banana around
+		override public function update():void {
+			
+			if (!banana.inMotion)
+				return;
+				
+			banana.x = int(banana.startX + (velocity.x * t) + (.5 * (cityScape.windSpeed / 5) *  (t * t)));
+			banana.y = int(banana.startY + (( -1 * (velocity.y * t)) + (.5 * gameSettings.gravity * (t * t))) * (Main.SCREEN_HEIGHT / 350));
+			
+			banana.rotation++;
+			t += 0.17;
+			
+			if (banana.x > Main.SCREEN_WIDTH || banana.x < 0 || banana.y > Main.SCREEN_HEIGHT)
+				banana.inMotion = false;
+			
+		}
 		
 		// draw everything to the screen
 		override public function draw(canvas:BitmapData):void {
@@ -134,13 +185,18 @@
 			scoreText.draw(canvas);
 			gorilla1.draw(canvas);
 			gorilla2.draw(canvas);
-			angleText.draw(canvas);
-			angleInput.draw(canvas);
-			if(currentInput == velocityInput){
-				velocityText.draw(canvas);
-				velocityInput.draw(canvas);
+			
+			if (!banana.inMotion) {
+				angleText.draw(canvas);
+				angleInput.draw(canvas);
+				if(currentInput == velocityInput){
+					velocityText.draw(canvas);
+					velocityInput.draw(canvas);
+				}
 			}
+			
 			sun.draw(canvas);
+			banana.draw(canvas);
 			
 		}
 		
@@ -167,17 +223,18 @@
 			}
 			
 			else if (currentInput == velocityInput) {
-				//plo
+				doShot();
 				currentInput = angleInput;
+				angleInput.showCursor();
 				disp = 50;
-				playerTurn = 1 - playerTurn;
+				playerTurn = 3 - playerTurn;
 				angleInput.text = "";
 				velocityInput.text = "";
 			}
 			
-			angleText.x = 520 * playerTurn;
-			velocityText.x = 520 * playerTurn;
-			currentInput.x = (520 * playerTurn) + disp;
+			angleText.x = 520 * (playerTurn - 1);
+			velocityText.x = 520 * (playerTurn - 1);
+			currentInput.x = (520 * (playerTurn - 1)) + disp;
 						
 		}
 		
