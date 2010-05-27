@@ -1,7 +1,8 @@
 ﻿package dee.moly.gameobjects {
 	
 	import flash.geom.Point;
-	import dee.moly.textures.ContentManager;
+	import flash.display.BitmapData;
+	import dee.moly.textures.SunTex;
 	
 	/**
 	 * a happy sun
@@ -10,11 +11,12 @@
 	
 	public class Sun extends GameObject{
 		
-		private var textures:Array = [ContentManager.sunH, ContentManager.sunS];
+		private static const happy:BitmapData = new SunTex(SunTex.HAPPY);
+		private static const shocked:BitmapData = new SunTex(SunTex.SHOCKED);
 		
 		public function Sun() {
 			
-			texture = textures[0];
+			texture = happy;
 			
 			position = new Point((Main.SCREEN_WIDTH / 2) - (texture.width / 2), 20);
 			
@@ -22,13 +24,13 @@
 		
 		public function shock():void {
 			
-			texture = textures[1];
+			texture = shocked;
 			
 		}
 		
 		public function reset():void {
 			
-			texture = textures[0];
+			texture = happy;
 			
 		}
 		

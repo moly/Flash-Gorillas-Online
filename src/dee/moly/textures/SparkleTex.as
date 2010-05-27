@@ -7,9 +7,9 @@
 	 * @author moly
 	 */
 	
-	public class Sparkle extends BitmapData{
+	public class SparkleTex extends BitmapData{
 		
-		public function Sparkle() {
+		public function SparkleTex() {
 			
 			super(8, 5, false, 0xFF000000);
 			

@@ -8,14 +8,14 @@
 	 * @author moly
 	 */
 	
-	public class Banana extends BitmapData{
+	public class BananaTex extends BitmapData{
 		
 		public static const LEFT:int = 0;
 		public static const RIGHT:int = 1;
 		public static const UP:int = 2;
 		public static const DOWN:int = 3;
 		
-		public function Banana(direction:int) {
+		public function BananaTex(direction:int) {
 			
 			super(7, 7, true, 0x000000AD);
 			

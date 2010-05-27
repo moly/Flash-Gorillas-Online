@@ -1,7 +1,7 @@
 ﻿package dee.moly.gamestates {
 	
 	import dee.moly.gameobjects.CharChain;
-	import dee.moly.textures.ContentManager;
+	import dee.moly.textures.SparkleTex;
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
@@ -12,8 +12,8 @@
 	 */
 	public class GameStateIntro extends GameState{
 		
-		// the texture
-		private var sparkle:BitmapData;
+		// sparkle texture
+		private static const sparkle:BitmapData = new SparkleTex();
 		
 		// sparkle positions
 		private static const SPARKLE_LEFT_X:int = 0;
@@ -36,12 +36,10 @@
 		
 		public function GameStateIntro() {
 			
-			sparkle = ContentManager.sparkleTex;
-			
 		}
 		
 		// move the sparkly border
-		override public function update():void {
+		override public function update(elapsed:Number):void {
 			
 			a = a < 32 ? a + 8 : 0;
 			b = b < 102 ? b + 25 : 2;

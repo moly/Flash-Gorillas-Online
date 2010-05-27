@@ -8,13 +8,13 @@
 	 * @author moly
 	 */
 	
-	public class Gorilla extends DrawingBitmap{
+	public class GorillaTex extends DrawingBitmap{
 		
 		public static const LEFT_ARM:int = 0;
 		public static const RIGHT_ARM:int = 1;
 		public static const ARMS_DOWN:int = 2;
 		
-		public function Gorilla(arms:int) {
+		public function GorillaTex(arms:int) {
 			
 			super(28, 30, false, 0xFF0000AD);
 			

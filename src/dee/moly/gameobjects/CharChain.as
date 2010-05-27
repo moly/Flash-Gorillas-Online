@@ -1,6 +1,5 @@
 ﻿package dee.moly.gameobjects {
 	
-	import dee.moly.textures.ContentManager;
 	import flash.display.BitmapData;
 	import flash.events.TimerEvent;
 	import flash.geom.ColorTransform;
@@ -18,6 +17,9 @@
 	
 	public class CharChain extends GameObject{
 		
+		[Embed(source="/dee/moly/textures/font.png")] private static const FontBitmap:Class;
+		public static const font:BitmapData = new FontBitmap().bitmapData;
+		
 		// types of chain
 		public static const ALPHANUMERIC:int = 0;
 		public static const NUMERIC:int = 1;
@@ -28,7 +30,7 @@
 		public static const SOLID:int = 2;
 		
 		// cursor state machine items
-		private static const CURSOR_HIDEN:Boolean = false;
+		private static const CURSOR_HIDDEN:Boolean = false;
 		private static const CURSOR_SHOWING:Boolean = true;
 		
 		// cursors location on the font sheet
@@ -69,6 +71,7 @@
 		}
 		public function set text(value:String):void {
 			string = value;
+			updateTexture();
 		}
 		
 		// font colour
@@ -76,12 +79,10 @@
 		
 		public function CharChain(text:String = "", x:int = 0, y:int = 0, cursor:int = NONE, type:int = 1, colour:uint = 0xFFFFFF, maxLength:int = -1) {
 			
-			texture = ContentManager.fontTex;
-			this.colour = new ColorTransform(0, 0, 0, 1, colour >> 16 & 0xFF, colour >> 8 & 0xFF, colour & 0xFF);
-			
 			string = text;
 			position = new Point(x, y);
 			filter = type;
+			this.colour = new ColorTransform(0, 0, 0, 1, colour >> 16 & 0xFF, colour >> 8 & 0xFF, colour & 0xFF);
 			maxStringLength = maxLength;
 			
 			switch(cursor) {
@@ -93,7 +94,7 @@
 					break;
 					
 				case NONE:
-					cursorState = CURSOR_HIDEN;
+					cursorState = CURSOR_HIDDEN;
 					break;
 				
 				case SOLID:
@@ -101,14 +102,14 @@
 					break;
 					
 			}
+			
+			updateTexture();
 				
 		}
 		
 		// centre the chain horizontally
 		public function centre():void {
-			
 			position.x = (Main.SCREEN_WIDTH / 2) - (string.length * CHAR_WIDTH / 2);
-			
 		}
 		
 		public function removeCursor():void {
@@ -116,18 +117,19 @@
 				blinkTimer.removeEventListener(TimerEvent.TIMER, blinkCursor);
 				blinkTimer.stop();
 			}
-			cursorState = CURSOR_HIDEN;
+			cursorState = CURSOR_HIDDEN;
+			updateTexture();
 		}
 		
 		public function showCursor():void {
-			
 			cursorState = CURSOR_SHOWING;
-			
+			updateTexture();
 		}
 		
 		// show the blinking underscore cursor
 		private function blinkCursor(e:TimerEvent):void {
-			cursorState = !cursorState;					
+			cursorState = !cursorState;
+			updateTexture();
 		}
 		
 		// add a character to the end of this string
@@ -148,29 +150,35 @@
 			}
 			
 			string = string.concat(String.fromCharCode(charCode));
-			
+			updateTexture();
 		}
 		
 		// this function removes the last character from the string
 		public function backspace():void {
-			//Check if this box even has any characters in it
+			
 			if(string.length > 0) {
 				string = string.slice(0, string.length - 1);
+				updateTexture();
 			}
 		}
 		
-		// draw the string from a spritesheet
-		override public function draw(canvas:BitmapData):void {
+		// draw the string to a texture
+		private function updateTexture():void {
 			
-			texture.colorTransform(texture.rect, colour);
+			texture = new BitmapData((string.length + 1) * CHAR_WIDTH, CHAR_HEIGHT, true, 0x00);
+			
+			texture.lock();
 			
 			for (var i:int = 0; i < string.length; i++) {
 				var code:int = string.charCodeAt(i) - 32;
-				canvas.copyPixels(texture, new Rectangle(int(code % 16) * TILE_WIDTH + 4, int(code / 16) * TILE_HEIGHT + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(position.x + (i * CHAR_WIDTH), position.y), null, null, true);
+				texture.copyPixels(font, new Rectangle(int(code % 16) * TILE_WIDTH + 4, int(code / 16) * TILE_HEIGHT + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(i * CHAR_WIDTH, 0), null, null, true);
 			}
 			if (cursorState == CURSOR_SHOWING)
-				canvas.copyPixels(texture, new Rectangle(CURSOR_X + 4, CURSOR_Y + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(position.x + (string.length * CHAR_WIDTH), position.y), null, null, true);
-				
+				texture.copyPixels(font, new Rectangle(CURSOR_X + 4, CURSOR_Y + 2, CHAR_WIDTH, CHAR_HEIGHT), new Point(string.length * CHAR_WIDTH, 0), null, null, true);
+			
+			texture.colorTransform(texture.rect, colour);
+			
+			texture.unlock();
 		}
 	}
 }

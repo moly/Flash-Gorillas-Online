@@ -1,7 +1,8 @@
 ﻿package dee.moly.gameobjects {
 	
-	import dee.moly.textures.ContentManager;
+	import flash.display.BitmapData;
 	import flash.geom.Point;
+	import dee.moly.textures.GorillaTex;
 	
 	/**
 	 * a gorilla
@@ -10,31 +11,32 @@
 	
 	public class Gorilla extends GameObject{
 		
-		private var textures:Array = [ContentManager.gorillaL, ContentManager.gorillaR, ContentManager.gorillaD];
+		private static const left:BitmapData = new GorillaTex(GorillaTex.LEFT_ARM);
+		private static const right:BitmapData = new GorillaTex(GorillaTex.RIGHT_ARM);
+		private static const down:BitmapData = new GorillaTex(GorillaTex.ARMS_DOWN);
 		
 		public function Gorilla(x:int = 0, y:int = 0) {
 			
 			position = new Point(x, y);
-			
-			texture = textures[2];
+			texture = down;
 			
 		}
 		
 		public function raiseLeftArm():void {
 			
-			texture = textures[0];
+			texture = left;
 			
 		}
 		
 		public function raiseRightArm():void {
 			
-			texture = textures[1];
+			texture = right;
 			
 		}
 		
 		public function swapArms():void {
 			
-			texture = texture == textures[0] ? textures[1] : textures[0];
+			texture = (texture == left) ? right : left;
 			
 		}
 		

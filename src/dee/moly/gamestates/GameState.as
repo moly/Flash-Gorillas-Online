@@ -20,7 +20,7 @@
 			
 		}
 		
-		public function update():void {
+		public function update(elapsed:Number):void {
 			
 		}
 		

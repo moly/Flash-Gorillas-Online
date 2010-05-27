@@ -38,6 +38,8 @@
 		private static const WINDOW_WIDTH_SEPARATION:int = 10;
 		private static const BUILDING_MINIMUM_HEIGHT:int = 25;
 		
+		private var buildingCoordinates:Array;
+		
 		// the level's wind speed
 		private var wind:int;
 		public function get windSpeed():int {
@@ -47,13 +49,12 @@
 		public function CityScape() {
 			
 			position = new Point(0, 0);
-			
 			texture = new BitmapData(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT, false, SKY_COLOUR);
 			
 		}
 		
 		// draw a random sky line
-		public function buildSkyline():Array {
+		public function buildSkyline():void {
 			
 			var currentBuildingColour:uint;
 			var currentBuildingHeight:int = 0;
@@ -62,9 +63,10 @@
 			var horizonLine:int = Main.SCREEN_HEIGHT - 15;
 			var currentWindowColour:uint;
 			var currentHeightBase:int
-			var buildingCoordinates:Array = new Array();
 			
 			var slopeState:int = int(Math.random() * 6);
+			
+			buildingCoordinates = new Array();
 			
 			switch (slopeState) {
 				
@@ -181,8 +183,33 @@
 		
 			setWindSpeed();
 			drawWindLine();
+		}
+		
+		// put the gorillas on either the second or third building from either end
+		public function placeGorillas(gorilla1:Gorilla, gorilla2:Gorilla):void {
+
+			const xAdj:int = 15;
+			const yAdj:int = 29;
+
+			for (var i:int = 1; i <= 2; i++){
+
+				if (i == 1)
+					var bNum:int = int(Math.random() * 2) + 1;
+				else
+					bNum = buildingCoordinates.length - 1 - (int(Math.random() * 2) + 1);
+					
+				var bWidth:int = buildingCoordinates[bNum + 1][0] - buildingCoordinates[bNum][0];
+				
+				if (i == 1){
+					gorilla1.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
+					gorilla1.y = buildingCoordinates[bNum][1] - yAdj;
+				}else{
+					gorilla2.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
+					gorilla2.y = buildingCoordinates[bNum][1] - yAdj;
+				}
+
+			}
 			
-			return buildingCoordinates;
 		}
 		
 		// decide a random wind speed/direction for each cityscape

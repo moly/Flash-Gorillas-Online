@@ -8,14 +8,14 @@
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.TimerEvent;
-	import flash.utils.Timer;
+	import flash.utils.getTimer;
 	
 	/**
 	 * Main class
 	 * @author moly
 	 */
 
-	[SWF(width = "640", height = "350", frameRate = "20")]
+	[SWF(width = "640", height = "350", frameRate = "30")]
 	public class Main extends Sprite {
 		
 		// screen width/height
@@ -27,6 +27,8 @@
 		
 		// a canvas to draw to
 		private var canvas:BitmapData;
+		
+		private var previousTime:Number;
 		
 		public function Main():void {
 			if (stage) init();
@@ -42,9 +44,8 @@
 			
 			currentState = new GameStateIntro();
 			
-			var gameTimer:Timer = new Timer(30);
-			gameTimer.addEventListener(TimerEvent.TIMER, update);
-			gameTimer.start();
+			previousTime = getTimer();
+			addEventListener(Event.ENTER_FRAME, update);
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
@@ -55,16 +56,18 @@
 		}
 		
 		// update game
-		private function update(e:TimerEvent):void {
+		private function update(e:Event):void {
 			
-			currentState.update();
+			var elapsed:Number = getTimer() - previousTime;
+			
+			currentState.update(elapsed);
 			
 			draw();
 			
 			if (currentState.moveToNextState == true)
 				currentState = currentState.nextState;
-						
-			e.updateAfterEvent();
+				
+			previousTime = getTimer();
 			
 		}
 		

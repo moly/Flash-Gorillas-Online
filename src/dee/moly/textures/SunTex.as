@@ -8,12 +8,12 @@
 	 * @author moly
 	 */
 	
-	public class Sun extends DrawingBitmap{
+	public class SunTex extends DrawingBitmap{
 		
 		public static const HAPPY:int = 0;
 		public static const SHOCKED:int = 1;
 		
-		public function Sun(mouth:int) {
+		public function SunTex(mouth:int) {
 			
 			super(41, 31, true, 0x000000AD);
 			
