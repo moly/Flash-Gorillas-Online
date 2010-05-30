@@ -16,7 +16,7 @@
 		
 		public function GorillaTex(arms:int) {
 			
-			super(28, 30, false, 0xFF0000AD);
+			super(28, 30, true, 0x00);
 			
 			// draw head
 			fillRect(new Rectangle(10, 1, 8, 7), 0xFFFFAD51);

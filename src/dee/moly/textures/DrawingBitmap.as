@@ -16,7 +16,7 @@
 		}
 		
 		// line drawing algorithm
-		protected function line(x0:int, y0:int, x1:int, y1:int, colour:uint):void {
+		public function line(x0:int, y0:int, x1:int, y1:int, colour:uint):void {
 			
 			var steep:Boolean = Math.abs(y1 - y0) > Math.abs(x1 - x0);
 			
@@ -59,8 +59,10 @@
 		}
 		
 		// qbasic-ish "circle" drawing algorithm.
-		protected function circle(x:int, y:int, radius:int, colour:uint):void {
+		public function circle(x:int, y:int, radius:int, colour:uint):void {
 		
+			if (radius == 0) return;
+			
 			var px:int, py:int, xRadius:int, yRadius:int, xChange:int, yChange:int;
 			var ellipseError:int, twoASquare:int, twoBSquare:int, stoppingX:int, stoppingY:int;
 			

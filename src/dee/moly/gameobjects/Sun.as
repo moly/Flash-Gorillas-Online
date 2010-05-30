@@ -17,7 +17,6 @@
 		public function Sun() {
 			
 			texture = happy;
-			
 			position = new Point((Main.SCREEN_WIDTH / 2) - (texture.width / 2), 20);
 			
 		}

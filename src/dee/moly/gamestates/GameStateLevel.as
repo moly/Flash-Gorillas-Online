@@ -55,6 +55,16 @@
 		// a smiley sun
 		private var sun:Sun;
 		
+		private var state:int;
+		
+		// state constants
+		private static const ANGLE_INPUT:int = 5;
+		private static const VELOCITY_INPUT:int = 6;
+		private static const BANANA_THROWN:int = 0;
+		private static const GORILLA1_HIT:int = 1;
+		private static const GORILLA2_HIT:int = 2;
+		private static const BUILDING_HIT:int = 3;
+		
 		public function GameStateLevel(gameSettings:GameSettings) {
 			
 			this.gameSettings = gameSettings;
@@ -89,45 +99,117 @@
 		// reset everything, build a new skyline etc
 		private function newGame():void {
 			
-			sun.reset();
 			cityScape.buildSkyline();
 			cityScape.placeGorillas(gorilla1, gorilla2);
 			angleText.x = (playerTurn - 1) * 520;
 			currentInput = angleInput;
-			currentInput.x = ((playerTurn - 1) * 520) + 50; 
+			currentInput.x = ((playerTurn - 1) * 520) + 50;
+			state = ANGLE_INPUT;
 			
 		}
 		
 		// move the banana around
 		override public function update(elapsed:Number):void {
 			
-			if (banana.inMotion == false)
-				return;
+			switch(state) {
 				
-			banana.update(elapsed);
+				case BANANA_THROWN:
 				
+					banana.update(elapsed);
+			
+					if (banana.hasCollidedWith(sun))
+						sun.shock();
+				
+					if (banana.hasCollidedWith(cityScape)){
+						cityScape.createExplosion(banana.x, banana.y);
+						state = BUILDING_HIT;
+					}
+				
+					if (banana.hasCollidedWith(gorilla1)) {
+						//gorilla1.explode();
+						state = GORILLA1_HIT;
+					}
+				
+					if (banana.hasCollidedWith(gorilla2)) {
+						//gorilla2.explode();
+						state = GORILLA2_HIT;
+					}
+					
+					if (banana.x > Main.SCREEN_WIDTH || banana.x < 0 || banana.y > Main.SCREEN_HEIGHT){
+						state = BUILDING_HIT;
+						nextStep();
+					}
+					
+					break;
+					
+				case BUILDING_HIT:
+				
+					cityScape.update(elapsed);
+					
+					if (cityScape.explosionFinished)
+						nextStep();
+						
+					break;
+					
+				case GORILLA1_HIT:
+				
+					gorilla1.update(elapsed);
+					gorilla2.update(elapsed);
+					
+					//if (gorilla1.finishedExploding)
+						//gorilla2.startDance();
+						
+					//if (gorilla2.finishedDancing)
+						nextStep();
+						
+					break;
+					
+				case GORILLA2_HIT:
+				
+					gorilla2.update(elapsed);
+					gorilla1.update(elapsed);
+					
+					//if (gorilla2.finishedExploding)
+						//gorilla1.startDance();
+						
+					//if (gorilla1.finishedDancing)
+						nextStep();
+						
+					break;
+					
+			}
+					
 		}
 		
 		// draw everything to the screen
 		override public function draw(canvas:BitmapData):void {
 			
 			canvas.fillRect(canvas.rect, 0xFF0000AD);
+			
 			cityScape.draw(canvas);
+			
 			player1NameText.draw(canvas);
 			player2NameText.draw(canvas);
+			
 			canvas.fillRect(new Rectangle(scoreText.x - 3, scoreText.y - 2, (scoreText.length * 8) + 5, 14), 0xFF0000AD);
 			scoreText.draw(canvas);
+			
 			gorilla1.draw(canvas);
 			gorilla2.draw(canvas);
 			
-			if (!banana.inMotion) {
+			if (state == ANGLE_INPUT || state == VELOCITY_INPUT) {
+				
 				angleText.draw(canvas);
 				angleInput.draw(canvas);
-				if(currentInput == velocityInput){
+				
+				if (state == VELOCITY_INPUT) {
 					velocityText.draw(canvas);
 					velocityInput.draw(canvas);
 				}
-			}else {
+				
+			} 
+			
+			if (state == BANANA_THROWN){
 				banana.draw(canvas);
 			}
 			
@@ -138,12 +220,12 @@
 		// put the input into the right places
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
-			if (banana.inMotion == true || currentInput.text == "")
+			if (state == BANANA_THROWN)
 				return;
 			
 			currentInput.addChar(e.charCode);
 			
-			if (e.keyCode == Keyboard.ENTER)
+			if (e.keyCode == Keyboard.ENTER && currentInput.text != "")
 				nextStep();
 				
 			if (e.keyCode == Keyboard.BACKSPACE)
@@ -154,42 +236,56 @@
 		// move on to the next step of the level
 		private function nextStep():void {
 			
-			if (currentInput == angleInput) {
-				angleInput.removeCursor();
-				currentInput = velocityInput;
-				var disp:int = 74;
-			}
+			switch (state) {
+				
+				// if an angle has just been entered, change the active input to velocity
+				case ANGLE_INPUT:
+					angleInput.removeCursor();
+					currentInput = velocityInput;
+					currentInput.x = (520 * (playerTurn - 1)) + 74;
+					state = VELOCITY_INPUT;
+					break;
 			
-			else if (currentInput == velocityInput) {
+				// if a velocity has just been entered, throw the banana
+				case VELOCITY_INPUT:
 				
-				var angle:int = int(angleInput.text);
-				var velocity:int = int(velocityInput.text);
+					var angle:int = int(angleInput.text);
+					var velocity:int = int(velocityInput.text);
 				
-				if (playerTurn == 1){
-					var startPoint:Point = new Point(gorilla1.x, gorilla1.y - 7);
-				}
+					if (playerTurn == 1){
+						var startPoint:Point = new Point(gorilla1.x, gorilla1.y - 7);
+						//gorilla1.throwAnimation();
+					}
 				
-				if (playerTurn == 2){
-					angle = 180 - angle;
-					startPoint = new Point(gorilla2.x + 25, gorilla2.y - 7);
-				}
+					if (playerTurn == 2){
+						angle = 180 - angle;
+						startPoint = new Point(gorilla2.x + 25, gorilla2.y - 7);
+						//gorilla2.throwAnimation();
+					}
 				
-				banana.doShot(angle, velocity, gameSettings.gravity, cityScape.windSpeed, startPoint);
-				playerTurn == 1 ? gorilla1.raiseLeftArm() : gorilla2.raiseRightArm();
-				
-				currentInput = angleInput;
-				angleInput.showCursor();
-				
-				playerTurn = 3 - playerTurn;
-				angleInput.text = "";
-				velocityInput.text = "";
-				disp = 50;
-				
-			}
+					banana.launch(angle, velocity, gameSettings.gravity, cityScape.windSpeed, startPoint);
+					
+					state = BANANA_THROWN;
+					
+					break;
 			
-			angleText.x = 520 * (playerTurn - 1);
-			velocityText.x = 520 * (playerTurn - 1);
-			currentInput.x = (520 * (playerTurn - 1)) + disp;
+				// if the banana has just landed, it's the other players turn
+				case GORILLA1_HIT:
+				case GORILLA2_HIT:
+				case BUILDING_HIT:
+					playerTurn = 3 - playerTurn;
+					angleInput.text = "";
+					angleInput.showCursor();
+					velocityInput.text = "";
+					currentInput = angleInput;
+					currentInput.x = (520 * (playerTurn - 1)) + 50;
+					angleText.x = 520 * (playerTurn - 1);
+					velocityText.x = 520 * (playerTurn - 1);
+					sun.reset();
+					state = ANGLE_INPUT;
+					break;
+					
+			}
 						
 		}
 		

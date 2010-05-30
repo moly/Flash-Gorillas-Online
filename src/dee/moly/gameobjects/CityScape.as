@@ -1,5 +1,6 @@
 ﻿package dee.moly.gameobjects {
 	
+	import dee.moly.textures.DrawingBitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -14,11 +15,10 @@
 		// colours	
 		private static const BUILDING_RED:uint = 0xFFA80000;
 		private static const BUILDING_GRAY:uint	= 0xFFA8A8A8;	
-		private static const BUILDING_GREEN:uint = 0xFF00A8A8;
-		private static const EXPLOSION_COLOUR:uint = 0xFFFF0052;	
+		private static const BUILDING_GREEN:uint = 0xFF00A8A8;	
 		private static const LIT_WINDOW_COLOUR:uint = 0xFFFCFC54;
 		private static const UNLIT_WINDOW_COLOUR:uint = 0xFF545454;
-		private static const SKY_COLOUR:uint = 0x0000AD;
+		private static const EXPLOSION_COLOUR:uint = 0xFFFC0054;
 		
 		// measurment Constants
 		private static const BUILDING_SEPARATION:int = 1;
@@ -40,6 +40,14 @@
 		
 		private var buildingCoordinates:Array;
 		
+		private var explosionPosition:Point;
+		private var explosionRadius:Number;
+		private var explosionUp:Boolean = true;
+		private var _explosionFinished:Boolean = false;
+		public function get explosionFinished():Boolean {
+			return _explosionFinished;
+		}
+		
 		// the level's wind speed
 		private var wind:int;
 		public function get windSpeed():int {
@@ -49,8 +57,29 @@
 		public function CityScape() {
 			
 			position = new Point(0, 0);
-			texture = new BitmapData(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT, false, SKY_COLOUR);
+			texture = new DrawingBitmap(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT, true, 0x00);
 			
+		}
+		
+		// animate an explosion
+		override public function update(elapsed:Number):void {
+			
+			const MAX_RADIUS:int = Main.SCREEN_HEIGHT / 50;
+			
+			if (explosionUp == true){
+				if (explosionRadius < MAX_RADIUS)
+					explosionRadius += 0.82;
+				else
+					explosionUp = false;
+			}else {
+				if (explosionRadius > 1)
+					explosionRadius -= 0.605;
+				else
+					_explosionFinished = true;
+			}
+			
+			DrawingBitmap(texture).circle(explosionPosition.x, explosionPosition.y, explosionRadius, explosionUp ? EXPLOSION_COLOUR : 0x00);
+  
 		}
 		
 		// draw a random sky line
@@ -212,6 +241,16 @@
 			
 		}
 		
+		// explode a piece of the cityscape
+		public function createExplosion(x:int, y:int):void {
+
+			explosionUp = true;
+			_explosionFinished = false;
+			explosionRadius = 1;
+			explosionPosition = new Point(x, y);
+			
+		}
+		
 		// decide a random wind speed/direction for each cityscape
 		private function setWindSpeed():void {
 			
@@ -235,19 +274,19 @@
 			var windLine:int = wind * 3 * (Main.SCREEN_WIDTH / 320);
 		
 			if (wind > 0) {
-				for (var px:int = Main.SCREEN_WIDTH / 2; px <= Main.SCREEN_WIDTH / 2 + windLine; px++)
-					texture.setPixel(px, Main.SCREEN_HEIGHT - 5, 0xFF0052);
-				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine - 1, Main.SCREEN_HEIGHT - 6, 0xFF0052);
-				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine - 2, Main.SCREEN_HEIGHT - 7, 0xFF0052);
-				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine - 1, Main.SCREEN_HEIGHT - 4, 0xFF0052);
-				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine - 2, Main.SCREEN_HEIGHT - 3, 0xFF0052);
+				for (var px:int = Main.SCREEN_WIDTH / 2; px <= (Main.SCREEN_WIDTH / 2) + windLine; px++)
+					texture.setPixel32(px, Main.SCREEN_HEIGHT - 5, 0xFFFF0052);
+				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine - 1, Main.SCREEN_HEIGHT - 6, 0xFFFF0052);
+				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine - 2, Main.SCREEN_HEIGHT - 7, 0xFFFF0052);
+				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine - 1, Main.SCREEN_HEIGHT - 4, 0xFFFF0052);
+				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine - 2, Main.SCREEN_HEIGHT - 3, 0xFFFF0052);
 			}else {
-				for (px = Main.SCREEN_WIDTH / 2; px >= Main.SCREEN_WIDTH / 2 + windLine; px--)
-					texture.setPixel(px, Main.SCREEN_HEIGHT - 5, 0xFF0052);
-				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine + 1, Main.SCREEN_HEIGHT - 6, 0xFF0052);
-				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine + 2, Main.SCREEN_HEIGHT - 7, 0xFF0052);
-				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine + 1, Main.SCREEN_HEIGHT - 4, 0xFF0052);
-				texture.setPixel(Main.SCREEN_WIDTH / 2 + windLine + 2, Main.SCREEN_HEIGHT - 3, 0xFF0052);
+				for (px = Main.SCREEN_WIDTH / 2; px >= (Main.SCREEN_WIDTH / 2) + windLine; px--)
+					texture.setPixel32(px, Main.SCREEN_HEIGHT - 5, 0xFFFF0052);
+				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine + 1, Main.SCREEN_HEIGHT - 6, 0xFFFF0052);
+				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine + 2, Main.SCREEN_HEIGHT - 7, 0xFFFF0052);
+				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine + 1, Main.SCREEN_HEIGHT - 4, 0xFFFF0052);
+				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine + 2, Main.SCREEN_HEIGHT - 3, 0xFFFF0052);
 			}
 			
 		}

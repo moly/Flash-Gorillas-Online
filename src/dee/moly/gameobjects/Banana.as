@@ -11,8 +11,6 @@
 	
 	public class Banana extends GameObject{
 		
-		public var inMotion:Boolean;
-		
 		private var startPos:Point;
 		private var gravity:Number;
 		private var windSpeed:Number;
@@ -69,12 +67,10 @@
 			
 			rotation++;
 			
-			if (position.x > Main.SCREEN_WIDTH || position.x < 0 || position.y > Main.SCREEN_HEIGHT)
-				inMotion = false;
 		}
 		
 		// start the banana moving
-		public function doShot(angle:Number, velocity:int, gravity:Number, windSpeed:Number, startPoint:Point):void {
+		public function launch(angle:Number, velocity:int, gravity:Number, windSpeed:Number, startPoint:Point):void {
 			
 			this.gravity = gravity;
 			this.windSpeed = windSpeed;
@@ -86,7 +82,6 @@
 			startPos = startPoint;
 			
 			time = 0;
-			inMotion = true;
 			
 		}
 		

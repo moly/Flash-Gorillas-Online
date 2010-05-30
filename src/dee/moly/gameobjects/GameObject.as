@@ -1,5 +1,6 @@
 ﻿package dee.moly.gameobjects{
 	
+	import dee.moly.textures.DrawingBitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	
@@ -39,6 +40,12 @@
 		// copy the texture to the canvas
 		public function draw(canvas:BitmapData):void {
 			canvas.copyPixels(texture, texture.rect, position, null, null, true);
+		}
+		
+				
+		// check for collision
+		public function hasCollidedWith(gameObject:GameObject):Boolean {
+			return texture.hitTest(position, 0xff, gameObject.texture, gameObject.position);
 		}
 		
 	}
