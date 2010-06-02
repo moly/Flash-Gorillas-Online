@@ -18,7 +18,6 @@
 		private static const BUILDING_GREEN:uint = 0xFF00A8A8;	
 		private static const LIT_WINDOW_COLOUR:uint = 0xFFFCFC54;
 		private static const UNLIT_WINDOW_COLOUR:uint = 0xFF545454;
-		private static const EXPLOSION_COLOUR:uint = 0xFFFC0054;
 		
 		// measurment Constants
 		private static const BUILDING_SEPARATION:int = 1;
@@ -40,12 +39,10 @@
 		
 		private var buildingCoordinates:Array;
 		
-		private var explosionPosition:Point;
-		private var explosionRadius:Number;
-		private var explosionUp:Boolean = true;
-		private var _explosionFinished:Boolean = false;
+		private var smallExplosion:SmallExplosion;
+		private var bigExplosion:BigExplosion;
 		public function get explosionFinished():Boolean {
-			return _explosionFinished;
+			return smallExplosion.finished && bigExplosion.finished;
 		}
 		
 		// the level's wind speed
@@ -58,28 +55,16 @@
 			
 			position = new Point(0, 0);
 			texture = new DrawingBitmap(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT, true, 0x00);
-			
+			smallExplosion = new SmallExplosion();
+			bigExplosion = new BigExplosion();
+		
 		}
 		
-		// animate an explosion
-		override public function update(elapsed:Number):void {
-			
-			const MAX_RADIUS:int = Main.SCREEN_HEIGHT / 50;
-			
-			if (explosionUp == true){
-				if (explosionRadius < MAX_RADIUS)
-					explosionRadius += 0.82;
-				else
-					explosionUp = false;
-			}else {
-				if (explosionRadius > 1)
-					explosionRadius -= 0.605;
-				else
-					_explosionFinished = true;
-			}
-			
-			DrawingBitmap(texture).circle(explosionPosition.x, explosionPosition.y, explosionRadius, explosionUp ? EXPLOSION_COLOUR : 0x00);
-  
+		override public function draw(canvas:BitmapData):void 
+		{
+			smallExplosion.draw(texture);
+			bigExplosion.draw(texture);
+			super.draw(canvas);
 		}
 		
 		// draw a random sky line
@@ -242,13 +227,13 @@
 		}
 		
 		// explode a piece of the cityscape
-		public function createExplosion(x:int, y:int):void {
-
-			explosionUp = true;
-			_explosionFinished = false;
-			explosionRadius = 1;
-			explosionPosition = new Point(x, y);
-			
+		public function createSmallExplosion(x:int, y:int):void {
+			smallExplosion.create(x, y);
+		}
+		
+		// explode a really big piece of the cityscape
+		public function createBigExplosion(x:int, y:int):void {
+			bigExplosion.create(x, y);
 		}
 		
 		// decide a random wind speed/direction for each cityscape

@@ -50,8 +50,8 @@
 			fillRect(new Rectangle(17, 29, 5, 1), 0xFFFFAD51);
 
 			// chest
-			circle(10, 11, 4, 0x0000AD);
-			circle(18, 11, 4, 0x0000AD);
+			circle(10, 11, 4, 0xFF0000AD);
+			circle(18, 11, 4, 0xFF0000AD);
 			
 			for (i = -5; i <= -1; i++) {
 				switch(arms) {

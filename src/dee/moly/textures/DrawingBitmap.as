@@ -59,20 +59,21 @@
 		}
 		
 		// qbasic-ish "circle" drawing algorithm.
-		public function circle(x:int, y:int, radius:int, colour:uint):void {
-		
-			if (radius == 0) return;
+		public function circle(x:int, y:int, radius:int, colour:uint, aspectRatio:Number = 1):void {
 			
-			var px:int, py:int, xRadius:int, yRadius:int, xChange:int, yChange:int;
-			var ellipseError:int, twoASquare:int, twoBSquare:int, stoppingX:int, stoppingY:int;
+			var px:Number, py:Number, xRadius:Number, yRadius:Number, xChange:Number, yChange:Number;
+			var ellipseError:Number, twoASquare:Number, twoBSquare:Number, stoppingX:Number, stoppingY:Number;
 			
-			xRadius = radius;
-			yRadius = radius * 0.8;
+			xRadius = radius * aspectRatio;
+			yRadius = radius * 0.75;
+			
+			if (xRadius <= 0 || yRadius <= 0) return;
+			
 			twoASquare = 2 * xRadius * xRadius;
-			twoBSquare = 2 * (yRadius) * (yRadius);
-			px = radius;
+			twoBSquare = 2 * yRadius * yRadius;
+			px = xRadius;
 			py = 0;
-			xChange = (yRadius) * (yRadius) * (1 - 2 * xRadius);
+			xChange = yRadius * yRadius * (1 - 2 * xRadius);
 			yChange = xRadius * xRadius;
 			ellipseError = 0;
 			stoppingX = twoBSquare * xRadius;
@@ -117,12 +118,12 @@
 		
 		}
 		
-		private function plot4EllipsePoints(x:int, y:int, px:int, py:int, colour:uint):void{
+		private function plot4EllipsePoints(x:Number, y:Number, px:Number, py:Number, colour:uint):void{
 			
-			setPixel32(x + px, y + py, colour);
-			setPixel32(x - px, y + py, colour);
-			setPixel32(x - px, y - py, colour);
-			setPixel32(x + px, y - py, colour);
+			setPixel32(Math.round(x + px), Math.round(y + py), colour);
+			setPixel32(Math.round(x - px), Math.round(y + py), colour);
+			setPixel32(Math.round(x - px), Math.round(y - py), colour);
+			setPixel32(Math.round(x + px), Math.round(y - py), colour);
 			
 		}
 		

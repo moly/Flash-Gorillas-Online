@@ -113,6 +113,7 @@
 			
 			switch(state) {
 				
+				// if the banana is in the air
 				case BANANA_THROWN:
 				
 					banana.update(elapsed);
@@ -121,20 +122,21 @@
 						sun.shock();
 				
 					if (banana.hasCollidedWith(cityScape)){
-						cityScape.createExplosion(banana.x, banana.y);
+						cityScape.createSmallExplosion(banana.x, banana.y);
 						state = BUILDING_HIT;
 					}
 				
 					if (banana.hasCollidedWith(gorilla1)) {
-						//gorilla1.explode();
+						cityScape.createBigExplosion(gorilla1.x, gorilla1.y);
 						state = GORILLA1_HIT;
 					}
 				
 					if (banana.hasCollidedWith(gorilla2)) {
-						//gorilla2.explode();
+						cityScape.createBigExplosion(gorilla2.x, gorilla2.y);
 						state = GORILLA2_HIT;
 					}
 					
+					// check if banana has left the screen
 					if (banana.x > Main.SCREEN_WIDTH || banana.x < 0 || banana.y > Main.SCREEN_HEIGHT){
 						state = BUILDING_HIT;
 						nextStep();
@@ -153,10 +155,9 @@
 					
 				case GORILLA1_HIT:
 				
-					gorilla1.update(elapsed);
 					gorilla2.update(elapsed);
 					
-					//if (gorilla1.finishedExploding)
+					if (cityScape.explosionFinished)
 						//gorilla2.startDance();
 						
 					//if (gorilla2.finishedDancing)
@@ -166,10 +167,9 @@
 					
 				case GORILLA2_HIT:
 				
-					gorilla2.update(elapsed);
 					gorilla1.update(elapsed);
 					
-					//if (gorilla2.finishedExploding)
+					if (cityScape.explosionFinished)
 						//gorilla1.startDance();
 						
 					//if (gorilla1.finishedDancing)
