@@ -36,19 +36,19 @@
 			
 			// mouth
 			if (mouth == HAPPY) {
-				circle(20, 15, 8, 0xFF0000AD);
+				circle(20, 15, 8, 0x000000AD);
 				fillRect(new Rectangle(12, 9, 17, 9), 0xFFFFFF00);
-			}else {
-				circle(20, 20, 3, 0xFF0000AD);
-				setPixel(20, 20, 0xFF0000AD);
+			}else{
+				fillRect(new Rectangle(19, 19, 3, 4), 0x000000AD);
+				fillRect(new Rectangle(18, 20, 5, 2), 0x000000AD);	
 			}
 			
 			// eyes
-			line(16, 13, 18, 13, 0xFF0000AD);
-			line(22, 13, 24, 13, 0xFF0000AD);
+			line(16, 13, 18, 13, 0x000000AD);
+			line(22, 13, 24, 13, 0x000000AD);
 			
-			line(17, 12, 17, 14, 0xFF0000AD);
-			line(23, 12, 23, 14, 0xFF0000AD);
+			line(17, 12, 17, 14, 0x000000AD);
+			line(23, 12, 23, 14, 0x000000AD);
 			
 		}
 		

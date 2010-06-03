@@ -82,6 +82,8 @@
 			
 			buildingCoordinates = new Array();
 			
+			texture.fillRect(texture.rect, 0x000000AD);
+			
 			switch (slopeState) {
 				
 				case 0: 

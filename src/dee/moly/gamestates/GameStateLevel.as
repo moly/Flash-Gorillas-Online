@@ -4,12 +4,15 @@
 	import dee.moly.gameobjects.CharChain;
 	import dee.moly.gameobjects.CityScape;
 	import dee.moly.gameobjects.Gorilla;
+	import dee.moly.AI.ProjectileEstimator;
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;
 	import dee.moly.gameobjects.Sun;
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
+	import flash.utils.Timer;
 	
 	/**
 	 * the main level with the gorillas and the buildings and such
@@ -54,7 +57,7 @@
 		
 		// a smiley sun
 		private var sun:Sun;
-		
+
 		private var state:int;
 		
 		// state constants
@@ -65,12 +68,18 @@
 		private static const GORILLA2_HIT:int = 2;
 		private static const BUILDING_HIT:int = 3;
 		
+		// AI for one player games
+		private var projectileEstimator:ProjectileEstimator;
+		
 		public function GameStateLevel(gameSettings:GameSettings) {
 			
 			this.gameSettings = gameSettings;
 			
 			gorilla1 = new Gorilla();
 			gorilla2 = new Gorilla();
+			
+			if (gameSettings.numberOfPlayers == 1)
+				projectileEstimator = new ProjectileEstimator();
 			
 			player1NameText = new CharChain(gameSettings.player1Name, 0, 3);
 			player2NameText = new CharChain(gameSettings.player2Name, Main.SCREEN_WIDTH - (gameSettings.player2Name.length * 8) - 8, 3);
@@ -101,9 +110,25 @@
 			
 			cityScape.buildSkyline();
 			cityScape.placeGorillas(gorilla1, gorilla2);
-			angleText.x = (playerTurn - 1) * 520;
+			
+			angleInput.text = "";
+			angleInput.showCursor();
+			velocityInput.text = "";
 			currentInput = angleInput;
-			currentInput.x = ((playerTurn - 1) * 520) + 50;
+			currentInput.x = (520 * (playerTurn - 1)) + 50;
+			angleText.x = 520 * (playerTurn - 1);
+			velocityText.x = 520 * (playerTurn - 1);
+			
+			sun.reset();
+			if (gameSettings.numberOfPlayers == 1){
+				projectileEstimator.reset();
+				if (playerTurn == 2) {
+					var t:Timer = new Timer(1000, 1);
+					t.addEventListener(TimerEvent.TIMER_COMPLETE, cpuTurn, false, 0, true);
+					t.start();
+				}
+			}
+			
 			state = ANGLE_INPUT;
 			
 		}
@@ -254,13 +279,13 @@
 				
 					if (playerTurn == 1){
 						var startPoint:Point = new Point(gorilla1.x, gorilla1.y - 7);
-						//gorilla1.throwAnimation();
+						gorilla1.throwAnimation();
 					}
 				
 					if (playerTurn == 2){
 						angle = 180 - angle;
 						startPoint = new Point(gorilla2.x + 25, gorilla2.y - 7);
-						//gorilla2.throwAnimation();
+						gorilla2.throwAnimation();
 					}
 				
 					banana.launch(angle, velocity, gameSettings.gravity, cityScape.windSpeed, startPoint);
@@ -269,10 +294,18 @@
 					
 					break;
 			
-				// if the banana has just landed, it's the other players turn
 				case GORILLA1_HIT:
 				case GORILLA2_HIT:
+					playerTurn = 3 - playerTurn;
+					newGame();
+					break;
+					
 				case BUILDING_HIT:
+				
+					if (gameSettings.numberOfPlayers == 1 && playerTurn == 2) {
+						projectileEstimator.projectileLanded(gorilla1.x - banana.x, gorilla1.y - banana.y);
+					}
+				
 					playerTurn = 3 - playerTurn;
 					angleInput.text = "";
 					angleInput.showCursor();
@@ -283,10 +316,45 @@
 					velocityText.x = 520 * (playerTurn - 1);
 					sun.reset();
 					state = ANGLE_INPUT;
+					
+					if (gameSettings.numberOfPlayers == 1 && playerTurn == 2) {
+						var t:Timer = new Timer(1000, 1);
+						t.addEventListener(TimerEvent.TIMER_COMPLETE, cpuTurn, false, 0, true);
+						t.start();
+					}
+					
 					break;
 					
 			}
 						
+		}
+		
+		// have the AI take a turn
+		private function cpuTurn(e:TimerEvent):void {
+			
+			var t:Timer = new Timer(1000, 1);
+			t.addEventListener(TimerEvent.TIMER_COMPLETE, cpuTurn, false, 0, true);
+			
+			switch(state) {
+				
+				case ANGLE_INPUT:
+					if (currentInput.text == "")
+						currentInput.text = String(projectileEstimator.getAngle());
+					else
+						nextStep();
+					t.start();
+					break;
+					
+				case VELOCITY_INPUT:
+					if (currentInput.text == ""){
+						currentInput.text = String(projectileEstimator.getVelocity());
+						t.start();
+					} else {
+						nextStep();
+					}
+					break;
+			}
+			
 		}
 		
 	}
