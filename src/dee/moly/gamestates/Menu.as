@@ -10,7 +10,7 @@
 	 * @author moly
 	 */
 	
-	public class GameStateMenu extends GameState{
+	public class Menu extends GameState{
 		
 		// default game settings
 		private static const DEFAULT_NUM_PLAYERS:int = 1;
@@ -47,7 +47,7 @@
 		private var menuStep:int;
 		private var currentInput:CharChain;
 		
-		public function GameStateMenu() {
+		public function Menu() {
 			
 			gameSettings = new GameSettings();
 			menuStep = STEP_NUMPLAYERS;
@@ -98,12 +98,10 @@
 			
 			if (menuStep == STEP_DONE) {
 				if (e.keyCode == 80){
-					nextState = new GameStateLevel(gameSettings);
-					moveToNextState = true;
+					gotoState(new Level(gameSettings));
 				}
 				if (e.keyCode == 86) {
-					nextState = new GameStateDance(gameSettings);
-					moveToNextState = true;
+					gotoState(new IntroDance(gameSettings));
 				}
 			}
 			else if (e.keyCode == 13)

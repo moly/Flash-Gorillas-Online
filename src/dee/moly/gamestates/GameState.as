@@ -9,8 +9,15 @@
 	 */
 	public class GameState{
 		
-		public var moveToNextState:Boolean;
-		public var nextState:GameState;
+		private var _moveToNextState:Boolean;
+		public function get moveToNextState():Boolean {
+			return _moveToNextState;
+		}
+		
+		private var _nextState:GameState;
+		public function get nextState():GameState {
+			return _nextState;
+		}
 		
 		public function GameState() {
 			
@@ -26,6 +33,11 @@
 		
 		public function draw(canvas:BitmapData):void {
 			
+		}
+		
+		protected function gotoState(state:GameState):void {
+			_moveToNextState = true;
+			_nextState = state;
 		}
 		
 	}

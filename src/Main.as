@@ -1,6 +1,6 @@
 ﻿package {
 	
-	import dee.moly.gamestates.GameStateIntro;
+	import dee.moly.gamestates.TitleScreen;
 	import dee.moly.gamestates.GameState;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -42,7 +42,7 @@
 			canvas = new BitmapData(640, 350, false, 0xFF000000);
 			addChild(new Bitmap(canvas));
 			
-			currentState = new GameStateIntro();
+			currentState = new TitleScreen();
 			
 			previousTime = getTimer();
 			addEventListener(Event.ENTER_FRAME, update);

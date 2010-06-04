@@ -19,7 +19,7 @@
 	 * @author moly
 	 */
 	
-	public class GameStateLevel extends GameState{
+	public class Level extends GameState{
 		
 		// the game setings for this round
 		private var gameSettings:GameSettings;
@@ -36,6 +36,8 @@
 		private var player2NameText:CharChain;
 		
 		// score
+		private var player1Score:int;
+		private var player2Score:int;
 		private var scoreText:CharChain;
 		
 		// angle/velocity prompts
@@ -71,7 +73,7 @@
 		// AI for one player games
 		private var projectileEstimator:ProjectileEstimator;
 		
-		public function GameStateLevel(gameSettings:GameSettings) {
+		public function Level(gameSettings:GameSettings) {
 			
 			this.gameSettings = gameSettings;
 			
@@ -83,6 +85,9 @@
 			
 			player1NameText = new CharChain(gameSettings.player1Name, 0, 3);
 			player2NameText = new CharChain(gameSettings.player2Name, Main.SCREEN_WIDTH - (gameSettings.player2Name.length * 8) - 8, 3);
+			
+			player1Score = 0;
+			player2Score = 0;
 			
 			scoreText = new CharChain("0>Score<0", 0, Main.SCREEN_HEIGHT - 38);
 			scoreText.centre();
@@ -119,7 +124,10 @@
 			angleText.x = 520 * (playerTurn - 1);
 			velocityText.x = 520 * (playerTurn - 1);
 			
+			scoreText.text = player1Score + ">Score<" + player2Score;
+			
 			sun.reset();
+			
 			if (gameSettings.numberOfPlayers == 1){
 				projectileEstimator.reset();
 				if (playerTurn == 2) {
@@ -153,11 +161,13 @@
 				
 					if (banana.hasCollidedWith(gorilla1)) {
 						cityScape.createBigExplosion(gorilla1.x, gorilla1.y);
+						player2Score++;
 						state = GORILLA1_HIT;
 					}
 				
 					if (banana.hasCollidedWith(gorilla2)) {
 						cityScape.createBigExplosion(gorilla2.x, gorilla2.y);
+						player1Score++;
 						state = GORILLA2_HIT;
 					}
 					
@@ -179,27 +189,23 @@
 					break;
 					
 				case GORILLA1_HIT:
-				
-					gorilla2.update(elapsed);
 					
-					if (cityScape.explosionFinished)
-						//gorilla2.startDance();
-						
-					//if (gorilla2.finishedDancing)
-						nextStep();
+					if (cityScape.explosionFinished){
+						gorilla2.danceAnimation();
+						if (gorilla2.finishedDancing)
+							nextStep();
+					}
 						
 					break;
 					
 				case GORILLA2_HIT:
 				
-					gorilla1.update(elapsed);
+					if (cityScape.explosionFinished){
+						gorilla1.danceAnimation();
+						if (gorilla1.finishedDancing)
+							nextStep();
+					}
 					
-					if (cityScape.explosionFinished)
-						//gorilla1.startDance();
-						
-					//if (gorilla1.finishedDancing)
-						nextStep();
-						
 					break;
 					
 			}
@@ -245,7 +251,7 @@
 		// put the input into the right places
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
-			if (state == BANANA_THROWN)
+			if (state == BANANA_THROWN || (gameSettings.numberOfPlayers == 1 && playerTurn == 2))
 				return;
 			
 			currentInput.addChar(e.charCode);
@@ -294,10 +300,13 @@
 					
 					break;
 			
-				case GORILLA1_HIT:
+				case GORILLA1_HIT:					
 				case GORILLA2_HIT:
 					playerTurn = 3 - playerTurn;
-					newGame();
+					if (player1Score + player2Score >= gameSettings.playToPoints)
+						gotoState(new ScoreOverview(gameSettings.player1Name, gameSettings.player2Name, player1Score, player2Score));
+					else
+						newGame();
 					break;
 					
 				case BUILDING_HIT:

@@ -11,7 +11,7 @@
 	 * @author moly
 	 */
 	
-	public class GameStateDance extends GameState{
+	public class IntroDance extends GameState{
 		
 		// the game settings to pass to the level
 		private var gameSettings:GameSettings;
@@ -34,17 +34,21 @@
 		// interval for second stage of the dance
 		private static const INTERVAL_2:int = 300;
 		
-		public function GameStateDance(gameSettings:GameSettings) {
+		public function IntroDance(gameSettings:GameSettings) {
 			
 			this.gameSettings = gameSettings;
 			
 			namesText = new CharChain(gameSettings.player1Name + " AND " + gameSettings.player2Name, 0, 114);
 			namesText.centre();
 			
-			gorilla1 = new Gorilla(269, 199);
+			gorilla1 = new Gorilla();
+			gorilla1.x = 269;
+			gorilla1.y = 199;
 			gorilla1.raiseRightArm();
 			
-			gorilla2 = new Gorilla(329, 199);
+			gorilla2 = new Gorilla();
+			gorilla2.x = 329;
+			gorilla2.y = 199;
 			gorilla2.raiseLeftArm();
 			
 			danceTimer = new Timer(INTERVAL_1, 0);
@@ -65,8 +69,7 @@
 			if (danceTimer.currentCount == 11) {
 				danceTimer.stop();
 				danceTimer.removeEventListener(TimerEvent.TIMER, dance);
-				nextState = new GameStateLevel(gameSettings);
-				moveToNextState = true;
+				gotoState(new Level(gameSettings));
 			}
 			
 		}

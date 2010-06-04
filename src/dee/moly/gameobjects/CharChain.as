@@ -18,7 +18,7 @@
 	public class CharChain extends GameObject{
 		
 		[Embed(source="/dee/moly/textures/font.png")] private static const FontBitmap:Class;
-		public static const font:BitmapData = new FontBitmap().bitmapData;
+		private static const font:BitmapData = new FontBitmap().bitmapData;
 		
 		// types of chain
 		public static const ALPHANUMERIC:int = 0;
