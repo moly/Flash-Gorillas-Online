@@ -121,7 +121,7 @@
 			angleInput.showCursor();
 			velocityInput.text = "";
 			currentInput = angleInput;
-			currentInput.x = (520 * (playerTurn - 1)) + 50;
+			currentInput.x = (520 * (playerTurn - 1)) + 58;
 			angleText.x = 520 * (playerTurn - 1);
 			velocityText.x = 520 * (playerTurn - 1);
 			
@@ -274,7 +274,7 @@
 				case ANGLE_INPUT:
 					angleInput.removeCursor();
 					currentInput = velocityInput;
-					currentInput.x = (520 * (playerTurn - 1)) + 74;
+					currentInput.x = (520 * (playerTurn - 1)) + 82;
 					state = VELOCITY_INPUT;
 					break;
 			
@@ -321,7 +321,7 @@
 					angleInput.showCursor();
 					velocityInput.text = "";
 					currentInput = angleInput;
-					currentInput.x = (520 * (playerTurn - 1)) + 50;
+					currentInput.x = (520 * (playerTurn - 1)) + 58;
 					angleText.x = 520 * (playerTurn - 1);
 					velocityText.x = 520 * (playerTurn - 1);
 					sun.reset();

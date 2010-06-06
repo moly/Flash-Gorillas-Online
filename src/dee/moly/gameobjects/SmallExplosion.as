@@ -3,6 +3,7 @@ package dee.moly.gameobjects {
 	import dee.moly.textures.DrawingBitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Point;
+	import flash.media.Sound;
 	
 	/**
 	 * The explosion when a banana hits a building
@@ -10,6 +11,9 @@ package dee.moly.gameobjects {
 	 */
 	
 	public class SmallExplosion extends GameObject{
+		
+		[Embed(source="/dee/moly/sounds/buildingExplosion.mp3")] private static const ExplosionSound:Class;
+		private static const explosionSound:Sound = new ExplosionSound();
 		
 		private var currentRadius:Number;
 		
@@ -34,9 +38,12 @@ package dee.moly.gameobjects {
 		
 		// start a new explosion
 		public function create(x:int, y:int):void {
+			
 			position = new Point(x, y);
 			stage = STAGE_1;
 			currentRadius = 0;
+			explosionSound.play();
+			
 		}
 		
 		override public function draw(canvas:BitmapData):void {

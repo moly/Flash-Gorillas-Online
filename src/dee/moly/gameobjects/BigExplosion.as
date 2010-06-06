@@ -4,6 +4,7 @@ package dee.moly.gameobjects {
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.media.Sound;
 	
 	/**
 	 * A big explosion when a gorilla is hit
@@ -11,6 +12,9 @@ package dee.moly.gameobjects {
 	 */
 	
 	public class BigExplosion extends GameObject{
+		
+		[Embed(source="/dee/moly/sounds/gorillaExplosion.mp3")] private static const ExplosionSound:Class;
+		private static const explosionSound:Sound = new ExplosionSound();
 		
 		private var currentRadius:int;
 		
@@ -40,9 +44,12 @@ package dee.moly.gameobjects {
 		
 		// start a new explosion
 		public function create(x:int, y:int):void {
+			
 			position = new Point(x, y);
 			stage = STAGE_1;
 			currentRadius = 1;			
+			
+			explosionSound.play();
 		}
 		
 		override public function draw(canvas:BitmapData):void {

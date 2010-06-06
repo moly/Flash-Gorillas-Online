@@ -3,13 +3,18 @@
 	import dee.moly.gameobjects.CharChain;
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;
+	import flash.media.Sound;
 	
 	/**
 	 * The title screen. Has the game name, a quick paragraph about the
 	 * game and a sparkle border.
 	 * @author moly
 	 */
-	public class TitleScreen extends SparkleBorder{
+	
+	public class TitleScreen extends SparkleBorder {
+		
+		[Embed(source="/dee/moly/sounds/intro.mp3")] private static const IntroMusic:Class;
+		private static const introMusic:Sound = new IntroMusic();
 		
 		// text
 		private var title:CharChain = new CharChain("F l a s h    G O R I L L A S", 218, 62);
@@ -21,7 +26,7 @@
 		private var pressToContinue:CharChain = new CharChain("Press any key to continue", 220, 300, CharChain.NONE, 1, 0xA8A8A8);
 		
 		public function TitleScreen() {
-			
+			introMusic.play();
 		}
 		
 		// draw the intro screen

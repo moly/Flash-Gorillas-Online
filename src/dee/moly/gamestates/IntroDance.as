@@ -5,6 +5,7 @@
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	import dee.moly.gameobjects.Gorilla
+	import flash.media.Sound;
 	
 	/**
 	 * a short intro with the gorillas dancing
@@ -12,6 +13,10 @@
 	 */
 	
 	public class IntroDance extends GameState{
+		
+		// dance music
+		[Embed(source="/dee/moly/sounds/danceMusic.mp3")] private static const DanceMusic:Class;
+		private static const danceMusic:Sound = new DanceMusic();
 		
 		// the game settings to pass to the level
 		private var gameSettings:GameSettings;
@@ -55,6 +60,7 @@
 			danceTimer.addEventListener(TimerEvent.TIMER, dance);
 			danceTimer.start();
 			
+			danceMusic.play();
 		}
 		
 		// change which arm the gorillas have raised to make them dance
@@ -63,7 +69,7 @@
 			gorilla1.swapArms();
 			gorilla2.swapArms();
 			
-			if (danceTimer.currentCount == 3)
+			if (danceTimer.currentCount == 4)
 				danceTimer.delay = INTERVAL_2;
 				
 			if (danceTimer.currentCount == 11) {
