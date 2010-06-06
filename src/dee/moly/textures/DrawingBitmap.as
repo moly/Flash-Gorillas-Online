@@ -1,6 +1,7 @@
 ﻿package dee.moly.textures {
 	
 	import flash.display.BitmapData;
+	import flash.display.Shape;
 	
 	/**
 	 * some drawing algorithms
@@ -61,13 +62,13 @@
 		// qbasic-ish "circle" drawing algorithm.
 		public function circle(x:int, y:int, radius:int, colour:uint, aspectRatio:Number = 1):void {
 			
-			var px:Number, py:Number, xRadius:Number, yRadius:Number, xChange:Number, yChange:Number;
-			var ellipseError:Number, twoASquare:Number, twoBSquare:Number, stoppingX:Number, stoppingY:Number;
+			var px:int, py:int, xRadius:int, yRadius:int, xChange:int, yChange:int;
+			var ellipseError:int, twoASquare:int, twoBSquare:int, stoppingX:int, stoppingY:int;
 			
-			xRadius = radius * aspectRatio;
-			yRadius = radius * 0.75;
+			xRadius = radius;
+			yRadius = radius * 0.8 * aspectRatio;
 			
-			if (xRadius <= 0 || yRadius <= 0) return;
+			if (xRadius <= 0) return;
 			
 			twoASquare = 2 * xRadius * xRadius;
 			twoBSquare = 2 * yRadius * yRadius;
@@ -79,13 +80,13 @@
 			stoppingX = twoBSquare * xRadius;
 			stoppingY = 0;
 			
-			while (stoppingX >= stoppingY ){
+			while (stoppingX >= stoppingY){
 				plot4EllipsePoints(x, y, px, py, colour);
 				py++;
 				stoppingY += twoASquare;
 				ellipseError += yChange;
 				yChange += twoASquare;
-				if ((2 * ellipseError + xChange) > 0 ){
+				if ((2 * ellipseError + xChange) > 0){
 					px--;
 					stoppingX -= twoBSquare;
 					ellipseError += xChange;
@@ -94,21 +95,21 @@
 			}
 			
 			px = 0;
-			py = (yRadius);
-			xChange = (yRadius) * (yRadius);
-			yChange = xRadius * xRadius * (1 - 2 * (yRadius));
+			py = yRadius;
+			xChange = yRadius * yRadius;
+			yChange = xRadius * xRadius * (1 - 2 * yRadius);
 			ellipseError = 0;
 			stoppingX = 0;
-			stoppingY = twoASquare * (yRadius);
+			stoppingY = twoASquare * yRadius;
 			
-			while ( stoppingX <= stoppingY ){
+			while (stoppingX <= stoppingY){
 				
 				plot4EllipsePoints(x, y, px, py, colour);
 				px++;
 				stoppingX += twoBSquare;
 				ellipseError += xChange;
 				xChange += twoBSquare;
-				if ((2 * ellipseError + yChange) > 0 ){
+				if ((2 * ellipseError + yChange) > 0){
 					py--;
 					stoppingY -= twoASquare;
 					ellipseError += yChange;
@@ -118,12 +119,12 @@
 		
 		}
 		
-		private function plot4EllipsePoints(x:Number, y:Number, px:Number, py:Number, colour:uint):void{
+		private function plot4EllipsePoints(x:int, y:int, px:int, py:int, colour:uint):void{
 			
-			setPixel32(Math.round(x + px), Math.round(y + py), colour);
-			setPixel32(Math.round(x - px), Math.round(y + py), colour);
-			setPixel32(Math.round(x - px), Math.round(y - py), colour);
-			setPixel32(Math.round(x + px), Math.round(y - py), colour);
+			setPixel32(x + px, y + py, colour);
+			setPixel32(x - px, y + py, colour);
+			setPixel32(x - px, y - py, colour);
+			setPixel32(x + px, y - py, colour);
 			
 		}
 		

@@ -10,14 +10,16 @@ package dee.moly.AI {
 		
 		private var currentAngleGuess:int;
 		private var currentVelocityGuess:int;
+		private var gravity:Number;
 		
-		public function ProjectileEstimator() {
+		public function ProjectileEstimator(gravity:Number) {
+			this.gravity = gravity;
 			reset();
 		}
 		
 		public function reset():void {
-			currentAngleGuess = Math.random() * 30 + 40;
-			currentVelocityGuess = Math.random() * 30 + 40;
+			currentAngleGuess = (Math.random() * 30 + 40);
+			currentVelocityGuess = (Math.random() * 30 + 30) + gravity;
 		}
 		
 		public function getAngle():int {
@@ -33,9 +35,9 @@ package dee.moly.AI {
 		public function projectileLanded(xDist:int, yDist:int):void {
 			
 			currentVelocityGuess -= xDist / 30;
-			if (currentAngleGuess > 45)
+			if (currentAngleGuess > 55)
 				currentAngleGuess += xDist / 50;
-			else if (currentAngleGuess < 45)
+			else if (currentAngleGuess < 55)
 				currentAngleGuess -= xDist / 50;
 			
 		}

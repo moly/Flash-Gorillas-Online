@@ -39,17 +39,16 @@ package dee.moly.gameobjects {
 			currentRadius = 0;
 		}
 		
-		override public function draw(canvas:BitmapData):void 
-		{
+		override public function draw(canvas:BitmapData):void {
+			
 			if (finished) return;
 			
 			if (stage == STAGE_1){
-				if (currentRadius < MAX_RADIUS)
-					currentRadius += 0.82;
-				else
+				currentRadius += 0.5;
+				if (currentRadius >= MAX_RADIUS)
 					stage = STAGE_2;
 			}else if (stage == STAGE_2){
-				currentRadius -= 0.605;
+				currentRadius -= 0.5;
 				if (currentRadius <= 0)
 					stage = FINISHED;
 			}

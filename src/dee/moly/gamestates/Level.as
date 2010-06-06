@@ -5,6 +5,7 @@
 	import dee.moly.gameobjects.CityScape;
 	import dee.moly.gameobjects.Gorilla;
 	import dee.moly.AI.ProjectileEstimator;
+	import dee.moly.textures.DrawingBitmap;
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;
 	import dee.moly.gameobjects.Sun;
@@ -81,7 +82,7 @@
 			gorilla2 = new Gorilla();
 			
 			if (gameSettings.numberOfPlayers == 1)
-				projectileEstimator = new ProjectileEstimator();
+				projectileEstimator = new ProjectileEstimator(gameSettings.gravity);
 			
 			player1NameText = new CharChain(gameSettings.player1Name, 0, 3);
 			player2NameText = new CharChain(gameSettings.player2Name, Main.SCREEN_WIDTH - (gameSettings.player2Name.length * 8) - 8, 3);
@@ -217,16 +218,16 @@
 			
 			canvas.fillRect(canvas.rect, 0xFF0000AD);
 			
-			cityScape.draw(canvas);
-			
 			player1NameText.draw(canvas);
 			player2NameText.draw(canvas);
 			
-			canvas.fillRect(new Rectangle(scoreText.x - 3, scoreText.y - 2, (scoreText.length * 8) + 5, 14), 0xFF0000AD);
-			scoreText.draw(canvas);
-			
 			gorilla1.draw(canvas);
 			gorilla2.draw(canvas);
+			
+			cityScape.draw(canvas);
+			
+			canvas.fillRect(new Rectangle(scoreText.x - 3, scoreText.y - 2, (scoreText.length * 8) + 5, 14), 0xFF0000AD);
+			scoreText.draw(canvas);
 			
 			if (state == ANGLE_INPUT || state == VELOCITY_INPUT) {
 				

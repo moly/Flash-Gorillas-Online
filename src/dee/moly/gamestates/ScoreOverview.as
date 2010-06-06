@@ -2,6 +2,7 @@ package dee.moly.gamestates {
 	
 	import dee.moly.gameobjects.CharChain;
 	import flash.display.BitmapData;
+	import flash.events.KeyboardEvent;
 	
 	/**
 	 * final screen showing the scores from the game
@@ -20,14 +21,16 @@ package dee.moly.gamestates {
 		private var pressToContinue:CharChain = new CharChain("Press any key to continue", 220, 300, CharChain.NONE, 1, 0xA8A8A8);
 		
 		public function ScoreOverview(player1Name:String, player2Name:String, player1Score:int, player2Score:int) {
+			
 			this.player1Name.text = player1Name;
 			this.player2Name.text = player2Name;
 			this.player1Score.text = String(player1Score);
 			this.player2Score.text = String(player2Score);
+			
 		}
 		
-		override public function draw(canvas:BitmapData):void 
-		{
+		override public function draw(canvas:BitmapData):void {
+			
 			super.draw(canvas);
 			
 			gameOver.draw(canvas);
@@ -37,6 +40,12 @@ package dee.moly.gamestates {
 			player1Score.draw(canvas);
 			player2Score.draw(canvas);
 			pressToContinue.draw(canvas);
+		}
+	
+		override public function onKeyDown(e:KeyboardEvent):void {
+			
+			gotoState(new Menu());
+			
 		}
 		
 	}
