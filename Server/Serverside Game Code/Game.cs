@@ -11,11 +11,19 @@ namespace MyGame {
 	}
 
 	public class GameCode : Game<Player> {
-		// This method is called when an instance of your the game is created
+		
+        // The players in the game
+        Player player1;
+        Player player2;
+
+        // Which players turn it is
+        int playerTurn;
+
 		public override void GameStarted() {
-			// anything you write to the Console will show up in the 
-			// output window of the development server
+			
 			Console.WriteLine("Game is started: " + RoomId);
+
+            playerTurn = 1;
 
 			// This is how you setup a timer
 			AddTimer(delegate {
@@ -41,12 +49,25 @@ namespace MyGame {
 
 		// This method is called whenever a player joins the game
 		public override void UserJoined(Player player) {
-			// this is how you send a player a message
-			player.Send("hello");
 
-			// this is how you broadcast a message to all players connected to the game
-			Broadcast("UserJoined", player.Id);
+            if (player1 == null){
+                player1 = player;
+                player1.Name = player.JoinData["name"];
+            } else {
+                player2 = player;
+                player2.Name = player.JoinData["name"];
+            }
+
+            if (PlayerCount == 2){
+                player1.Send("start", player2.Name);
+                player2.Send("start", player1.Name);
+            }
 		}
+
+        // Prevent more than two people joining a game
+        public override bool AllowUserJoin(Player player){
+            return (player1 == null || player2 == null);
+        }
 
 		// This method is called when a player leaves the game
 		public override void UserLeft(Player player) {
@@ -58,8 +79,9 @@ namespace MyGame {
 			switch(message.Type) {
 				// This is how you would set a players name when they send in their name in a 
 				// "MyNameIs" message
-				case "MyNameIs":
-					player.Name = message.GetString(0);
+				case "shot":
+					(playerTurn == 1 ? player2 : player1).Send("shot", message.GetInt(0), message.GetInt(1));
+                    playerTurn = 3 - playerTurn;
 					break;
 			}
 		}
@@ -77,7 +99,7 @@ namespace MyGame {
 
 				// draw the current time
 				g.DrawString(DateTime.Now.ToString(), new Font("Verdana",20F),Brushes.Orange, 10,10);
-
+                
 				// draw a dot based on the DebugPoint variable
 				g.FillRectangle(Brushes.Red, debugPoint.X,debugPoint.Y,5,5);
 			}
@@ -89,17 +111,17 @@ namespace MyGame {
 		// arguments and add a [DebugAction] attribute like we've down below, a button
 		// will be added to the development server. 
 		// Whenever you click the button, your code will run.
-		[DebugAction("Play", DebugAction.Icon.Play)]
-		public void PlayNow() {
-			Console.WriteLine("The play button was clicked!");
-		}
+		//[DebugAction("Play", DebugAction.Icon.Play)]
+		//public void PlayNow() {
+		//	Console.WriteLine("The play button was clicked!");
+		//}
 
 		// If you use the [DebugAction] attribute on a method with
 		// two int arguments, the action will be triggered via the
 		// debug view when you click the debug view on a running game.
-		[DebugAction("Set Debug Point", DebugAction.Icon.Green)]
-		public void SetDebugPoint(int x, int y) {
-			debugPoint = new Point(x,y);
-		}
+		//[DebugAction("Set Debug Point", DebugAction.Icon.Green)]
+		//public void SetDebugPoint(int x, int y) {
+		//	debugPoint = new Point(x,y);
+		//}
 	}
 }

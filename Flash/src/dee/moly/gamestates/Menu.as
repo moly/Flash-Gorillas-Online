@@ -4,165 +4,113 @@
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Rectangle;
+	import playerio.*;
 	
 	/**
 	 * A menu to decide game options
 	 * @author moly
 	 */
 	
-	public class Menu extends GameState{
-		
-		// default game settings
-		private static const DEFAULT_NUM_PLAYERS:int = 1;
-		private static const DEFAULT_PLAYER_1_NAME:String = "Player 1";
-		private static const DEFAULT_PLAYER_2_NAME:String = "Player 2";
-		private static const DEFAULT_PLAY_TO_POINTS:int = 3;
-		private static const DEFAULT_GRAVITY:Number = 9.8;
-		
-		// the steps through the menu
-		private static const STEP_NUMPLAYERS:int = 0;
-		private static const STEP_PLAYER1NAME:int = 1;
-		private static const STEP_PLAYER2NAME:int = 2;
-		private static const STEP_POINTS:int = 3;
-		private static const STEP_GRAVITY:int = 4;
-		private static const STEP_DONE:int = 5;
+	public class Menu extends GameState {
 		
 		//text
-		private static const numPlayersText:CharChain = new CharChain("1 or 2 players (Default = 1): ", 170, 51, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private var numPlayersInput:CharChain = new CharChain("", 170 + numPlayersText.length * 8, 51, CharChain.BLINKING, CharChain.NUMERIC, 0xA8A8A8);
-		private static const player1NameText:CharChain = new CharChain("Name of Player 1 (Default = 'Player 1'): ", 121, 80, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private var player1NameInput:CharChain = new CharChain("", 121 + player1NameText.length * 8, 80, CharChain.BLINKING, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const player2NameText:CharChain = new CharChain("Name of Player 2 (Default = 'Player 2'): ", 121, 109, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private var player2NameInput:CharChain = new CharChain("", 121 + player2NameText.length * 8, 109, CharChain.BLINKING, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const totalPointsText:CharChain = new CharChain("Play to how many total points (Default = 3)? ", 110, 135, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private var totalPointsInput:CharChain = new CharChain("", 110 + totalPointsText.length * 8, 135, CharChain.BLINKING, CharChain.NUMERIC, 0xA8A8A8);
-		private static const gravityText:CharChain = new CharChain("Gravity in Meters/Sec (Earth = 9.8)? ", 126, 164, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private var gravityInput:CharChain = new CharChain("", 126 + gravityText.length * 8, 164, CharChain.BLINKING, CharChain.NUMERIC, 0xA8A8A8);
-		private static const lineDash:CharChain = new CharChain("--------------", 265, 210, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const viewIntroText:CharChain = new CharChain("V = View Intro", 265, 246, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const playGameText:CharChain = new CharChain("P = Play Game", 265, 262, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const yourChoiceText:CharChain = new CharChain("Your Choice?", 273, 294, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const playerNameText:CharChain = new CharChain("Name of Player 1: ", 141, 80, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private var playerNameInput:CharChain = new CharChain("", playerNameText.x + playerNameText.length * 8, 80, CharChain.BLINKING, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		
-		private var gameSettings:GameSettings;
-		private var menuStep:int;
-		private var currentInput:CharChain;
+		// multiplayer client
+		private var client:Client;
+		
+		// multiplayer connection
+		private var connection:Connection;
+		
+		// player's name
+		private var myName:String;
+		
+		// whether the player is player 1 or player 2
+		private var playerNumber:int;
 		
 		public function Menu() {
-			
-			gameSettings = new GameSettings();
-			menuStep = STEP_NUMPLAYERS;
-			currentInput = numPlayersInput;
+		
 			
 		}
 		
-		// draw menu options, let it fall through cases to draw all options needed
+		// draw menu options
 		override public function draw(canvas:BitmapData):void {
 			
 			canvas.fillRect(canvas.rect, 0xFF000000);
 			
-			switch(menuStep){
-			
-				case STEP_DONE:
-					lineDash.draw(canvas);
-					viewIntroText.draw(canvas);
-					playGameText.draw(canvas);
-					yourChoiceText.draw(canvas);
-				
-				case STEP_GRAVITY:
-					gravityText.draw(canvas);
-					gravityInput.draw(canvas);
-				
-				case STEP_POINTS:
-					totalPointsText.draw(canvas);
-					totalPointsInput.draw(canvas);
-				
-				case STEP_PLAYER2NAME:
-					player2NameText.draw(canvas);
-					player2NameInput.draw(canvas);
-				
-				case STEP_PLAYER1NAME:
-					player1NameText.draw(canvas);
-					player1NameInput.draw(canvas);
-				
-				case STEP_NUMPLAYERS:
-					numPlayersText.draw(canvas);
-					numPlayersInput.draw(canvas);
-					break;
-					
-			}
+			playerNameText.draw(canvas);
+			playerNameInput.draw(canvas);
 			
 		}
 		
 		// decide valid input and such
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
-			if (menuStep == STEP_DONE) {
-				if (e.keyCode == 80){
-					gotoState(new Level(gameSettings));
-				}
-				if (e.keyCode == 86) {
-					gotoState(new IntroDance(gameSettings));
-				}
-			}
-			else if (e.keyCode == 13)
+			if (myName != null) return;
 			
-				switch(menuStep) {
-				
-					case STEP_NUMPLAYERS:
-					
-						if (numPlayersInput.text == "" || int(numPlayersInput.text) == 1 || int(numPlayersInput.text) == 2) {
-							gameSettings.numberOfPlayers = numPlayersInput.text == "" ? DEFAULT_NUM_PLAYERS : int(numPlayersInput.text);
-							numPlayersInput.removeCursor();
-							currentInput = player1NameInput;
-							menuStep = STEP_PLAYER1NAME;
-						}else {
-							numPlayersInput.text = "";
-						}
-				
-						break;
-					
-					case STEP_PLAYER1NAME:
-						
-						gameSettings.player1Name = player1NameInput.text == "" ? DEFAULT_PLAYER_1_NAME : player1NameInput.text.substring(0, 10);
-						player1NameInput.removeCursor();
-						currentInput = player2NameInput;
-						menuStep = STEP_PLAYER2NAME;
-						break;
-						
-					case STEP_PLAYER2NAME:
-						
-						gameSettings.player2Name = player2NameInput.text == "" ? DEFAULT_PLAYER_2_NAME : player2NameInput.text.substring(0, 10);
-						player2NameInput.removeCursor();
-						currentInput = totalPointsInput;
-						menuStep = STEP_POINTS;
-						break;
-					
-					case STEP_POINTS:
-					
-						if (totalPointsInput.text.length < 3) {
-							gameSettings.playToPoints = totalPointsInput.text == "" || int(totalPointsInput.text) == 0 ? DEFAULT_PLAY_TO_POINTS : int(totalPointsInput.text);
-							totalPointsInput.removeCursor();
-							currentInput = gravityInput;
-							menuStep = STEP_GRAVITY;
-						}else {
-							totalPointsInput.text = "";
-						}
-						
-						break;
-						
-					case STEP_GRAVITY:
-					
-						gameSettings.gravity = gravityInput.text == "" || int(gravityInput.text) == 0 ? DEFAULT_GRAVITY : Number(gravityInput.text);
-						gravityInput.removeCursor();
-						menuStep = STEP_DONE;
-						break;
-				}
+			if (e.keyCode == 13 && playerNameInput.text != ""){
+				myName = playerNameInput.text.substring(0, 10);
+				playerNameInput.removeCursor();
+				PlayerIO.connect(Main.stageRef, "flash-gorillas-online-1nrdveekuspcredhsoew", "public", myName + int(Math.random()*99999), "", onConnected, onConnectionError);
+			}
 			
 			else if (e.keyCode == 8)
-				currentInput.backspace();
+				playerNameInput.backspace();
 			else 
-				currentInput.addChar(e.charCode);
+				playerNameInput.addChar(e.charCode);
 				
+		}
+		
+		// successfully connected
+		private function onConnected(client:Client):void {
+			trace("connected");
+			this.client = client;
+			getRooms();
+		}
+		
+		// not successfully connected
+		private function onConnectionError(error:PlayerIOError):void {
+			trace(error);
+		}
+		
+		// retrieve a list of rooms
+		private function getRooms():void {
+			client.multiplayer.developmentServer = "localhost:8184";
+			client.multiplayer.listRooms("gorillas", { }, 200, 0, onRetrievedRooms, onRetrieveRoomsError);  
+		}
+		
+		// successfully retrieved rooms
+		private function onRetrievedRooms(rooms:Array):void {
+			
+			for each(var room:RoomInfo in rooms) {
+				if (room.onlineUsers == 1) {
+					client.multiplayer.joinRoom(room.id, { name:myName }, onJoinedRoom);
+					playerNumber = 2;
+					return;
+				}
+			}
+				
+			client.multiplayer.createJoinRoom("", "gorillas", true, { }, {name:myName}, onJoinedRoom);
+			playerNumber = 1;
+		}
+		
+		// not successfully retrieved rooms
+		private function onRetrieveRoomsError(error:PlayerIOError):void {
+			trace(error);
+			//getRooms();
+		}
+		
+		// successfully joined a room
+		private function onJoinedRoom(connection:Connection):void {
+			this.connection = connection;
+			connection.addMessageHandler("start", onGameStarted);
+		}
+		
+		// start a new game
+		private function onGameStarted(message:Message, opponentName:String):void {
+			
+			gotoState(new Level(connection, playerNumber, myName, opponentName));
 		}
 		
 	}

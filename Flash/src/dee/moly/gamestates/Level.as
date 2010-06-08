@@ -14,6 +14,7 @@
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
+	import playerio.*;
 	
 	/**
 	 * the main level with the gorillas and the buildings and such
@@ -21,9 +22,6 @@
 	 */
 	
 	public class Level extends GameState{
-		
-		// the game setings for this round
-		private var gameSettings:GameSettings;
 		
 		// the cityscape in the background
 		private var cityScape:CityScape;
@@ -61,6 +59,7 @@
 		// a smiley sun
 		private var sun:Sun;
 
+		// current state
 		private var state:int;
 		
 		// state constants
@@ -71,21 +70,28 @@
 		private static const GORILLA2_HIT:int = 2;
 		private static const BUILDING_HIT:int = 3;
 		
-		// AI for one player games
-		private var projectileEstimator:ProjectileEstimator;
+		// other constants
+		private static const GRAVITY:Number = 9.8;
+		private static const PLAY_TO_POINTS:int = 3;
 		
-		public function Level(gameSettings:GameSettings) {
+		// which gorilla are we
+		private var playerNumber:int;
+		
+		// multiplayer connection
+		private var connection:Connection;
+		
+		public function Level(connection:Connection, playerNumber:int, myName:String, opponentName:String) {
 			
-			this.gameSettings = gameSettings;
+			this.connection = connection;
+			this.playerNumber = playerNumber;
+			
+			connection.addMessageHandler("shot", onReceivedShot);
 			
 			gorilla1 = new Gorilla();
 			gorilla2 = new Gorilla();
 			
-			if (gameSettings.numberOfPlayers == 1)
-				projectileEstimator = new ProjectileEstimator(gameSettings.gravity);
-			
-			player1NameText = new CharChain(gameSettings.player1Name, 0, 3);
-			player2NameText = new CharChain(gameSettings.player2Name, Main.SCREEN_WIDTH - (gameSettings.player2Name.length * 8) - 8, 3);
+			player1NameText = new CharChain(playerNumber == 1 ? myName : opponentName, 0, 3);
+			player2NameText = new CharChain(playerNumber == 2 ? myName : opponentName, Main.SCREEN_WIDTH - ((playerNumber == 2 ? myName : opponentName).length * 8) - 8, 3);
 			
 			player1Score = 0;
 			player2Score = 0;
@@ -128,15 +134,6 @@
 			scoreText.text = player1Score + ">Score<" + player2Score;
 			
 			sun.reset();
-			
-			if (gameSettings.numberOfPlayers == 1){
-				projectileEstimator.reset();
-				if (playerTurn == 2) {
-					var t:Timer = new Timer(1000, 1);
-					t.addEventListener(TimerEvent.TIMER_COMPLETE, cpuTurn, false, 0, true);
-					t.start();
-				}
-			}
 			
 			state = ANGLE_INPUT;
 			
@@ -252,7 +249,7 @@
 		// put the input into the right places
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
-			if (state == BANANA_THROWN || (gameSettings.numberOfPlayers == 1 && playerTurn == 2))
+			if (state == BANANA_THROWN || playerTurn != playerNumber)
 				return;
 			
 			currentInput.addChar(e.charCode);
@@ -283,6 +280,9 @@
 				
 					var angle:int = int(angleInput.text);
 					var velocity:int = int(velocityInput.text);
+					
+					if(playerTurn == playerNumber)
+						connection.send("shot", angle, velocity);
 				
 					if (playerTurn == 1){
 						var startPoint:Point = new Point(gorilla1.x, gorilla1.y - 7);
@@ -295,7 +295,7 @@
 						gorilla2.throwAnimation();
 					}
 				
-					banana.launch(angle, velocity, gameSettings.gravity, cityScape.windSpeed, startPoint);
+					banana.launch(angle, velocity, GRAVITY, cityScape.windSpeed, startPoint);
 					
 					state = BANANA_THROWN;
 					
@@ -304,17 +304,13 @@
 				case GORILLA1_HIT:					
 				case GORILLA2_HIT:
 					playerTurn = 3 - playerTurn;
-					if (player1Score + player2Score >= gameSettings.playToPoints)
-						gotoState(new ScoreOverview(gameSettings.player1Name, gameSettings.player2Name, player1Score, player2Score));
+					if (player1Score + player2Score >= PLAY_TO_POINTS)
+						gotoState(new ScoreOverview(player1NameText.text, player2NameText.text, player1Score, player2Score));
 					else
 						newGame();
 					break;
 					
 				case BUILDING_HIT:
-				
-					if (gameSettings.numberOfPlayers == 1 && playerTurn == 2) {
-						projectileEstimator.projectileLanded(gorilla1.x - banana.x, gorilla1.y - banana.y);
-					}
 				
 					playerTurn = 3 - playerTurn;
 					angleInput.text = "";
@@ -326,45 +322,19 @@
 					velocityText.x = 520 * (playerTurn - 1);
 					sun.reset();
 					state = ANGLE_INPUT;
-					
-					if (gameSettings.numberOfPlayers == 1 && playerTurn == 2) {
-						var t:Timer = new Timer(1000, 1);
-						t.addEventListener(TimerEvent.TIMER_COMPLETE, cpuTurn, false, 0, true);
-						t.start();
-					}
-					
 					break;
 					
 			}
 						
 		}
 		
-		// have the AI take a turn
-		private function cpuTurn(e:TimerEvent):void {
-			
-			var t:Timer = new Timer(1000, 1);
-			t.addEventListener(TimerEvent.TIMER_COMPLETE, cpuTurn, false, 0, true);
-			
-			switch(state) {
-				
-				case ANGLE_INPUT:
-					if (currentInput.text == "")
-						currentInput.text = String(projectileEstimator.getAngle());
-					else
-						nextStep();
-					t.start();
-					break;
+		// received a shot from the server
+		private function onReceivedShot(message:Message, angle:int, velocity:int):void {
 					
-				case VELOCITY_INPUT:
-					if (currentInput.text == ""){
-						currentInput.text = String(projectileEstimator.getVelocity());
-						t.start();
-					} else {
-						nextStep();
-					}
-					break;
-			}
-			
+			angleInput.text = String(angle);
+			velocityInput.text = String(velocity);
+			state = VELOCITY_INPUT;
+			nextStep();
 		}
 		
 	}
