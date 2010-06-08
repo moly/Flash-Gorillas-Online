@@ -5,7 +5,7 @@ using System.Collections;
 using PlayerIO.GameLibrary;
 using System.Drawing;
 
-namespace MyGame {
+namespace ServersideGameCode {
 	public class Player : BasePlayer {
 		public string Name;
 	}
@@ -19,11 +19,16 @@ namespace MyGame {
         // Which players turn it is
         int playerTurn;
 
+        // The game level
+        Cityscape cityscape;
+
 		public override void GameStarted() {
 			
 			Console.WriteLine("Game is started: " + RoomId);
 
             playerTurn = 1;
+            cityscape = new Cityscape();
+            cityscape.BuildSkyline();
 
 			// This is how you setup a timer
 			AddTimer(delegate {
@@ -75,33 +80,27 @@ namespace MyGame {
 		}
 
 		// This method is called when a player sends a message into the server code
-		public override void GotMessage(Player player, Message message) {
-			switch(message.Type) {
-				// This is how you would set a players name when they send in their name in a 
-				// "MyNameIs" message
-				case "shot":
-					(playerTurn == 1 ? player2 : player1).Send("shot", message.GetInt(0), message.GetInt(1));
+        public override void GotMessage(Player player, Message message)
+        {
+            switch (message.Type)
+            {
+                // This is how you would set a players name when they send in their name in a 
+                // "MyNameIs" message
+                case "shot":
+                    (playerTurn == 1 ? player2 : player1).Send("shot", message.GetInt(0), message.GetInt(1));
                     playerTurn = 3 - playerTurn;
-					break;
-			}
-		}
-
-		Point debugPoint;
+                    break;
+            }
+        }
 
 		// This method get's called whenever you trigger it by calling the RefreshDebugView() method.
 		public override System.Drawing.Image GenerateDebugImage() {
 			// we'll just draw 400 by 400 pixels image with the current time, but you can
 			// use this to visualize just about anything.
-			var image = new Bitmap(400,400);
+			var image = new Bitmap(640,350);
+            
 			using(var g = Graphics.FromImage(image)) {
-				// fill the background
-				g.FillRectangle(Brushes.Blue, 0, 0, image.Width, image.Height);
-
-				// draw the current time
-				g.DrawString(DateTime.Now.ToString(), new Font("Verdana",20F),Brushes.Orange, 10,10);
-                
-				// draw a dot based on the DebugPoint variable
-				g.FillRectangle(Brushes.Red, debugPoint.X,debugPoint.Y,5,5);
+                g.DrawImage(cityscape.texture, 0, 0);
 			}
 			return image;
 		}

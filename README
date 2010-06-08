@@ -1,2 +1,4 @@
-Should compile with just the Flex SDK using "mxmlc Main.as"
+Flash client should compile with the Flex SDK using "mxmlc Main.as"
 Otherwise, open GorillasAS3.as3proj in FlashDevelop and compile from there
+
+Server will compile and run in Visual C# 2008 Express
