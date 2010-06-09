@@ -6,27 +6,30 @@ using PlayerIO.GameLibrary;
 using System.Drawing;
 
 namespace ServersideGameCode {
-	public class Player : BasePlayer {
-		public string Name;
-	}
 
-	public class GameCode : Game<Player> {
-		
+	public class GameCode : Game<Gorilla> {
+
+        // A bitmap to draw to, used for debugging
+        private Bitmap canvas;
+
         // The players in the game
-        Player player1;
-        Player player2;
+        private Gorilla player1;
+        private Gorilla player2;
 
         // Which players turn it is
-        int playerTurn;
+        private int playerTurn;
 
         // The game level
-        Cityscape cityscape;
+        private Cityscape cityscape;
 
 		public override void GameStarted() {
 			
 			Console.WriteLine("Game is started: " + RoomId);
 
+            canvas = new Bitmap(640,350);
+
             playerTurn = 1;
+
             cityscape = new Cityscape();
             cityscape.BuildSkyline();
 
@@ -35,14 +38,8 @@ namespace ServersideGameCode {
 				// code here will code every 100th millisecond (ten times a second)
 			}, 25);
 			
-			// Debug Example:
-			// Sometimes, it can be very usefull to have a graphical representation
-			// of the state of your game.
-			// An easy way to accomplish this is to setup a timer to update the
-			// debug view every 250th second (4 times a second).
 			AddTimer(delegate {
 				// This will cause the GenerateDebugImage() method to be called
-				// so you can draw a grapical version of the game state.
 				RefreshDebugView(); 
 			}, 250);
 		}
@@ -53,7 +50,7 @@ namespace ServersideGameCode {
 		}
 
 		// This method is called whenever a player joins the game
-		public override void UserJoined(Player player) {
+		public override void UserJoined(Gorilla player) {
 
             if (player1 == null){
                 player1 = player;
@@ -62,30 +59,27 @@ namespace ServersideGameCode {
                 player2 = player;
                 player2.Name = player.JoinData["name"];
             }
-
+            
             if (PlayerCount == 2){
-                player1.Send("start", player2.Name);
-                player2.Send("start", player1.Name);
+                cityscape.PlaceGorillas(player1, player2);
+                player1.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.x, player1.y, player2.x, player2.y, player2.Name);
+                player2.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.x, player1.y, player2.x, player2.y, player1.Name);
             }
 		}
 
         // Prevent more than two people joining a game
-        public override bool AllowUserJoin(Player player){
+        public override bool AllowUserJoin(Gorilla player){
             return (player1 == null || player2 == null);
         }
 
 		// This method is called when a player leaves the game
-		public override void UserLeft(Player player) {
+		public override void UserLeft(Gorilla player) {
 			Broadcast("UserLeft", player.Id);
 		}
 
 		// This method is called when a player sends a message into the server code
-        public override void GotMessage(Player player, Message message)
-        {
-            switch (message.Type)
-            {
-                // This is how you would set a players name when they send in their name in a 
-                // "MyNameIs" message
+        public override void GotMessage(Gorilla player, Message message){
+            switch (message.Type){
                 case "shot":
                     (playerTurn == 1 ? player2 : player1).Send("shot", message.GetInt(0), message.GetInt(1));
                     playerTurn = 3 - playerTurn;
@@ -93,17 +87,32 @@ namespace ServersideGameCode {
             }
         }
 
-		// This method get's called whenever you trigger it by calling the RefreshDebugView() method.
-		public override System.Drawing.Image GenerateDebugImage() {
-			// we'll just draw 400 by 400 pixels image with the current time, but you can
-			// use this to visualize just about anything.
-			var image = new Bitmap(640,350);
-            
-			using(var g = Graphics.FromImage(image)) {
-                g.DrawImage(cityscape.texture, 0, 0);
+		// This method gets called whenever triggered by the RefreshDebugView() method.
+		public override Image GenerateDebugImage() {
+
+			using(Graphics g = Graphics.FromImage(canvas)) {
+                g.FillRectangle(new SolidBrush(Color.FromArgb(unchecked((int)0xFF0000AD))), new Rectangle(0, 0, canvas.Width, canvas.Height));
+                cityscape.Draw(g);
 			}
-			return image;
+
+			return canvas;
 		}
+
+        // Convert a two dimensional list to a byte array
+        private byte[] ListToByteArray(List<List<int>> list){
+            byte[] byteArray = new byte[list.Count * 8];
+            for (int i = 0; i < list.Count; ++i){
+                byteArray[i * 8] = (byte)(list[i][0] >> 24);
+                byteArray[(i * 8) + 1] = (byte)(list[i][0] >> 16);
+                byteArray[(i * 8) + 2] = (byte)(list[i][0] >> 8);
+                byteArray[(i * 8) + 3] = (byte)list[i][0];
+                byteArray[(i * 8) + 4] = (byte)(list[i][1] >> 24);
+                byteArray[(i * 8) + 5] = (byte)(list[i][1] >> 16);
+                byteArray[(i * 8) + 6] = (byte)(list[i][1] >> 8);
+                byteArray[(i * 8) + 7] = (byte)list[i][1];
+            }
+            return byteArray;
+        }
 
 		// During development, it's very usefull to be able to cause certain events
 		// to occur in your serverside code. If you create a public method with no

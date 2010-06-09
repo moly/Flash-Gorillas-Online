@@ -4,6 +4,7 @@
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
 	
 	/**
 	 * generates a random skyline
@@ -68,100 +69,17 @@
 		}
 		
 		// draw a random sky line
-		public function buildSkyline():void {
+		public function buildSkyline(buildingCoordinates:ByteArray, windSpeed:int):void {
 			
 			var currentBuildingColour:uint;
 			var currentBuildingHeight:int = 0;
 			var currentBuildingWidth:int = 0;
-			var drawingXLocation:int = 2;
+			var drawingXLocation:int = 0;
 			var horizonLine:int = Main.SCREEN_HEIGHT - 15;
 			var currentWindowColour:uint;
 			var currentHeightBase:int
 			
-			var slopeState:int = int(Math.random() * 6);
-			
-			buildingCoordinates = new Array();
-			
-			texture.fillRect(texture.rect, 0x000000AD);
-			
-			switch (slopeState) {
-				
-				case 0: 
-					//Upward slopeState
-					currentHeightBase = 15;                 	
-					break;
-				case 1: 
-					//Downward slopeState
-					currentHeightBase = 130;                	
-					break;
-				case 2:
-				case 3:
-				case 4: 
-					//"V" slopeState - most common.  We allow 3 cases to fall here to increase the chances
-					//we have a V slope
-					currentHeightBase = 15;            	 	
-					break;
-				case 5: 
-					//Inverted "V" slopeState
-					currentHeightBase = 130;
-					break;
-			}
-			
-			while(drawingXLocation <= Main.SCREEN_WIDTH - HEIGHT_TREND){
-	
-				switch(slopeState) {
-					
-					case 0:
-						// This is an upward slope.  Gently increase the base height for this next building	
-						currentHeightBase = currentHeightBase + HEIGHT_TREND;
-						break;
-						
-					case 1:
-						//This is a downward slope so gently decrease the base height
-						currentHeightBase = currentHeightBase - HEIGHT_TREND;
-						break;
-						
-					case 2:
-					case 3:
-					case 4:
-						//Which side of the screen are we on?
-						if(drawingXLocation > (Main.SCREEN_WIDTH / 2)){
-							//West side of the screen.  Aggressively change the slope downward
-							currentHeightBase = currentHeightBase - 2 * HEIGHT_TREND;
-						}else{
-							//East side of the screen.  Aggressively change the slope upward
-							currentHeightBase = currentHeightBase + 2 * HEIGHT_TREND;
-						}
-						break;
-					case 5:
-						//Which side of the screen are we on?
-						if(drawingXLocation > Main.SCREEN_WIDTH / 2){
-							//West side.  Aggressively change the slope upward.
-							currentHeightBase = currentHeightBase + 2 * HEIGHT_TREND;
-						}else{
-							//East side.  Aggressively bring the base height down on this iteration.
-							currentHeightBase = currentHeightBase - 2 * HEIGHT_TREND;
-						}
-						break;
-				}
-				
-				currentBuildingWidth = int(Math.random() * (WIDTH_AGGREGATE + 1)) + WIDTH_TREND;
-				
-				if (drawingXLocation + currentBuildingWidth > Main.SCREEN_WIDTH)
-					currentBuildingWidth = Main.SCREEN_WIDTH - drawingXLocation - BUILDING_SEPARATION;
-				
-				if ((Main.SCREEN_WIDTH - currentBuildingWidth - drawingXLocation) < WIDTH_TREND)
-					currentBuildingWidth += Main.SCREEN_WIDTH - currentBuildingWidth - drawingXLocation;						
-					
-				currentBuildingHeight = int(Math.random() * (HEIGHT_AGGREGATE + 1)) + currentHeightBase;
-				  
-				if (currentBuildingHeight < HEIGHT_TREND)
-					currentBuildingHeight = HEIGHT_TREND + BUILDING_MINIMUM_HEIGHT + int(Math.random() * (HEIGHT_AGGREGATE + 1));	
-				
-				if (horizonLine - currentBuildingHeight <= UPPER_DRAWING_LIMIT)
-					currentBuildingHeight = horizonLine - UPPER_DRAWING_LIMIT - int(Math.random() * (HEIGHT_AGGREGATE + 1));	
-								
-				buildingCoordinates.push([drawingXLocation, horizonLine - currentBuildingHeight]);								
+			while (buildingCoordinates.bytesAvailable) {
 				
 				currentBuildingColour = int(Math.random() * 3);
 
@@ -175,6 +93,16 @@
 					case 2:
 						currentBuildingColour = BUILDING_GREEN;
 						break;
+				}
+				
+				drawingXLocation = buildingCoordinates.readInt();
+				currentBuildingHeight = horizonLine - buildingCoordinates.readInt();
+				
+				if(buildingCoordinates.bytesAvailable){
+					currentBuildingWidth = buildingCoordinates.readInt() - drawingXLocation - BUILDING_SEPARATION;
+					buildingCoordinates.position -= 4;
+				}else {
+					currentBuildingWidth = Main.SCREEN_WIDTH - drawingXLocation - BUILDING_SEPARATION;
 				}
 				
 				texture.fillRect(new Rectangle(drawingXLocation - 1, (horizonLine + 1) - currentBuildingHeight, currentBuildingWidth, currentBuildingHeight), currentBuildingColour);
@@ -195,37 +123,11 @@
 					windowDrawingXLocation = windowDrawingXLocation + WINDOW_WIDTH_SEPARATION;
 				} 
 				drawingXLocation += currentBuildingWidth + BUILDING_SEPARATION;
-			}
-		
-			setWindSpeed();
-			drawWindLine();
-		}
-		
-		// put the gorillas on either the second or third building from either end
-		public function placeGorillas(gorilla1:Gorilla, gorilla2:Gorilla):void {
-
-			const xAdj:int = 15;
-			const yAdj:int = 29;
-
-			for (var i:int = 1; i <= 2; i++){
-
-				if (i == 1)
-					var bNum:int = int(Math.random() * 2) + 1;
-				else
-					bNum = buildingCoordinates.length - 1 - (int(Math.random() * 2) + 1);
-					
-				var bWidth:int = buildingCoordinates[bNum + 1][0] - buildingCoordinates[bNum][0];
 				
-				if (i == 1){
-					gorilla1.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
-					gorilla1.y = buildingCoordinates[bNum][1] - yAdj;
-				}else{
-					gorilla2.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
-					gorilla2.y = buildingCoordinates[bNum][1] - yAdj;
-				}
-
 			}
 			
+			wind = windSpeed;
+			drawWindLine();
 		}
 		
 		// explode a piece of the cityscape

@@ -18,6 +18,7 @@ namespace ServersideGameCode{
 		private const uint BUILDING_GREEN = 0xFF00A8A8;	
 		private const uint LIT_WINDOW_COLOUR = 0xFFFCFC54;
 		private const uint UNLIT_WINDOW_COLOUR = 0xFF545454;
+        private const uint WIND_LINE_COLOUR = 0xFFFF0052;
 		
 		// measurment Constants
 		private const int BUILDING_SEPARATION = 1;
@@ -38,7 +39,10 @@ namespace ServersideGameCode{
 		private const int BUILDING_MINIMUM_HEIGHT = 25;
 		
         // positions and widths for buildings
-		private List<int> buildingCoordinates;
+		private List<List<int>> buildingCoordinates;
+        public List<List<int>> BuildingCoordinates{
+            get { return buildingCoordinates; }
+        }
 		
 		// the level's wind speed
 		private int wind;
@@ -56,8 +60,8 @@ namespace ServersideGameCode{
             random = new Random();
 		}
 		
-		public void Draw() {
-			
+		public void Draw(Graphics g) {
+            g.DrawImage(texture, 0, 0);
 		}
 		
 		// draw a random sky line
@@ -73,7 +77,7 @@ namespace ServersideGameCode{
 			
 			int slopeState = random.Next(6);
 			
-			buildingCoordinates = new List<int>();
+			buildingCoordinates = new List<List<int>>();
 			
 			texture = new Bitmap(640, 350);
             Graphics g = Graphics.FromImage(texture);
@@ -154,9 +158,12 @@ namespace ServersideGameCode{
 				
 				if (horizonLine - currentBuildingHeight <= UPPER_DRAWING_LIMIT)
 					currentBuildingHeight = horizonLine - UPPER_DRAWING_LIMIT - random.Next(HEIGHT_AGGREGATE + 1); //int(Math.random() * (HEIGHT_AGGREGATE + 1));	
-								
-				//buildingCoordinates.Add([drawingXLocation, horizonLine - currentBuildingHeight]);								
-			
+				
+                List<int> xAndHeight = new List<int>();
+                xAndHeight.Add(drawingXLocation);
+                xAndHeight.Add(horizonLine - currentBuildingHeight);
+				buildingCoordinates.Add(xAndHeight);								
+			    
 				currentBuildingColour = (uint)random.Next(3); //int(Math.random() * 3);
 
 				switch(currentBuildingColour){
@@ -191,37 +198,38 @@ namespace ServersideGameCode{
 				drawingXLocation += currentBuildingWidth + BUILDING_SEPARATION;
 			}
 		
-			//setWindSpeed();
-			//drawWindLine();
+			SetWindSpeed();
+			DrawWindLine();
 		}
-		/*
+		
 		// put the gorillas on either the second or third building from either end
-		public function placeGorillas(gorilla1:Gorilla, gorilla2:Gorilla):void {
+		public void PlaceGorillas(Gorilla player1, Gorilla player2) {
 
 			int xAdj = 15;
 			int yAdj = 29;
+            int bNum = 0;
 
-			for (var i:int = 1; i <= 2; i++){
+			for (int i = 1; i <= 2; i++){
 
 				if (i == 1)
-					var bNum:int = int(Math.random() * 2) + 1;
+					bNum = random.Next(1, 3);
 				else
-					bNum = buildingCoordinates.length - 1 - (int(Math.random() * 2) + 1);
+					bNum = buildingCoordinates.Count - 1 - random.Next(1, 3);
 					
-				var bWidth:int = buildingCoordinates[bNum + 1][0] - buildingCoordinates[bNum][0];
+				int bWidth = buildingCoordinates[bNum + 1][0] - buildingCoordinates[bNum][0];
 				
 				if (i == 1){
-					gorilla1.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
-					gorilla1.y = buildingCoordinates[bNum][1] - yAdj;
+					player1.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
+					player1.y = buildingCoordinates[bNum][1] - yAdj;
 				}else{
-					gorilla2.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
-					gorilla2.y = buildingCoordinates[bNum][1] - yAdj;
+					player2.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
+					player2.y = buildingCoordinates[bNum][1] - yAdj;
 				}
 
 			}
 			
 		}
-		
+		/*
 		// explode a piece of the cityscape
 		public function createSmallExplosion(x:int, y:int):void {
 			smallExplosion.create(x, y);
@@ -231,49 +239,47 @@ namespace ServersideGameCode{
 		public function createBigExplosion(x:int, y:int):void {
 			bigExplosion.create(x, y);
 		}
-		
+        
+		*/
+
 		// decide a random wind speed/direction for each cityscape
-		private function setWindSpeed():void {
+		private void SetWindSpeed() {
 			
-			wind = int(Math.random() * 11) - 5;
+			wind = random.Next(-5, 6); //int(Math.random() * 11) - 5;
 			
-			if (int(Math.random() * 3) == 2) {
+			if (random.Next(3) == 2) {
 				if (wind > 0)
-					wind += int(Math.random() * 11);
+					wind += random.Next(11);
 				else
-					wind -= int(Math.random() * 11);
+					wind -= random.Next(11);
 			}
 			
 		}
-		
+
 		// draw a line along the bottom of the screen relative to the wind's strength
-		private function drawWindLine():void {
+		private void DrawWindLine() {
 			
 			if (wind == 0)
 				return;
 			
-			var windLine:int = wind * 3 * (Main.SCREEN_WIDTH / 320);
+			int windLine = wind * 3 * (SCREEN_WIDTH / 320);
 		
 			if (wind > 0) {
-				for (var px:int = Main.SCREEN_WIDTH / 2; px <= (Main.SCREEN_WIDTH / 2) + windLine; px++)
-					texture.setPixel32(px, Main.SCREEN_HEIGHT - 5, 0xFFFF0052);
-				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine - 1, Main.SCREEN_HEIGHT - 6, 0xFFFF0052);
-				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine - 2, Main.SCREEN_HEIGHT - 7, 0xFFFF0052);
-				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine - 1, Main.SCREEN_HEIGHT - 4, 0xFFFF0052);
-				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine - 2, Main.SCREEN_HEIGHT - 3, 0xFFFF0052);
+				for (int px = SCREEN_WIDTH / 2; px <= (SCREEN_WIDTH / 2) + windLine; px++)
+					texture.SetPixel(px, SCREEN_HEIGHT - 5, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
+                texture.SetPixel(SCREEN_WIDTH / 2 + windLine - 1, SCREEN_HEIGHT - 6, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
+                texture.SetPixel(SCREEN_WIDTH / 2 + windLine - 2, SCREEN_HEIGHT - 7, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
+                texture.SetPixel(SCREEN_WIDTH / 2 + windLine - 1, SCREEN_HEIGHT - 4, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
+                texture.SetPixel(SCREEN_WIDTH / 2 + windLine - 2, SCREEN_HEIGHT - 3, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
 			}else {
-				for (px = Main.SCREEN_WIDTH / 2; px >= (Main.SCREEN_WIDTH / 2) + windLine; px--)
-					texture.setPixel32(px, Main.SCREEN_HEIGHT - 5, 0xFFFF0052);
-				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine + 1, Main.SCREEN_HEIGHT - 6, 0xFFFF0052);
-				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine + 2, Main.SCREEN_HEIGHT - 7, 0xFFFF0052);
-				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine + 1, Main.SCREEN_HEIGHT - 4, 0xFFFF0052);
-				texture.setPixel32(Main.SCREEN_WIDTH / 2 + windLine + 2, Main.SCREEN_HEIGHT - 3, 0xFFFF0052);
+				for (int px = SCREEN_WIDTH / 2; px >= (SCREEN_WIDTH / 2) + windLine; px--)
+                    texture.SetPixel(px, SCREEN_HEIGHT - 5, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
+                texture.SetPixel(SCREEN_WIDTH / 2 + windLine + 1, SCREEN_HEIGHT - 6, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
+                texture.SetPixel(SCREEN_WIDTH / 2 + windLine + 2, SCREEN_HEIGHT - 7, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
+                texture.SetPixel(SCREEN_WIDTH / 2 + windLine + 1, SCREEN_HEIGHT - 4, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
+                texture.SetPixel(SCREEN_WIDTH / 2 + windLine + 2, SCREEN_HEIGHT - 3, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
 			}
 			
 		}
-		
-	}
-
-}*/
     }
 }

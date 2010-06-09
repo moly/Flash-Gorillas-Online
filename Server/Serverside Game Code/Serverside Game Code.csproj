@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Cityscape.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Player.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

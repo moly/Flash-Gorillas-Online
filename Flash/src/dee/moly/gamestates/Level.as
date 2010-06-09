@@ -13,6 +13,7 @@
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
+	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	import playerio.*;
 	
@@ -80,7 +81,7 @@
 		// multiplayer connection
 		private var connection:Connection;
 		
-		public function Level(connection:Connection, playerNumber:int, myName:String, opponentName:String) {
+		public function Level(connection:Connection, buildingCoordinates:ByteArray, windSpeed:int, player1X:int, player1Y:int, player2X:int, player2Y:int, playerNumber:int, myName:String, opponentName:String) {
 			
 			this.connection = connection;
 			this.playerNumber = playerNumber;
@@ -113,15 +114,20 @@
 			
 			playerTurn = 1;
 			
-			newGame();
+			newGame(buildingCoordinates, windSpeed, player1X, player1Y, player2X, player2Y);
 			
 		}
 		
 		// reset everything, build a new skyline etc
-		private function newGame():void {
+		private function newGame(buildingCoordinates:ByteArray, windSpeed:int, player1X:int, player1Y:int, player2X:int, player2Y:int):void {
 			
-			cityScape.buildSkyline();
-			cityScape.placeGorillas(gorilla1, gorilla2);
+			cityScape.buildSkyline(buildingCoordinates, windSpeed);
+			
+			gorilla1.x = player1X;
+			gorilla1.y = player1Y;
+			
+			gorilla2.x = player2X;
+			gorilla2.y = player2Y;
 			
 			angleInput.text = "";
 			angleInput.showCursor();
@@ -306,8 +312,8 @@
 					playerTurn = 3 - playerTurn;
 					if (player1Score + player2Score >= PLAY_TO_POINTS)
 						gotoState(new ScoreOverview(player1NameText.text, player2NameText.text, player1Score, player2Score));
-					else
-						newGame();
+					else{}
+						//newGame();
 					break;
 					
 				case BUILDING_HIT:

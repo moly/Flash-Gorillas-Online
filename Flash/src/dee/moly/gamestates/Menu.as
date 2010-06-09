@@ -4,6 +4,7 @@
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
 	import playerio.*;
 	
 	/**
@@ -108,9 +109,9 @@
 		}
 		
 		// start a new game
-		private function onGameStarted(message:Message, opponentName:String):void {
+		private function onGameStarted(message:Message, buildingCoordinates:ByteArray, windSpeed:int, player1X:int, player1Y:int, player2X:int, player2Y:int, opponentName:String):void {
 			
-			gotoState(new Level(connection, playerNumber, myName, opponentName));
+			gotoState(new Level(connection, buildingCoordinates, windSpeed, player1X, player1Y, player2X, player2Y, playerNumber, myName, opponentName));
 		}
 		
 	}
