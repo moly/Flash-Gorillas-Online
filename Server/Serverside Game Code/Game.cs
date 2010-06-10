@@ -54,16 +54,17 @@ namespace ServersideGameCode {
 
             if (player1 == null){
                 player1 = player;
+                cityscape.PlaceGorilla(player1, 1);
                 player1.Name = player.JoinData["name"];
             } else {
                 player2 = player;
+                cityscape.PlaceGorilla(player2, 2);
                 player2.Name = player.JoinData["name"];
             }
             
             if (PlayerCount == 2){
-                cityscape.PlaceGorillas(player1, player2);
-                player1.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.x, player1.y, player2.x, player2.y, player2.Name);
-                player2.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.x, player1.y, player2.x, player2.y, player1.Name);
+                player1.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.X, player1.Y, player2.X, player2.Y, player2.Name);
+                player2.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.X, player1.Y, player2.X, player2.Y, player1.Name);
             }
 		}
 
@@ -91,8 +92,16 @@ namespace ServersideGameCode {
 		public override Image GenerateDebugImage() {
 
 			using(Graphics g = Graphics.FromImage(canvas)) {
+                
                 g.FillRectangle(new SolidBrush(Color.FromArgb(unchecked((int)0xFF0000AD))), new Rectangle(0, 0, canvas.Width, canvas.Height));
+                
                 cityscape.Draw(g);
+
+                if (player1 != null)
+                    player1.Draw(g);
+
+                if (player2 != null)
+                    player2.Draw(g);
 			}
 
 			return canvas;

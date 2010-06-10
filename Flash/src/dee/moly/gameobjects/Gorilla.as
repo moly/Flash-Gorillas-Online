@@ -23,9 +23,9 @@
 		[Embed(source="/dee/moly/sounds/armDance2.mp3")] private static const ArmDance2Sound:Class;
 		private static const armDance2Sound:Sound = new ArmDance2Sound();
 		
-		private const left:BitmapData = new GorillaTex(GorillaTex.LEFT_ARM);
-		private const right:BitmapData = new GorillaTex(GorillaTex.RIGHT_ARM);
-		private const down:BitmapData = new GorillaTex(GorillaTex.ARMS_DOWN);
+		private static const left:BitmapData = new GorillaTex(GorillaTex.LEFT_ARM);
+		private static const right:BitmapData = new GorillaTex(GorillaTex.RIGHT_ARM);
+		private static const down:BitmapData = new GorillaTex(GorillaTex.ARMS_DOWN);
 		
 		private var danceStep:int
 		

@@ -203,30 +203,21 @@ namespace ServersideGameCode{
 		}
 		
 		// put the gorillas on either the second or third building from either end
-		public void PlaceGorillas(Gorilla player1, Gorilla player2) {
+		public void PlaceGorilla(Gorilla player, int playerNumber) {
 
 			int xAdj = 15;
 			int yAdj = 29;
             int bNum = 0;
 
-			for (int i = 1; i <= 2; i++){
-
-				if (i == 1)
-					bNum = random.Next(1, 3);
-				else
-					bNum = buildingCoordinates.Count - 1 - random.Next(1, 3);
+			if (playerNumber == 1)
+				bNum = random.Next(1, 3);
+			else
+				bNum = buildingCoordinates.Count - 1 - random.Next(1, 3);
 					
-				int bWidth = buildingCoordinates[bNum + 1][0] - buildingCoordinates[bNum][0];
-				
-				if (i == 1){
-					player1.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
-					player1.y = buildingCoordinates[bNum][1] - yAdj;
-				}else{
-					player2.x = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
-					player2.y = buildingCoordinates[bNum][1] - yAdj;
-				}
-
-			}
+			int bWidth = buildingCoordinates[bNum + 1][0] - buildingCoordinates[bNum][0];
+			
+			player.X = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
+			player.Y = buildingCoordinates[bNum][1] - yAdj;
 			
 		}
 		/*

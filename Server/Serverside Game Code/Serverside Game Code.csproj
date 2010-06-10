@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ServersideGameCode</RootNamespace>
-    <AssemblyName>MyGame</AssemblyName>
+    <AssemblyName>GorillasServer</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Cityscape.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Gorilla.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

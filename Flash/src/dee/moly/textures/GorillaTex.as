@@ -96,61 +96,6 @@
 				line(20, 20, 24, 20, 0xFFFFAD51);
 			}
 					
-			
-			/*
-			for (i = -5; i <= -1; i++) {
-				switch(arms) {
-					case RIGHT_ARM:
-						circle(13 + i, 15, 8, 0xFFFFAD51);
-						circle(20 + i, 5, 8, 0xFFFFAD51);
-						break;
-					case LEFT_ARM:
-						circle(13 + i, 5, 8, 0xFFFFAD51);
-						circle(20 + i, 15, 8, 0xFFFFAD51);
-						break;
-					case ARMS_DOWN:
-						circle(13 + i, 15, 8, 0xFFFFAD51);
-						circle(20 + i, 15, 8, 0xFFFFAD51);
-						break;						
-				}
-			}
-			
-			if(arms == RIGHT_ARM || arms == ARMS_DOWN){
-				setPixel32(2, 10, 0x000000AD);
-				setPixel32(1, 11, 0x000000AD);
-				setPixel32(1, 19, 0x000000AD);
-				setPixel32(2, 20, 0x000000AD);
-				setPixel32(6, 19, 0xFFFFAD51);
-				setPixel32(7, 20, 0xFFFFAD51);
-			}
-			
-			if(arms == RIGHT_ARM){
-				setPixel32(20, 0, 0xFFFFAD51);
-				setPixel32(21, 1, 0xFFFFAD51);
-				setPixel32(25, 0, 0x000000AD);
-				setPixel32(26, 1, 0x000000AD);
-				setPixel32(26, 9, 0x000000AD);
-				setPixel32(25, 10, 0x000000AD);
-			}
-			
-			if (arms == LEFT_ARM || arms == ARMS_DOWN) {
-				setPixel32(25, 10, 0x000000AD);
-				setPixel32(26, 11, 0x000000AD);
-				setPixel32(26, 19, 0x000000AD);
-				setPixel32(25, 20, 0x000000AD);
-				setPixel32(21, 19, 0xFFFFAD51);
-				setPixel32(20, 20, 0xFFFFAD51);
-			}
-			
-			if (arms == LEFT_ARM) {
-				setPixel32(2, 0, 0x000000AD);
-				setPixel32(1, 1, 0x000000AD);
-				setPixel32(1, 9, 0x000000AD);
-				setPixel32(2, 10, 0x000000AD);
-				setPixel32(7, 0, 0xFFFFAD51);
-				setPixel32(6, 1, 0xFFFFAD51);
-			}
-*/
 		}
 		
 	}
