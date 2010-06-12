@@ -15,8 +15,15 @@
 		private var gravity:Number;
 		private var windSpeed:Number;
 		private var time:Number;
+		private var result:int;
 		
 		private var velocity:Point;
+		
+		// Four posibilites for the end of the banana
+        private const HIT_GORILLA_ONE:int = 0;
+        private const HIT_GORILLA_TWO:int = 1;
+        private const HIT_BUILDING:int = 2;
+        private const OUT_OF_BOUNDS:int = 3;
 		
 		private static const left:BitmapData = new BananaTex(BananaTex.LEFT);
 		private static const right:BitmapData = new BananaTex(BananaTex.RIGHT);
@@ -58,29 +65,28 @@
 		}
 		
 		// move the banana
-		override public function update(elapsed:Number):void 
-		{	
-			time += elapsed / 200;
-			
+		override public function update(elapsed:Number):void {
+						
 			position.x = int(startPos.x + (velocity.x * time) + (.5 * (windSpeed / 5) *  (time * time)));
 			position.y = int(startPos.y + (( -1 * (velocity.y * time)) + (.5 * gravity * (time * time))) * (Main.SCREEN_HEIGHT / 350));
 			
-			rotation++;
+			time += 0.1;
 			
+			rotation++;
 		}
 		
 		// start the banana moving
-		public function launch(angle:Number, velocity:int, gravity:Number, windSpeed:Number, startPoint:Point):void {
+		public function launch(angle:Number, velocity:int, gravity:Number, windSpeed:Number, startPoint:Point, result:int):void {
 			
 			this.gravity = gravity;
 			this.windSpeed = windSpeed;
+			this.result = result;
 				
 			angle = angle / 180 * 3.142;
 			
-			this.velocity = new Point(Math.cos(angle) * velocity, Math.sin(angle) * velocity);
+			this.velocity = new Point(int(Math.cos(angle) * velocity), int(Math.sin(angle) * velocity));
 			
 			startPos = startPoint;
-			
 			time = 0;
 			
 		}

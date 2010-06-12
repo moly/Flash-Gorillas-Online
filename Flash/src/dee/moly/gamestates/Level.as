@@ -86,7 +86,7 @@
 			this.connection = connection;
 			this.playerNumber = playerNumber;
 			
-			connection.addMessageHandler("shot", onReceivedShot);
+			connection.addMessageHandler("throw", onReceivedThrow);
 			
 			gorilla1 = new Gorilla();
 			gorilla2 = new Gorilla();
@@ -158,7 +158,7 @@
 					if (banana.hasCollidedWith(sun))
 						sun.shock();
 				
-					if (banana.hasCollidedWith(cityScape)){
+					if (banana.hasCollidedWith(cityScape)) {
 						cityScape.createSmallExplosion(banana.x, banana.y);
 						state = BUILDING_HIT;
 					}
@@ -286,24 +286,12 @@
 				
 					var angle:int = int(angleInput.text);
 					var velocity:int = int(velocityInput.text);
-					
-					if(playerTurn == playerNumber)
-						connection.send("shot", angle, velocity);
 				
-					if (playerTurn == 1){
-						var startPoint:Point = new Point(gorilla1.x, gorilla1.y - 7);
-						gorilla1.throwAnimation();
-					}
-				
-					if (playerTurn == 2){
+					if (playerTurn == 2)
 						angle = 180 - angle;
-						startPoint = new Point(gorilla2.x + 25, gorilla2.y - 7);
-						gorilla2.throwAnimation();
-					}
 				
-					banana.launch(angle, velocity, GRAVITY, cityScape.windSpeed, startPoint);
-					
-					state = BANANA_THROWN;
+					connection.send("throw", angle, velocity);
+					throwBanana(angle, velocity);
 					
 					break;
 			
@@ -334,13 +322,32 @@
 						
 		}
 		
+		// throw a banana
+		private function throwBanana(angle:int, velocity:int):void {
+			
+			if (playerTurn == 1){
+				var startPoint:Point = new Point(gorilla1.x, gorilla1.y - 7);
+				gorilla1.throwAnimation();
+			}
+				
+			if (playerTurn == 2){
+				startPoint = new Point(gorilla2.x + 25, gorilla2.y - 7);
+				gorilla2.throwAnimation();
+			}
+			
+			banana.launch(angle, velocity, GRAVITY, cityScape.windSpeed, startPoint, 1);
+			state = BANANA_THROWN;
+		}
+		
 		// received a shot from the server
-		private function onReceivedShot(message:Message, angle:int, velocity:int):void {
+		private function onReceivedThrow(message:Message, angle:int, velocity:int):void {
 					
-			angleInput.text = String(angle);
-			velocityInput.text = String(velocity);
-			state = VELOCITY_INPUT;
-			nextStep();
+			//angleInput.text = String(angle);
+			//velocityInput.text = String(velocity);
+			//state = VELOCITY_INPUT;
+			//nextStep();
+			throwBanana(angle, velocity);
+			
 		}
 		
 	}

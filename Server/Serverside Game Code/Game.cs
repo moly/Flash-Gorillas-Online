@@ -7,20 +7,26 @@ using System.Drawing;
 
 namespace ServersideGameCode {
 
-	public class GameCode : Game<Gorilla> {
+	public class GameCode : Game<Player> {
 
         // A bitmap to draw to, used for debugging
         private Bitmap canvas;
 
         // The players in the game
-        private Gorilla player1;
-        private Gorilla player2;
+        private Player player1;
+        private Player player2;
 
         // Which players turn it is
-        private int playerTurn;
+        private Player playerTurn;
 
         // The game level
         private Cityscape cityscape;
+
+        // A throwable banana
+        private Banana banana;
+
+        // Constants
+        private const float GRAVITY = 9.8f;
 
 		public override void GameStarted() {
 			
@@ -28,10 +34,10 @@ namespace ServersideGameCode {
 
             canvas = new Bitmap(640,350);
 
-            playerTurn = 1;
-
             cityscape = new Cityscape();
             cityscape.BuildSkyline();
+
+            banana = new Banana();
 
 			// This is how you setup a timer
 			AddTimer(delegate {
@@ -50,7 +56,7 @@ namespace ServersideGameCode {
 		}
 
 		// This method is called whenever a player joins the game
-		public override void UserJoined(Gorilla player) {
+		public override void UserJoined(Player player) {
 
             if (player1 == null){
                 player1 = player;
@@ -63,27 +69,62 @@ namespace ServersideGameCode {
             }
             
             if (PlayerCount == 2){
+                playerTurn = player1;
                 player1.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.X, player1.Y, player2.X, player2.Y, player2.Name);
                 player2.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.X, player1.Y, player2.X, player2.Y, player1.Name);
             }
 		}
 
         // Prevent more than two people joining a game
-        public override bool AllowUserJoin(Gorilla player){
+        public override bool AllowUserJoin(Player player){
             return (player1 == null || player2 == null);
         }
 
 		// This method is called when a player leaves the game
-		public override void UserLeft(Gorilla player) {
+		public override void UserLeft(Player player) {
 			Broadcast("UserLeft", player.Id);
+            (player == player1 ? player2 : player1).Disconnect();
 		}
 
 		// This method is called when a player sends a message into the server code
-        public override void GotMessage(Gorilla player, Message message){
+        public override void GotMessage(Player player, Message message){
             switch (message.Type){
-                case "shot":
-                    (playerTurn == 1 ? player2 : player1).Send("shot", message.GetInt(0), message.GetInt(1));
-                    playerTurn = 3 - playerTurn;
+
+                // A player has sent an angle and a velocity for their turn
+                case "throw":
+                    
+                    // If it's not actually their turn, disregard
+                    if (player != playerTurn)
+                        return;
+
+                    // Get the angle and velocity from the message
+                    int angle = message.GetInt(0);
+                    int velocity = message.GetInt(1);
+
+                    // Send other player the angle and velocity of the shot 
+                    (player == player1 ? player2 : player1).Send("throw", angle, velocity);
+                    Console.WriteLine(player.Name + " angle: " + angle + " velocity: " + velocity);
+
+                    // Work out ourselves where the banana will land
+                    Point startPoint;
+                    if (playerTurn == player1){
+						startPoint = new Point(player1.X, player1.Y - 7);
+					}else{
+						startPoint = new Point(player2.X + 25, player2.Y - 7);
+					}
+
+                    int result = banana.Launch(angle, velocity, GRAVITY, cityscape.WindSpeed, startPoint, cityscape, player1, player2);
+                    
+                    // Increase score appropriately
+                    if (result == Banana.HIT_GORILLA_ONE)
+                        player2.Score++;
+
+                    if (result == Banana.HIT_GORILLA_TWO)
+                        player1.Score++;
+
+                    // Next players turn
+                    playerTurn = playerTurn == player1 ? player2 : player1;
+
                     break;
             }
         }
@@ -91,18 +132,19 @@ namespace ServersideGameCode {
 		// This method gets called whenever triggered by the RefreshDebugView() method.
 		public override Image GenerateDebugImage() {
 
-			using(Graphics g = Graphics.FromImage(canvas)) {
+            Graphics g = Graphics.FromImage(canvas);
                 
-                g.FillRectangle(new SolidBrush(Color.FromArgb(unchecked((int)0xFF0000AD))), new Rectangle(0, 0, canvas.Width, canvas.Height));
+            g.FillRectangle(new SolidBrush(Color.FromArgb(unchecked((int)0xFF0000AD))), new Rectangle(0, 0, canvas.Width, canvas.Height));
                 
-                cityscape.Draw(g);
+            cityscape.Draw(g);
 
-                if (player1 != null)
-                    player1.Draw(g);
+            if (player1 != null)
+                player1.Draw(g);
 
-                if (player2 != null)
-                    player2.Draw(g);
-			}
+            if (player2 != null)
+                player2.Draw(g);
+
+            banana.Draw(g);
 
 			return canvas;
 		}

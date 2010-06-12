@@ -65,7 +65,6 @@
 		
 		// successfully connected
 		private function onConnected(client:Client):void {
-			trace("connected");
 			this.client = client;
 			getRooms();
 		}

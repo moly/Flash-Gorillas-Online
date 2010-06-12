@@ -44,9 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Banana.cs" />
     <Compile Include="Cityscape.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Gorilla.cs" />
+    <Compile Include="Player.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

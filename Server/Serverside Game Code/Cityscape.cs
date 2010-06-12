@@ -51,7 +51,7 @@ namespace ServersideGameCode{
 		}
 
         // an image to draw to
-        public Bitmap texture;
+        private Bitmap texture;
 
         // a random number generator
         private Random random;
@@ -203,7 +203,7 @@ namespace ServersideGameCode{
 		}
 		
 		// put the gorillas on either the second or third building from either end
-		public void PlaceGorilla(Gorilla player, int playerNumber) {
+		public void PlaceGorilla(Player player, int playerNumber) {
 
 			int xAdj = 15;
 			int yAdj = 29;
@@ -220,6 +220,13 @@ namespace ServersideGameCode{
 			player.Y = buildingCoordinates[bNum][1] - yAdj;
 			
 		}
+
+        // Check for a collision
+        public bool IsColliding(Point point){
+            if (point.Y < 0 || point.Y >= SCREEN_HEIGHT || point.X < 0 || point.X >= SCREEN_WIDTH)
+                return false;
+            return texture.GetPixel(point.X, point.Y).A != 0;
+        }
 		/*
 		// explode a piece of the cityscape
 		public function createSmallExplosion(x:int, y:int):void {

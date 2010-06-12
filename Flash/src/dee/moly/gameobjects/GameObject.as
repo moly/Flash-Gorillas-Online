@@ -45,7 +45,8 @@
 				
 		// check for collision
 		public function hasCollidedWith(gameObject:GameObject):Boolean {
-			return texture.hitTest(position, 0xff, gameObject.texture, gameObject.position);
+			//return texture.hitTest(position, 0xff, gameObject.texture, gameObject.position);
+			return gameObject.texture.hitTest(gameObject.position, 0xff, position);
 		}
 		
 	}
