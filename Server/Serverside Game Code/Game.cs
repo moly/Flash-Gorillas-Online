@@ -19,7 +19,7 @@ namespace ServersideGameCode {
         // Which players turn it is
         private Player playerTurn;
 
-        // The game level
+        // The game levels
         private Cityscape cityscape;
 
         // A throwable banana
@@ -34,20 +34,17 @@ namespace ServersideGameCode {
 
             canvas = new Bitmap(640,350);
 
+            // Set up all our cityscapes
             cityscape = new Cityscape();
-            cityscape.BuildSkyline();
+            cityscape.BuildSkylines(3);
+            cityscape.SetCityscape(0);
 
             banana = new Banana();
-
-			// This is how you setup a timer
-			AddTimer(delegate {
-				// code here will code every 100th millisecond (ten times a second)
-			}, 25);
 			
-			AddTimer(delegate {
+			//AddTimer(delegate {
 				// This will cause the GenerateDebugImage() method to be called
-				RefreshDebugView(); 
-			}, 250);
+			//	RefreshDebugView(); 
+			//}, 250);
 		}
 
 		// This method is called when the last player leaves the room, and it's closed down.
@@ -60,18 +57,26 @@ namespace ServersideGameCode {
 
             if (player1 == null){
                 player1 = player;
-                cityscape.PlaceGorilla(player1, 1);
                 player1.Name = player.JoinData["name"];
             } else {
                 player2 = player;
-                cityscape.PlaceGorilla(player2, 2);
                 player2.Name = player.JoinData["name"];
             }
             
             if (PlayerCount == 2){
+
                 playerTurn = player1;
-                player1.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.X, player1.Y, player2.X, player2.Y, player2.Name);
-                player2.Send("start", ListToByteArray(cityscape.BuildingCoordinates), cityscape.WindSpeed, player1.X, player1.Y, player2.X, player2.Y, player1.Name);
+                PlaceGorillas();
+
+                byte[] buildingCoordinates = BuildingCoordinatesToByteArray(cityscape.BuildingCoordinates);
+                byte[] player1Positions = PlayerPositionsToByteArray(cityscape.AllPlayer1Positions);
+                byte[] player2Positions = PlayerPositionsToByteArray(cityscape.AllPlayer2Positions);
+                byte[] windSpeeds = WindSpeedsToByteArray(cityscape.AllWindSpeeds);
+
+                player1.Send("start", buildingCoordinates, player1Positions, player2Positions, windSpeeds, player2.Name);
+                player2.Send("start", buildingCoordinates, player1Positions, player2Positions, windSpeeds, player1.Name);
+
+                RefreshDebugView();
             }
 		}
 
@@ -107,7 +112,7 @@ namespace ServersideGameCode {
 
                     // Work out ourselves where the banana will land
                     Point startPoint;
-                    if (playerTurn == player1){
+                    if (player == player1){
 						startPoint = new Point(player1.X, player1.Y - 7);
 					}else{
 						startPoint = new Point(player2.X + 25, player2.Y - 7);
@@ -116,17 +121,33 @@ namespace ServersideGameCode {
                     int result = banana.Launch(angle, velocity, GRAVITY, cityscape.WindSpeed, startPoint, cityscape, player1, player2);
                     
                     // Increase score appropriately
-                    if (result == Banana.HIT_GORILLA_ONE)
+                    if (result == Banana.HIT_GORILLA_ONE){
                         player2.Score++;
+                        cityscape.NextCityscape();
+                        PlaceGorillas();
+                    }
 
-                    if (result == Banana.HIT_GORILLA_TWO)
+                    if (result == Banana.HIT_GORILLA_TWO){
                         player1.Score++;
+                        cityscape.NextCityscape();
+                        PlaceGorillas();
+                    }
 
                     // Next players turn
                     playerTurn = playerTurn == player1 ? player2 : player1;
 
+                    RefreshDebugView();
+
                     break;
             }
+        }
+
+        // Position players correctly
+        private void PlaceGorillas(){
+            player1.X = cityscape.Player1Position.X;
+            player1.Y = cityscape.Player1Position.Y;
+            player2.X = cityscape.Player2Position.X;
+            player2.Y = cityscape.Player2Position.Y;
         }
 
 		// This method gets called whenever triggered by the RefreshDebugView() method.
@@ -149,19 +170,66 @@ namespace ServersideGameCode {
 			return canvas;
 		}
 
-        // Convert a two dimensional list to a byte array
-        private byte[] ListToByteArray(List<List<int>> list){
-            byte[] byteArray = new byte[list.Count * 8];
+        // Convert all building coordinates to a byte array
+        private byte[] BuildingCoordinatesToByteArray(List<List<List<int>>> list){
+
+            int bytes = list.Count * 4;
+            for (int i = 0; i < list.Count; ++i)
+                bytes += list[i].Count * 8;
+
+            byte[] byteArray = new byte[bytes];
+            int lastCount = 0;
             for (int i = 0; i < list.Count; ++i){
-                byteArray[i * 8] = (byte)(list[i][0] >> 24);
-                byteArray[(i * 8) + 1] = (byte)(list[i][0] >> 16);
-                byteArray[(i * 8) + 2] = (byte)(list[i][0] >> 8);
-                byteArray[(i * 8) + 3] = (byte)list[i][0];
-                byteArray[(i * 8) + 4] = (byte)(list[i][1] >> 24);
-                byteArray[(i * 8) + 5] = (byte)(list[i][1] >> 16);
-                byteArray[(i * 8) + 6] = (byte)(list[i][1] >> 8);
-                byteArray[(i * 8) + 7] = (byte)list[i][1];
+                byteArray[lastCount] = (byte)(list[i].Count * 8 >> 24);
+                byteArray[lastCount + 1] = (byte)(list[i].Count * 8 >> 16);
+                byteArray[lastCount + 2] = (byte)(list[i].Count * 8 >> 8);
+                byteArray[lastCount + 3] = (byte)(list[i].Count * 8);
+                lastCount += 4;
+                for (int j = 0; j < list[i].Count; ++j){
+                    byteArray[lastCount + (j * 8)] = (byte)(list[i][j][0] >> 24);
+                    byteArray[lastCount + (j * 8) + 1] = (byte)(list[i][j][0] >> 16);
+                    byteArray[lastCount + (j * 8) + 2] = (byte)(list[i][j][0] >> 8);
+                    byteArray[lastCount + (j * 8) + 3] = (byte)list[i][j][0];
+                    byteArray[lastCount + (j * 8) + 4] = (byte)(list[i][j][1] >> 24);
+                    byteArray[lastCount + (j * 8) + 5] = (byte)(list[i][j][1] >> 16);
+                    byteArray[lastCount + (j * 8) + 6] = (byte)(list[i][j][1] >> 8);
+                    byteArray[lastCount + (j * 8) + 7] = (byte)list[i][j][1];
+                }
+                lastCount += list[i].Count * 8;
             }
+            
+            return byteArray;
+        }
+
+        // Convert player positions to a byte array
+        private byte[] PlayerPositionsToByteArray(List<Point> list) {
+
+            byte[] byteArray = new byte[list.Count * 8];
+            for (int i = 0; i < list.Count; ++i) {
+                byteArray[i * 8] = (byte)(list[i].X >> 24);
+                byteArray[(i * 8) + 1] = (byte)(list[i].X >> 16);
+                byteArray[(i * 8) + 2] = (byte)(list[i].X >> 8);
+                byteArray[(i * 8) + 3] = (byte)list[i].X;
+                byteArray[(i * 8) + 4] = (byte)(list[i].Y >> 24);
+                byteArray[(i * 8) + 5] = (byte)(list[i].Y >> 16);
+                byteArray[(i * 8) + 6] = (byte)(list[i].Y >> 8);
+                byteArray[(i * 8) + 7] = (byte)list[i].Y;
+            }
+
+            return byteArray;
+        }
+
+        // Convert windspeeds to byte array
+        private byte[] WindSpeedsToByteArray(List<int> list) {
+
+            byte[] byteArray = new byte[list.Count * 4];
+            for (int i = 0; i < list.Count; ++i){
+                byteArray[i * 4] = (byte)(list[i] >> 24);
+                byteArray[(i * 4) + 1] = (byte)(list[i] >> 16);
+                byteArray[(i * 4) + 2] = (byte)(list[i] >> 8);
+                byteArray[(i * 4) + 3] = (byte)list[i];
+            }
+
             return byteArray;
         }
 

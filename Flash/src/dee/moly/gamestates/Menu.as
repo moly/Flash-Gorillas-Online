@@ -76,8 +76,8 @@
 		
 		// retrieve a list of rooms
 		private function getRooms():void {
-			client.multiplayer.developmentServer = "localhost:8184";
-			client.multiplayer.listRooms("gorillas", { }, 200, 0, onRetrievedRooms, onRetrieveRoomsError);  
+			//client.multiplayer.developmentServer = "localhost:8184";
+			client.multiplayer.listRooms("GorillasServer", { }, 200, 0, onRetrievedRooms, onRetrieveRoomsError);  
 		}
 		
 		// successfully retrieved rooms
@@ -91,7 +91,7 @@
 				}
 			}
 				
-			client.multiplayer.createJoinRoom("", "gorillas", true, { }, {name:myName}, onJoinedRoom);
+			client.multiplayer.createJoinRoom("", "GorillasServer", true, { }, {name:myName}, onJoinedRoom);
 			playerNumber = 1;
 		}
 		
@@ -108,9 +108,9 @@
 		}
 		
 		// start a new game
-		private function onGameStarted(message:Message, buildingCoordinates:ByteArray, windSpeed:int, player1X:int, player1Y:int, player2X:int, player2Y:int, opponentName:String):void {
+		private function onGameStarted(message:Message, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, opponentName:String):void {
 			
-			gotoState(new Level(connection, buildingCoordinates, windSpeed, player1X, player1Y, player2X, player2Y, playerNumber, myName, opponentName));
+			gotoState(new Level(connection, buildingCoordinates, player1Positions, player2Positions, windSpeeds, playerNumber, myName, opponentName));
 		}
 		
 	}

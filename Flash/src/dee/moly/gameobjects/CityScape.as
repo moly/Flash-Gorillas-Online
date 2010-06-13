@@ -11,7 +11,14 @@
 	 * @author moly, borrowed heavily from Chris King
 	 */
 	
-	public class CityScape extends GameObject{
+	public class Cityscape extends GameObject {
+		
+		// store all the cityscapes
+		private var buildingCoordinates:Array;
+		private var windSpeeds:Array;
+		private var player1Positions:Array;
+		private var player2Positions:Array;
+		private var currentCityscape:int;
 		
 		// colours	
 		private static const BUILDING_RED:uint = 0xFFA80000;
@@ -38,48 +45,67 @@
 		private static const WINDOW_WIDTH_SEPARATION:int = 10;
 		private static const BUILDING_MINIMUM_HEIGHT:int = 25;
 		
-		private var buildingCoordinates:Array;
-		
 		private var smallExplosion:SmallExplosion;
 		private var bigExplosion:BigExplosion;
 		public function get explosionFinished():Boolean {
 			return smallExplosion.finished && bigExplosion.finished;
 		}
 		
-		// the level's wind speed
-		private var wind:int;
-		public function get windSpeed():int {
-			return wind;
+		public function get player1Position():Point {
+			return player1Positions[currentCityscape];
 		}
 		
-		public function CityScape() {
+		public function get player2Position():Point {
+			return player2Positions[currentCityscape];
+		}
+		
+		public function get windSpeed():int {
+			return windSpeeds[currentCityscape];
+		}
+		
+		public function Cityscape(buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray) {
 			
 			position = new Point(0, 0);
-			texture = new DrawingBitmap(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT, true, 0x00);
 			smallExplosion = new SmallExplosion();
 			bigExplosion = new BigExplosion();
-		
+			this.buildingCoordinates = buildingCoordinatesToArray(buildingCoordinates);
+			this.player1Positions = positionsToArray(player1Positions);
+			this.player2Positions = positionsToArray(player2Positions);
+			this.windSpeeds = windSpeedsToArray(windSpeeds);
+			currentCityscape = -1;
 		}
 		
-		override public function draw(canvas:BitmapData):void 
-		{
+		override public function draw(canvas:BitmapData):void {
+			
 			smallExplosion.draw(texture);
 			bigExplosion.draw(texture);
 			super.draw(canvas);
 		}
 		
-		// draw a random sky line
-		public function buildSkyline(buildingCoordinates:ByteArray, windSpeed:int):void {
+		// go to the next cityscape
+		public function nextCityscape():void {
 			
+			currentCityscape++;
+			setCityscape(currentCityscape);
+		}
+		
+		// Set the current
+		public function setCityscape(cityscapeNumber:int):void {
+			
+			currentCityscape = cityscapeNumber;
+		
 			var currentBuildingColour:uint;
 			var currentBuildingHeight:int = 0;
 			var currentBuildingWidth:int = 0;
 			var drawingXLocation:int = 0;
 			var horizonLine:int = Main.SCREEN_HEIGHT - 15;
 			var currentWindowColour:uint;
-			var currentHeightBase:int
+			var currentHeightBase:int;
 			
-			while (buildingCoordinates.bytesAvailable) {
+			texture = new DrawingBitmap(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT, true, 0x00);
+			
+			buildingCoordinates[currentCityscape].position = 0;
+			while (buildingCoordinates[currentCityscape].bytesAvailable) {
 				
 				currentBuildingColour = int(Math.random() * 3);
 
@@ -95,12 +121,12 @@
 						break;
 				}
 				
-				drawingXLocation = buildingCoordinates.readInt();
-				currentBuildingHeight = horizonLine - buildingCoordinates.readInt();
+				drawingXLocation = buildingCoordinates[currentCityscape].readInt();
+				currentBuildingHeight = horizonLine - buildingCoordinates[currentCityscape].readInt();
 				
-				if(buildingCoordinates.bytesAvailable){
-					currentBuildingWidth = buildingCoordinates.readInt() - drawingXLocation - BUILDING_SEPARATION;
-					buildingCoordinates.position -= 4;
+				if(buildingCoordinates[currentCityscape].bytesAvailable){
+					currentBuildingWidth = buildingCoordinates[currentCityscape].readInt() - drawingXLocation - BUILDING_SEPARATION;
+					buildingCoordinates[currentCityscape].position -= 4;
 				}else {
 					currentBuildingWidth = Main.SCREEN_WIDTH - drawingXLocation - BUILDING_SEPARATION;
 				}
@@ -126,7 +152,6 @@
 				
 			}
 			
-			wind = windSpeed;
 			drawWindLine();
 		}
 		
@@ -140,22 +165,49 @@
 			bigExplosion.create(x, y);
 		}
 		
-		// decide a random wind speed/direction for each cityscape
-		private function setWindSpeed():void {
+		// convert the buildingCoordinates bytearray to an array
+		private function buildingCoordinatesToArray(byteArray:ByteArray):Array {
 			
-			wind = int(Math.random() * 11) - 5;
+			var buildingCoordinates:Array = new Array();
 			
-			if (int(Math.random() * 3) == 2) {
-				if (wind > 0)
-					wind += int(Math.random() * 11);
-				else
-					wind -= int(Math.random() * 11);
+			while (byteArray.bytesAvailable) {
+				var length:int = byteArray.readInt();
+				var array:ByteArray = new ByteArray();
+				
+				for (var i:int = 0; i < length; ++i)
+					array.writeByte(byteArray.readByte());
+				buildingCoordinates.push(array);
 			}
 			
+			return buildingCoordinates;
+		}
+		
+		// converts the playerPostions bytearray to an array of points
+		private function positionsToArray(byteArray:ByteArray):Array {
+			
+			var positionsArray:Array = new Array();
+			while (byteArray.bytesAvailable) {
+				positionsArray.push(new Point(byteArray.readInt(), byteArray.readInt()));
+			}
+			
+			return positionsArray;
+		}
+		
+		// convert windSpeeds bytearray to an array if ints
+		private function windSpeedsToArray(byteArray:ByteArray):Array {
+			
+			var windArray:Array = new Array();
+			while (byteArray.bytesAvailable) {
+				windArray.push(byteArray.readInt());
+			}
+			
+			return windArray;
 		}
 		
 		// draw a line along the bottom of the screen relative to the wind's strength
 		private function drawWindLine():void {
+			
+			var wind:int = windSpeeds[currentCityscape];
 			
 			if (wind == 0)
 				return;

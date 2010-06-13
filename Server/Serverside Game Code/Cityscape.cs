@@ -33,138 +33,192 @@ namespace ServersideGameCode{
 		
 		// all new widths generated will increase or decrease by this amount
 		private const int WIDTH_TREND = 32;
-		
 		private const int WINDOW_HEIGHT_SEPARATION = 15;
 		private const int WINDOW_WIDTH_SEPARATION = 10;
 		private const int BUILDING_MINIMUM_HEIGHT = 25;
-		
-        // positions and widths for buildings
-		private List<List<int>> buildingCoordinates;
-        public List<List<int>> BuildingCoordinates{
-            get { return buildingCoordinates; }
-        }
-		
-		// the level's wind speed
-		private int wind;
-		public int WindSpeed {
-            get {return wind;}
-		}
 
         // an image to draw to
         private Bitmap texture;
 
         // a random number generator
         private Random random;
-		
+
+        private int currentCityscape;
+
+        private List<List<List<int>>> buildingCoordinates;
+        public List<List<List<int>>> BuildingCoordinates{
+            get { return buildingCoordinates; }
+        }
+
+        private List<int> windSpeeds;
+        public int WindSpeed {
+            get { return windSpeeds[currentCityscape]; }
+        }
+        public List<int> AllWindSpeeds{
+            get { return windSpeeds; }
+        }
+
+        private List<Point> player1Positions;
+        public Point Player1Position {
+            get { return player1Positions[currentCityscape]; }
+        }
+        public List<Point> AllPlayer1Positions{
+            get { return player1Positions; }
+        }
+
+        private List<Point> player2Positions;
+        public Point Player2Position{
+            get { return player2Positions[currentCityscape]; }
+        }
+        public List<Point> AllPlayer2Positions{
+            get { return player2Positions; }
+        }
+
 		public Cityscape() {
+
             random = new Random();
+            buildingCoordinates = new List<List<List<int>>>();
+            windSpeeds = new List<int>();
+            player1Positions = new List<Point>();
+            player2Positions = new List<Point>();
+            currentCityscape = 0;
 		}
 		
 		public void Draw(Graphics g) {
             g.DrawImage(texture, 0, 0);
 		}
+
+        // move to the next cityscape
+        public void NextCityscape(){
+            currentCityscape++;
+            SetCityscape(currentCityscape);
+        }
 		
-		// draw a random sky line
-		public void BuildSkyline() {
+		// generate random sky lines
+		public void BuildSkylines(int numberOfSkylines) {
 			
-		    uint currentBuildingColour;
+            for(int i = 0; i < numberOfSkylines; ++i){
+		        
+			    int currentBuildingHeight = 0;
+			    int currentBuildingWidth = 0;
+			    int drawingXLocation = 2;
+                int horizonLine = 350 - 15;
+			    int currentHeightBase = 0;
+    			
+			    List<List<int>> buildingCoordinates = new List<List<int>>();
+
+                int slopeState = random.Next(6);
+    			
+			    switch (slopeState) {
+    				
+				    case 0: 
+					    //Upward slopeState
+					    currentHeightBase = 15;                 	
+					    break;
+				    case 1: 
+					    //Downward slopeState
+					    currentHeightBase = 130;                	
+					    break;
+				    case 2:
+				    case 3:
+				    case 4: 
+					    //"V" slopeState - most common.  We allow 3 cases to fall here to increase the chances
+					    //we have a V slope
+					    currentHeightBase = 15;            	 	
+					    break;
+				    case 5: 
+					    //Inverted "V" slopeState
+					    currentHeightBase = 130;
+					    break;
+			    }
+    			
+			    while(drawingXLocation <= SCREEN_WIDTH - HEIGHT_TREND){
+    	
+				    switch(slopeState) {
+    					
+					    case 0:
+						    // This is an upward slope.  Gently increase the base height for this next building	
+						    currentHeightBase = currentHeightBase + HEIGHT_TREND;
+						    break;
+    						
+					    case 1:
+						    //This is a downward slope so gently decrease the base height
+						    currentHeightBase = currentHeightBase - HEIGHT_TREND;
+						    break;
+    						
+					    case 2:
+					    case 3:
+					    case 4:
+						    //Which side of the screen are we on?
+						    if(drawingXLocation > (SCREEN_WIDTH / 2)){
+							    //West side of the screen.  Aggressively change the slope downward
+							    currentHeightBase = currentHeightBase - 2 * HEIGHT_TREND;
+						    }else{
+							    //East side of the screen.  Aggressively change the slope upward
+							    currentHeightBase = currentHeightBase + 2 * HEIGHT_TREND;
+						    }
+						    break;
+					    case 5:
+						    //Which side of the screen are we on?
+						    if(drawingXLocation > SCREEN_WIDTH / 2){
+							    //West side.  Aggressively change the slope upward.
+							    currentHeightBase = currentHeightBase + 2 * HEIGHT_TREND;
+						    }else{
+							    //East side.  Aggressively bring the base height down on this iteration.
+							    currentHeightBase = currentHeightBase - 2 * HEIGHT_TREND;
+						    }
+						    break;
+				    }
+    				
+				    currentBuildingWidth = random.Next(WIDTH_TREND, WIDTH_TREND + WIDTH_AGGREGATE + 1); //int(Math.random() * (WIDTH_AGGREGATE + 1)) + WIDTH_TREND;
+    				
+				    if (drawingXLocation + currentBuildingWidth > SCREEN_WIDTH)
+					    currentBuildingWidth = SCREEN_WIDTH - drawingXLocation - BUILDING_SEPARATION;
+    				
+				    if ((SCREEN_WIDTH - currentBuildingWidth - drawingXLocation) < WIDTH_TREND)
+					    currentBuildingWidth += SCREEN_WIDTH - currentBuildingWidth - drawingXLocation;						
+    					
+				    currentBuildingHeight = random.Next(currentHeightBase, currentHeightBase + HEIGHT_AGGREGATE + 1); //int(Math.random() * (HEIGHT_AGGREGATE + 1)) + currentHeightBase;
+    				  
+				    if (currentBuildingHeight < HEIGHT_TREND)
+					    currentBuildingHeight = HEIGHT_TREND + BUILDING_MINIMUM_HEIGHT + random.Next(HEIGHT_AGGREGATE + 1); //int(Math.random() * (HEIGHT_AGGREGATE + 1));	
+    				
+				    if (horizonLine - currentBuildingHeight <= UPPER_DRAWING_LIMIT)
+					    currentBuildingHeight = horizonLine - UPPER_DRAWING_LIMIT - random.Next(HEIGHT_AGGREGATE + 1); //int(Math.random() * (HEIGHT_AGGREGATE + 1));	
+    				
+                    List<int> xAndHeight = new List<int>();
+                    xAndHeight.Add(drawingXLocation);
+                    xAndHeight.Add(horizonLine - currentBuildingHeight);
+				    buildingCoordinates.Add(xAndHeight);								
+    				
+				    drawingXLocation += currentBuildingWidth + BUILDING_SEPARATION;
+			    }
+
+                this.buildingCoordinates.Add(buildingCoordinates);
+			    this.windSpeeds.Add(SetWindSpeed());
+                this.player1Positions.Add(PlaceGorilla(1, buildingCoordinates));
+                this.player2Positions.Add(PlaceGorilla(2, buildingCoordinates));
+            }
+		}
+		
+        // set the current cityscape
+        public void SetCityscape(int cityscapeNumber){
+			
+			uint currentBuildingColour;
 			int currentBuildingHeight = 0;
 			int currentBuildingWidth = 0;
-			int drawingXLocation = 2;
-			int horizonLine = 350 - 15;
+			int drawingXLocation = 0;
+			int horizonLine = SCREEN_HEIGHT - 15;
 			uint currentWindowColour;
-			int currentHeightBase = 0;
 			
-			int slopeState = random.Next(6);
-			
-			buildingCoordinates = new List<List<int>>();
-			
-			texture = new Bitmap(640, 350);
+            texture = new Bitmap(640, 350);
             Graphics g = Graphics.FromImage(texture);
-			
-			switch (slopeState) {
+
+            currentCityscape = cityscapeNumber;
+
+			for(int i = 0; i < buildingCoordinates[cityscapeNumber].Count; ++i) {
 				
-				case 0: 
-					//Upward slopeState
-					currentHeightBase = 15;                 	
-					break;
-				case 1: 
-					//Downward slopeState
-					currentHeightBase = 130;                	
-					break;
-				case 2:
-				case 3:
-				case 4: 
-					//"V" slopeState - most common.  We allow 3 cases to fall here to increase the chances
-					//we have a V slope
-					currentHeightBase = 15;            	 	
-					break;
-				case 5: 
-					//Inverted "V" slopeState
-					currentHeightBase = 130;
-					break;
-			}
-			
-			while(drawingXLocation <= SCREEN_WIDTH - HEIGHT_TREND){
-	
-				switch(slopeState) {
-					
-					case 0:
-						// This is an upward slope.  Gently increase the base height for this next building	
-						currentHeightBase = currentHeightBase + HEIGHT_TREND;
-						break;
-						
-					case 1:
-						//This is a downward slope so gently decrease the base height
-						currentHeightBase = currentHeightBase - HEIGHT_TREND;
-						break;
-						
-					case 2:
-					case 3:
-					case 4:
-						//Which side of the screen are we on?
-						if(drawingXLocation > (SCREEN_WIDTH / 2)){
-							//West side of the screen.  Aggressively change the slope downward
-							currentHeightBase = currentHeightBase - 2 * HEIGHT_TREND;
-						}else{
-							//East side of the screen.  Aggressively change the slope upward
-							currentHeightBase = currentHeightBase + 2 * HEIGHT_TREND;
-						}
-						break;
-					case 5:
-						//Which side of the screen are we on?
-						if(drawingXLocation > SCREEN_WIDTH / 2){
-							//West side.  Aggressively change the slope upward.
-							currentHeightBase = currentHeightBase + 2 * HEIGHT_TREND;
-						}else{
-							//East side.  Aggressively bring the base height down on this iteration.
-							currentHeightBase = currentHeightBase - 2 * HEIGHT_TREND;
-						}
-						break;
-				}
-				
-				currentBuildingWidth = random.Next(WIDTH_TREND, WIDTH_TREND + WIDTH_AGGREGATE + 1); //int(Math.random() * (WIDTH_AGGREGATE + 1)) + WIDTH_TREND;
-				
-				if (drawingXLocation + currentBuildingWidth > SCREEN_WIDTH)
-					currentBuildingWidth = SCREEN_WIDTH - drawingXLocation - BUILDING_SEPARATION;
-				
-				if ((SCREEN_WIDTH - currentBuildingWidth - drawingXLocation) < WIDTH_TREND)
-					currentBuildingWidth += SCREEN_WIDTH - currentBuildingWidth - drawingXLocation;						
-					
-				currentBuildingHeight = random.Next(currentHeightBase, currentHeightBase + HEIGHT_AGGREGATE + 1); //int(Math.random() * (HEIGHT_AGGREGATE + 1)) + currentHeightBase;
-				  
-				if (currentBuildingHeight < HEIGHT_TREND)
-					currentBuildingHeight = HEIGHT_TREND + BUILDING_MINIMUM_HEIGHT + random.Next(HEIGHT_AGGREGATE + 1); //int(Math.random() * (HEIGHT_AGGREGATE + 1));	
-				
-				if (horizonLine - currentBuildingHeight <= UPPER_DRAWING_LIMIT)
-					currentBuildingHeight = horizonLine - UPPER_DRAWING_LIMIT - random.Next(HEIGHT_AGGREGATE + 1); //int(Math.random() * (HEIGHT_AGGREGATE + 1));	
-				
-                List<int> xAndHeight = new List<int>();
-                xAndHeight.Add(drawingXLocation);
-                xAndHeight.Add(horizonLine - currentBuildingHeight);
-				buildingCoordinates.Add(xAndHeight);								
-			    
-				currentBuildingColour = (uint)random.Next(3); //int(Math.random() * 3);
+				currentBuildingColour = (uint)random.Next(3);
 
 				switch(currentBuildingColour){
 					case 0:
@@ -178,7 +232,16 @@ namespace ServersideGameCode{
 						break;
 				}
 				
-				g.FillRectangle(new SolidBrush(Color.FromArgb((int)currentBuildingColour)), new Rectangle(drawingXLocation - 1, (horizonLine + 1) - currentBuildingHeight, currentBuildingWidth, currentBuildingHeight));
+				drawingXLocation = buildingCoordinates[cityscapeNumber][i][0];
+				currentBuildingHeight = horizonLine - buildingCoordinates[cityscapeNumber][i][1];
+				
+				if(i != buildingCoordinates[cityscapeNumber].Count - 1){
+					currentBuildingWidth = buildingCoordinates[cityscapeNumber][i + 1][0] - drawingXLocation - BUILDING_SEPARATION;
+				}else {
+					currentBuildingWidth = SCREEN_WIDTH - drawingXLocation - BUILDING_SEPARATION;
+				}
+				
+				g.FillRectangle(new SolidBrush(Color.FromArgb((int)currentBuildingColour)), drawingXLocation - 1, (horizonLine + 1) - currentBuildingHeight, currentBuildingWidth, currentBuildingHeight);
 				
 				int windowDrawingXLocation = drawingXLocation + 3;
 				
@@ -191,19 +254,19 @@ namespace ServersideGameCode{
 						}else{
 							currentWindowColour = UNLIT_WINDOW_COLOUR;
 						}
-						g.FillRectangle(new SolidBrush(Color.FromArgb((int)currentWindowColour)), new Rectangle(windowDrawingXLocation, horizonLine - topToWindowDistance, WINDOW_WIDTH, WINDOW_HEIGHT));
+						g.FillRectangle(new SolidBrush(Color.FromArgb((int)currentWindowColour)), windowDrawingXLocation, horizonLine - topToWindowDistance, WINDOW_WIDTH, WINDOW_HEIGHT);
 					}
 					windowDrawingXLocation = windowDrawingXLocation + WINDOW_WIDTH_SEPARATION;
 				} 
 				drawingXLocation += currentBuildingWidth + BUILDING_SEPARATION;
+				
 			}
 		
-			SetWindSpeed();
 			DrawWindLine();
 		}
-		
+
 		// put the gorillas on either the second or third building from either end
-		public void PlaceGorilla(Player player, int playerNumber) {
+		private Point PlaceGorilla(int playerNumber, List<List<int>> buildingCoordinates) {
 
 			int xAdj = 15;
 			int yAdj = 29;
@@ -215,10 +278,10 @@ namespace ServersideGameCode{
 				bNum = buildingCoordinates.Count - 1 - random.Next(1, 3);
 					
 			int bWidth = buildingCoordinates[bNum + 1][0] - buildingCoordinates[bNum][0];
-			
-			player.X = buildingCoordinates[bNum][0] + bWidth / 2 - xAdj;
-			player.Y = buildingCoordinates[bNum][1] - yAdj;
-			
+
+            Point position = new Point(buildingCoordinates[bNum][0] + bWidth / 2 - xAdj, buildingCoordinates[bNum][1] - yAdj);
+
+            return position;
 		}
 
         // Check for a collision
@@ -241,9 +304,9 @@ namespace ServersideGameCode{
 		*/
 
 		// decide a random wind speed/direction for each cityscape
-		private void SetWindSpeed() {
+		private int SetWindSpeed() {
 			
-			wind = random.Next(-5, 6); //int(Math.random() * 11) - 5;
+			int wind = random.Next(-5, 6); //int(Math.random() * 11) - 5;
 			
 			if (random.Next(3) == 2) {
 				if (wind > 0)
@@ -251,12 +314,15 @@ namespace ServersideGameCode{
 				else
 					wind -= random.Next(11);
 			}
-			
+
+            return wind;
 		}
 
 		// draw a line along the bottom of the screen relative to the wind's strength
 		private void DrawWindLine() {
-			
+
+            int wind = windSpeeds[currentCityscape];
+
 			if (wind == 0)
 				return;
 			

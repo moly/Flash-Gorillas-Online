@@ -2,7 +2,7 @@
 	
 	import dee.moly.gameobjects.Banana;
 	import dee.moly.gameobjects.CharChain;
-	import dee.moly.gameobjects.CityScape;
+	import dee.moly.gameobjects.Cityscape;
 	import dee.moly.gameobjects.Gorilla;
 	import dee.moly.AI.ProjectileEstimator;
 	import dee.moly.textures.DrawingBitmap;
@@ -25,7 +25,7 @@
 	public class Level extends GameState{
 		
 		// the cityscape in the background
-		private var cityScape:CityScape;
+		private var cityscape:Cityscape;
 		
 		// two gorillas
 		private var gorilla1:Gorilla;
@@ -81,7 +81,7 @@
 		// multiplayer connection
 		private var connection:Connection;
 		
-		public function Level(connection:Connection, buildingCoordinates:ByteArray, windSpeed:int, player1X:int, player1Y:int, player2X:int, player2Y:int, playerNumber:int, myName:String, opponentName:String) {
+		public function Level(connection:Connection, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, playerNumber:int, myName:String, opponentName:String) {
 			
 			this.connection = connection;
 			this.playerNumber = playerNumber;
@@ -110,24 +110,24 @@
 			
 			banana = new Banana();
 			
-			cityScape = new CityScape();
+			cityscape = new Cityscape(buildingCoordinates, player1Positions, player2Positions, windSpeeds);
 			
 			playerTurn = 1;
 			
-			newGame(buildingCoordinates, windSpeed, player1X, player1Y, player2X, player2Y);
+			newGame();
 			
 		}
 		
 		// reset everything, build a new skyline etc
-		private function newGame(buildingCoordinates:ByteArray, windSpeed:int, player1X:int, player1Y:int, player2X:int, player2Y:int):void {
+		private function newGame():void {
 			
-			cityScape.buildSkyline(buildingCoordinates, windSpeed);
+			cityscape.nextCityscape();
 			
-			gorilla1.x = player1X;
-			gorilla1.y = player1Y;
+			gorilla1.x = cityscape.player1Position.x;
+			gorilla1.y = cityscape.player1Position.y;
 			
-			gorilla2.x = player2X;
-			gorilla2.y = player2Y;
+			gorilla2.x = cityscape.player2Position.x;
+			gorilla2.y = cityscape.player2Position.y;
 			
 			angleInput.text = "";
 			angleInput.showCursor();
@@ -158,19 +158,19 @@
 					if (banana.hasCollidedWith(sun))
 						sun.shock();
 				
-					if (banana.hasCollidedWith(cityScape)) {
-						cityScape.createSmallExplosion(banana.x, banana.y);
+					if (banana.hasCollidedWith(cityscape)) {
+						cityscape.createSmallExplosion(banana.x, banana.y);
 						state = BUILDING_HIT;
 					}
 				
 					if (banana.hasCollidedWith(gorilla1)) {
-						cityScape.createBigExplosion(gorilla1.x, gorilla1.y);
+						cityscape.createBigExplosion(gorilla1.x, gorilla1.y);
 						player2Score++;
 						state = GORILLA1_HIT;
 					}
 				
 					if (banana.hasCollidedWith(gorilla2)) {
-						cityScape.createBigExplosion(gorilla2.x, gorilla2.y);
+						cityscape.createBigExplosion(gorilla2.x, gorilla2.y);
 						player1Score++;
 						state = GORILLA2_HIT;
 					}
@@ -185,16 +185,16 @@
 					
 				case BUILDING_HIT:
 				
-					cityScape.update(elapsed);
+					cityscape.update(elapsed);
 					
-					if (cityScape.explosionFinished)
+					if (cityscape.explosionFinished)
 						nextStep();
 						
 					break;
 					
 				case GORILLA1_HIT:
 					
-					if (cityScape.explosionFinished){
+					if (cityscape.explosionFinished){
 						gorilla2.danceAnimation();
 						if (gorilla2.finishedDancing)
 							nextStep();
@@ -204,7 +204,7 @@
 					
 				case GORILLA2_HIT:
 				
-					if (cityScape.explosionFinished){
+					if (cityscape.explosionFinished){
 						gorilla1.danceAnimation();
 						if (gorilla1.finishedDancing)
 							nextStep();
@@ -227,7 +227,7 @@
 			gorilla1.draw(canvas);
 			gorilla2.draw(canvas);
 			
-			cityScape.draw(canvas);
+			cityscape.draw(canvas);
 			
 			canvas.fillRect(new Rectangle(scoreText.x - 3, scoreText.y - 2, (scoreText.length * 8) + 5, 14), 0xFF0000AD);
 			scoreText.draw(canvas);
@@ -300,8 +300,8 @@
 					playerTurn = 3 - playerTurn;
 					if (player1Score + player2Score >= PLAY_TO_POINTS)
 						gotoState(new ScoreOverview(player1NameText.text, player2NameText.text, player1Score, player2Score));
-					else{}
-						//newGame();
+					else
+						newGame();
 					break;
 					
 				case BUILDING_HIT:
@@ -335,17 +335,13 @@
 				gorilla2.throwAnimation();
 			}
 			
-			banana.launch(angle, velocity, GRAVITY, cityScape.windSpeed, startPoint, 1);
+			banana.launch(angle, velocity, GRAVITY, cityscape.windSpeed, startPoint, 1);
 			state = BANANA_THROWN;
 		}
 		
 		// received a shot from the server
 		private function onReceivedThrow(message:Message, angle:int, velocity:int):void {
 					
-			//angleInput.text = String(angle);
-			//velocityInput.text = String(velocity);
-			//state = VELOCITY_INPUT;
-			//nextStep();
 			throwBanana(angle, velocity);
 			
 		}

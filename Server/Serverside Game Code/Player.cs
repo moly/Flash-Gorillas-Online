@@ -55,7 +55,7 @@ namespace ServersideGameCode{
                 point.Y > position.Y + texture.Height)
                 return false;
 
-            return !texture.GetPixel(point.X - position.X, point.Y - position.Y).IsEmpty;
+            return texture.GetPixel(point.X - position.X, point.Y - position.Y).A != 0;
         }
     }
 

@@ -47,10 +47,10 @@ namespace ServersideGameCode{
                 if (player2.IsColliding(position))
                     return HIT_GORILLA_TWO;
 
-                if (position.X > 640 || position.X < 0 || position.Y > 350)
+                if (position.X >= 640 || position.X < 0 || position.Y >= 350)
                     return OUT_OF_BOUNDS;
 
-                if (position.Y > 0)
+                if (position.Y >= 0)
                     texture.SetPixel(position.X, position.Y, Color.Red);
             }
         }
