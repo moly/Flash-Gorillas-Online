@@ -76,7 +76,7 @@
 		
 		// retrieve a list of rooms
 		private function getRooms():void {
-			//client.multiplayer.developmentServer = "localhost:8184";
+			client.multiplayer.developmentServer = "localhost:8184";
 			client.multiplayer.listRooms("GorillasServer", { }, 200, 0, onRetrievedRooms, onRetrieveRoomsError);  
 		}
 		
@@ -98,7 +98,7 @@
 		// not successfully retrieved rooms
 		private function onRetrieveRoomsError(error:PlayerIOError):void {
 			trace(error);
-			//getRooms();
+			getRooms();
 		}
 		
 		// successfully joined a room

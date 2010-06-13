@@ -290,12 +290,14 @@ namespace ServersideGameCode{
                 return false;
             return texture.GetPixel(point.X, point.Y).A != 0;
         }
-		/*
+		
 		// explode a piece of the cityscape
-		public function createSmallExplosion(x:int, y:int):void {
-			smallExplosion.create(x, y);
+		public void CreateSmallExplosion(int x, int y) {
+            for (int i = 0; i <= 7; ++i)
+                DrawCircle(x, y, i, Color.Transparent);
 		}
 		
+        /*
 		// explode a really big piece of the cityscape
 		public function createBigExplosion(x:int, y:int):void {
 			bigExplosion.create(x, y);
@@ -343,6 +345,75 @@ namespace ServersideGameCode{
                 texture.SetPixel(SCREEN_WIDTH / 2 + windLine + 1, SCREEN_HEIGHT - 4, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
                 texture.SetPixel(SCREEN_WIDTH / 2 + windLine + 2, SCREEN_HEIGHT - 3, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
 			}
+			
+		}
+
+        // Draw a circle on the texture bitmap
+        private void DrawCircle(int x, int y, int radius, Color colour){
+
+            int px, py, xRadius, yRadius, xChange, yChange;
+			int ellipseError, twoASquare, twoBSquare, stoppingX, stoppingY;
+			
+			xRadius = radius;
+			yRadius = (int)(radius * 0.8);
+			
+			if (xRadius <= 0) return;
+			
+			twoASquare = 2 * xRadius * xRadius;
+			twoBSquare = 2 * yRadius * yRadius;
+			px = xRadius;
+			py = 0;
+			xChange = yRadius * yRadius * (1 - 2 * xRadius);
+			yChange = xRadius * xRadius;
+			ellipseError = 0;
+			stoppingX = twoBSquare * xRadius;
+			stoppingY = 0;
+			
+			while (stoppingX >= stoppingY){
+				Plot4EllipsePoints(x, y, px, py, colour);
+				py++;
+				stoppingY += twoASquare;
+				ellipseError += yChange;
+				yChange += twoASquare;
+				if ((2 * ellipseError + xChange) > 0){
+					px--;
+					stoppingX -= twoBSquare;
+					ellipseError += xChange;
+					xChange += twoBSquare;
+				}
+			}
+			
+			px = 0;
+			py = yRadius;
+			xChange = yRadius * yRadius;
+			yChange = xRadius * xRadius * (1 - 2 * yRadius);
+			ellipseError = 0;
+			stoppingX = 0;
+			stoppingY = twoASquare * yRadius;
+			
+			while (stoppingX <= stoppingY){
+				
+				Plot4EllipsePoints(x, y, px, py, colour);
+				px++;
+				stoppingX += twoBSquare;
+				ellipseError += xChange;
+				xChange += twoBSquare;
+				if ((2 * ellipseError + yChange) > 0){
+					py--;
+					stoppingY -= twoASquare;
+					ellipseError += yChange;
+					yChange += twoASquare;
+				}
+			}
+		
+		}
+		
+		private void Plot4EllipsePoints(int x, int y, int px, int py, Color colour){
+			
+			texture.SetPixel(x + px, y + py, colour);
+			texture.SetPixel(x - px, y + py, colour);
+			texture.SetPixel(x - px, y - py, colour);
+			texture.SetPixel(x + px, y - py, colour);
 			
 		}
     }

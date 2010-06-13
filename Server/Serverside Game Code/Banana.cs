@@ -37,9 +37,11 @@ namespace ServersideGameCode{
                 position.X = (int)(startPoint.X + (velocityX * time) + (.5 * (windSpeed / 5) * (time * time)));
                 position.Y = (int)(startPoint.Y + ((-1 * (velocityY * time)) + (.5 * gravity * (time * time))));
                 time += 0.1f;
-                
-                if (cityscape.IsColliding(position))
+
+                if (cityscape.IsColliding(position)) {
+                    cityscape.CreateSmallExplosion(position.X, position.Y);
                     return HIT_BUILDING;
+                }
 
                 if (player1.IsColliding(position))
                     return HIT_GORILLA_ONE;

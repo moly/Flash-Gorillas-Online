@@ -129,8 +129,15 @@
 			gorilla2.x = cityscape.player2Position.x;
 			gorilla2.y = cityscape.player2Position.y;
 			
+			if (playerTurn != playerNumber) {
+				angleText.text = "Opponent's turn";
+				angleInput.removeCursor();
+			}else {
+				angleText.text = "Angle:";
+				angleInput.showCursor();
+			}
+			
 			angleInput.text = "";
-			angleInput.showCursor();
 			velocityInput.text = "";
 			currentInput = angleInput;
 			currentInput.x = (520 * (playerTurn - 1)) + 58;
@@ -307,8 +314,15 @@
 				case BUILDING_HIT:
 				
 					playerTurn = 3 - playerTurn;
+					
+					if (playerTurn != playerNumber) {
+						angleText.text = "Opponent's turn";
+					}else {
+						angleText.text = "Angle:";
+						angleInput.showCursor();
+					}
+					
 					angleInput.text = "";
-					angleInput.showCursor();
 					velocityInput.text = "";
 					currentInput = angleInput;
 					currentInput.x = (520 * (playerTurn - 1)) + 58;

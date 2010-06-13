@@ -126,13 +126,13 @@ namespace ServersideGameCode {
                         cityscape.NextCityscape();
                         PlaceGorillas();
                     }
-
+                    
                     if (result == Banana.HIT_GORILLA_TWO){
                         player1.Score++;
                         cityscape.NextCityscape();
                         PlaceGorillas();
                     }
-
+                    
                     // Next players turn
                     playerTurn = playerTurn == player1 ? player2 : player1;
 
