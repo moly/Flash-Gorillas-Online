@@ -2,8 +2,15 @@
 	
 	import dee.moly.gameobjects.CharChain;
 	import flash.display.BitmapData;
+	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
 	import flash.media.Sound;
+	import flash.display.LoaderInfo; 
+	import flash.display.Loader; 
+	import flash.net.URLRequest; 
+	import flash.events.Event; 
+	import flash.system.Security;
+	import playerio.*;
 	
 	/**
 	 * The title screen. Has the game name, a quick paragraph about the
@@ -25,8 +32,65 @@
 		private var line5:CharChain = new CharChain("of the playing field, its length relative to its strength.", 80, 171, CharChain.NONE, 1, 0xA8A8A8);
 		private var pressToContinue:CharChain = new CharChain("Press any key to continue", 220, 300, CharChain.NONE, 1, 0xA8A8A8);
 		
-		public function TitleScreen() {
+		// kongregate API reference 
+		private var kongregate:*;
+		
+		// player.io client reference
+		private var client:Client;
+		
+		// stage reference
+		private var stage:Stage;
+		
+		public function TitleScreen(stage:Stage) {
+			
 			introMusic.play();
+			
+			this.stage = stage;
+			
+			// kongregate API
+			// pull the API path from the FlashVars 
+			var paramObj:Object = LoaderInfo(stage.root.loaderInfo).parameters; 
+ 
+			// the API path. The "shadow" API will load if testing locally.  
+			var apiPath:String = paramObj.kongregate_api_path || "http://www.kongregate.com/flash/API_AS3_Local.swf"; 
+  
+			// allow the API access to this SWF 
+			Security.allowDomain(apiPath);
+			
+			// load the API 
+			var request:URLRequest = new URLRequest(apiPath); 
+			var loader:Loader = new Loader(); 
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loadComplete); 
+			loader.load(request); 
+			stage.addChild(loader);
+		}
+		
+		// this function is called when kongregate API loading is complete 
+		private function loadComplete(event:Event):void {
+			
+			// save Kongregate API reference 
+			kongregate = event.target.content; 
+  
+			// connect to the back-end 
+			kongregate.services.connect(); 
+  
+			//var userId:String = kongregate.services.getUserId();
+			//var gameAuth:String = kongregate.services.getGameAuthToken();
+			
+			// connect to player.io
+			//PlayerIO.quickConnect.kongregateConnect(Main.stageRef, "flash-gorillas-online-1nrdveekuspcredhsoew", userId, gameAuth, onConnected, onConnectionError);
+			PlayerIO.connect(stage, "flash-gorillas-online-1nrdveekuspcredhsoew", "public", "Guest" + int(Math.random() * 9999), "", onConnected, onConnectionError);
+		}
+		
+		// successfully connected to player.io
+		private function onConnected(client:Client):void {
+			this.client = client;
+			client.multiplayer.developmentServer = "localhost:8184";
+		}
+		
+		// not successfully connected to player.io
+		private function onConnectionError(error:PlayerIOError):void {
+			trace(error);
 		}
 		
 		// draw the intro screen
@@ -40,14 +104,16 @@
 			line3.draw(canvas);
 			line4.draw(canvas);
 			line5.draw(canvas);
-			pressToContinue.draw(canvas);
+			
+			if(client != null)
+				pressToContinue.draw(canvas);
 			
 		}
 		
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
-			gotoState(new Menu());
-			
+			if(client != null)
+				gotoState(new Menu(client, kongregate));
 		}
 		
 	}

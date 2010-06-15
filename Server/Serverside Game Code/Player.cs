@@ -5,64 +5,71 @@ using System.Text;
 using System.Drawing;
 using PlayerIO.GameLibrary;
 
-namespace ServersideGameCode{
-
-    public class Player : BasePlayer{
-
+namespace ServersideGameCode
+{
+    public class Player : BasePlayer
+    {
         // A gorilla image
         private Bitmap texture;
 
         // Player's current score
         private int score;
-        public int Score{
+        public int Score
+        {
             get { return score; }
             set { score = value; }
         }
 
         // Player's position
         private Point position;
-        public int X{
+        public int X
+        {
             get { return position.X; }
             set { position.X = value; }
         }
-        public int Y{
+        public int Y
+        {
             get { return position.Y; }
             set { position.Y = value; }
         }
 
         // The player's display name
         private string name;
-        public string Name{
+        public string Name
+        {
             get { return name; }
             set { name = value; }
         }
 
-        public Player() : base(){
+        public Player() : base()
+        {
             texture = GorillaTexture.Create(new Bitmap(28, 30));
             score = 0;
         }
         
         // Draw the gorilla
-        public void Draw(Graphics g){
+        public void Draw(Graphics g)
+        {
             g.DrawImage(texture, position);
         }
 
         // Check for a collision
-        public bool IsColliding(Point point){
+        public bool IsColliding(Point point)
+        {
             if (point.X < position.X ||
-                point.X > position.X + texture.Width ||
+                point.X >= position.X + texture.Width ||
                 point.Y < position.Y ||
-                point.Y > position.Y + texture.Height)
+                point.Y >= position.Y + texture.Height)
                 return false;
 
             return texture.GetPixel(point.X - position.X, point.Y - position.Y).A != 0;
         }
     }
 
-    class GorillaTexture {
-
-        public static Bitmap Create(Bitmap bitmap) {
-            
+    class GorillaTexture 
+    {
+        public static Bitmap Create(Bitmap bitmap) 
+        {            
             Graphics g = Graphics.FromImage(bitmap);
             SolidBrush gorillaColour = new SolidBrush(Color.FromArgb(unchecked((int)0xFFFFAD51)));
             Pen backgroundColour = new Pen(Color.FromArgb(unchecked((int)0xFF0000AD)));
@@ -142,7 +149,6 @@ namespace ServersideGameCode{
 			//}
 
             return bitmap;
-
         }
     }
 }

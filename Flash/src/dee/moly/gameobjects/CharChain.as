@@ -77,7 +77,7 @@
 		// font colour
 		private var colour:ColorTransform;
 		
-		public function CharChain(text:String = "", x:int = 0, y:int = 0, cursor:int = NONE, type:int = 1, colour:uint = 0xFFFFFF, maxLength:int = -1) {
+		public function CharChain(text:String = "", x:int = 0, y:int = 0, cursor:int = NONE, type:int = NUMERIC, colour:uint = 0xFFFFFF, maxLength:int = -1) {
 			
 			string = text;
 			position = new Point(x, y);

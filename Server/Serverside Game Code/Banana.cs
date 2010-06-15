@@ -18,6 +18,9 @@ namespace ServersideGameCode{
 
         // How long the banana took to fly
         private float time;
+        public float Time {
+            get { return (time * 10) / 30; }
+        }
 
         // Throw a banana
         public int Launch(float angle, int velocity, float gravity, float windSpeed, Point startPoint, Cityscape cityscape, Player player1, Player player2){

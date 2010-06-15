@@ -19,13 +19,6 @@
 	[SWF(width = "640", height = "350", frameRate = "30")]
 	public class Main extends Sprite {
 		
-		// stage reference for the multiplayer service
-		public static function get stageRef():Stage {
-			return _stageRef;
-		}
-		
-		private static var _stageRef:Stage;
-		
 		// screen width/height
 		public static const SCREEN_WIDTH:int = 640;
 		public static const SCREEN_HEIGHT:int = 350;
@@ -47,12 +40,10 @@
 		private function init(e:Event = null):void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
-			_stageRef = stage;
-			
 			canvas = new BitmapData(640, 350, false, 0xFF000000);
 			addChild(new Bitmap(canvas));
 			
-			currentState = new TitleScreen();
+			currentState = new TitleScreen(stage);
 			
 			previousTime = getTimer();
 			addEventListener(Event.ENTER_FRAME, update);

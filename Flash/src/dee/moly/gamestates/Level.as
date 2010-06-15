@@ -64,29 +64,49 @@
 		private var state:int;
 		
 		// state constants
-		private static const ANGLE_INPUT:int = 5;
-		private static const VELOCITY_INPUT:int = 6;
-		private static const BANANA_THROWN:int = 0;
-		private static const GORILLA1_HIT:int = 1;
-		private static const GORILLA2_HIT:int = 2;
-		private static const BUILDING_HIT:int = 3;
+		private static const ANGLE_INPUT:int = 0;
+		private static const VELOCITY_INPUT:int = 1;
+		private static const BANANA_THROWN:int = 2;
+		private static const GORILLA1_HIT:int = 3;
+		private static const GORILLA2_HIT:int = 4;
+		private static const BUILDING_HIT:int = 5;
+		private static const DISCONNECTED:int = 6;
+		
+		// time limit to take a turn
+		private static const TURN_TIME_LIMIT:int = 15000;
+		private var currentTime:Number;
 		
 		// other constants
 		private static const GRAVITY:Number = 9.8;
-		private static const PLAY_TO_POINTS:int = 3;
+		private static const PLAY_TO_POINTS:int = 3; 
 		
 		// which gorilla are we
 		private var playerNumber:int;
 		
-		// multiplayer connection
+		// player.io connection
 		private var connection:Connection;
 		
-		public function Level(connection:Connection, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, playerNumber:int, myName:String, opponentName:String) {
+		// player.io client reference
+		private var client:Client;
+		
+		// kongregate api reference
+		private var kongregate:*;
+		
+		// error message display
+		private var errorMessage:CharChain;
+		
+		public function Level(connection:Connection, client:Client, kongregate:*, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, playerNumber:int, myName:String, opponentName:String) {
 			
 			this.connection = connection;
+			this.client = client;
+			this.kongregate = kongregate;
 			this.playerNumber = playerNumber;
 			
+			// add server message handlers
 			connection.addMessageHandler("throw", onReceivedThrow);
+			connection.addMessageHandler("timeOut", onTimeOut);
+			connection.addMessageHandler("userLeft", onUserLeft);
+			connection.addDisconnectHandler(onDisconnected);
 			
 			gorilla1 = new Gorilla();
 			gorilla2 = new Gorilla();
@@ -118,7 +138,7 @@
 			
 		}
 		
-		// reset everything, build a new skyline etc
+		// reset everything, build a new skyline
 		private function newGame():void {
 			
 			cityscape.nextCityscape();
@@ -130,7 +150,7 @@
 			gorilla2.y = cityscape.player2Position.y;
 			
 			if (playerTurn != playerNumber) {
-				angleText.text = "Opponent's turn";
+				angleText.text = "Opponent turn";
 				angleInput.removeCursor();
 			}else {
 				angleText.text = "Angle:";
@@ -148,16 +168,24 @@
 			
 			sun.reset();
 			
+			currentTime = TURN_TIME_LIMIT;
+			
 			state = ANGLE_INPUT;
 			
 		}
 		
-		// move the banana around
+		// update the game
 		override public function update(elapsed:Number):void {
 			
+			if(state != BANANA_THROWN){
+				currentTime -= elapsed;
+				if (currentTime <= 0) {
+					currentTime = TURN_TIME_LIMIT;
+				}
+			}
+			
 			switch(state) {
-				
-				// if the banana is in the air
+								
 				case BANANA_THROWN:
 				
 					banana.update(elapsed);
@@ -239,6 +267,9 @@
 			canvas.fillRect(new Rectangle(scoreText.x - 3, scoreText.y - 2, (scoreText.length * 8) + 5, 14), 0xFF0000AD);
 			scoreText.draw(canvas);
 			
+			//new CharChain(currentTime.toString(), 100, 100).draw(canvas);
+			
+			// only draw the angle and velocity prompts during the input stages
 			if (state == ANGLE_INPUT || state == VELOCITY_INPUT) {
 				
 				angleText.draw(canvas);
@@ -251,16 +282,25 @@
 				
 			} 
 			
-			if (state == BANANA_THROWN){
+			// only draw the banana when it's moving
+			if (state == BANANA_THROWN)
 				banana.draw(canvas);
-			}
 			
 			sun.draw(canvas);
 			
+			// if we've been disconnected, draw an error message
+			if(state == DISCONNECTED)
+				errorMessage.draw(canvas);
 		}
 		
 		// put the input into the right places
 		override public function onKeyDown(e:KeyboardEvent):void {
+			
+			if (state == DISCONNECTED) {
+				if (connection.connected)
+					connection.disconnect();
+				gotoState(new Menu(client, kongregate));
+			}
 			
 			if (state == BANANA_THROWN || playerTurn != playerNumber)
 				return;
@@ -288,7 +328,7 @@
 					state = VELOCITY_INPUT;
 					break;
 			
-				// if a velocity has just been entered, throw the banana
+				// if a velocity has just been entered, send the details to the server
 				case VELOCITY_INPUT:
 				
 					var angle:int = int(angleInput.text);
@@ -298,17 +338,18 @@
 						angle = 180 - angle;
 				
 					connection.send("throw", angle, velocity);
-					throwBanana(angle, velocity);
 					
 					break;
 			
 				case GORILLA1_HIT:					
 				case GORILLA2_HIT:
 					playerTurn = 3 - playerTurn;
-					if (player1Score + player2Score >= PLAY_TO_POINTS)
-						gotoState(new ScoreOverview(player1NameText.text, player2NameText.text, player1Score, player2Score));
-					else
+					if (player1Score + player2Score >= PLAY_TO_POINTS) {
+						connection.disconnect();
+						gotoState(new ScoreOverview(client, kongregate, playerNumber, player1NameText.text, player2NameText.text, player1Score, player2Score));
+					}else{
 						newGame();
+					}
 					break;
 					
 				case BUILDING_HIT:
@@ -316,7 +357,8 @@
 					playerTurn = 3 - playerTurn;
 					
 					if (playerTurn != playerNumber) {
-						angleText.text = "Opponent's turn";
+						angleText.text = "Opponent turn";
+						angleInput.removeCursor();
 					}else {
 						angleText.text = "Angle:";
 						angleInput.showCursor();
@@ -350,6 +392,7 @@
 			}
 			
 			banana.launch(angle, velocity, GRAVITY, cityscape.windSpeed, startPoint, 1);
+			currentTime = TURN_TIME_LIMIT;
 			state = BANANA_THROWN;
 		}
 		
@@ -357,9 +400,34 @@
 		private function onReceivedThrow(message:Message, angle:int, velocity:int):void {
 					
 			throwBanana(angle, velocity);
-			
 		}
 		
+		// someone took too long to take their turn
+		private function onTimeOut(message:Message):void {
+			
+			state = BUILDING_HIT;
+			nextStep();
+		}
+		
+		// the other player has left the game
+		private function onUserLeft(message:Message):void {
+		
+			errorMessage = new CharChain("Your opponent has left the game. Press any key to return to the menu.", 0, 70);
+			errorMessage.centre();
+			
+			connection.removeMessageHandler("throw", onReceivedThrow);
+			connection.removeMessageHandler("timeOut", onTimeOut);
+			connection.removeMessageHandler("userLeft", onUserLeft);
+			
+			state = DISCONNECTED;
+		}
+		
+		// we have been disconnected by the server
+		private function onDisconnected():void {
+			
+			errorMessage = new CharChain("You have been disconnected from the server. Press any key to return to the menu.", 0, 70);
+			errorMessage.centre();
+			state = DISCONNECTED;
+		}
 	}
-
 }
