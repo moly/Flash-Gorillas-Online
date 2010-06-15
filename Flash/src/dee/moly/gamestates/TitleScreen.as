@@ -79,6 +79,7 @@
 			
 			// connect to player.io
 			//PlayerIO.quickConnect.kongregateConnect(Main.stageRef, "flash-gorillas-online-1nrdveekuspcredhsoew", userId, gameAuth, onConnected, onConnectionError);
+			PlayerIO.showLogo(stage, "TR");
 			PlayerIO.connect(stage, "flash-gorillas-online-1nrdveekuspcredhsoew", "public", "Guest" + int(Math.random() * 9999), "", onConnected, onConnectionError);
 		}
 		

@@ -89,7 +89,7 @@
 				
 				// edit gorilla
 				case 52:
-				
+					gotoState(new GorillaEditor(client, kongregate));
 					break;
 					
 				// view leaderboards
