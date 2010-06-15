@@ -41,6 +41,15 @@ namespace ServersideGameCode
             set { name = value; }
         }
 
+        // Number of bananas this player has thrown
+        private int bananasThrown;
+        public int BananasThrown
+        {
+            get { return bananasThrown;}
+            set { bananasThrown = value;}
+        }
+
+
         public Player() : base()
         {
             texture = GorillaTexture.Create(new Bitmap(28, 30));

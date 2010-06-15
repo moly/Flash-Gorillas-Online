@@ -39,6 +39,9 @@ namespace ServersideGameCode {
         // Has the game finished
         private bool gameFinished;
 
+        // Time the game started
+        private DateTime startTime;
+
 		public override void GameStarted()
         {
 			Console.WriteLine("Game is started: " + RoomId);
@@ -86,6 +89,7 @@ namespace ServersideGameCode {
         // Start a new game
         private void StartGame()
         {
+            startTime = System.DateTime.Now;
 
             playerTurn = player1;
             PlaceGorillas();
@@ -141,7 +145,9 @@ namespace ServersideGameCode {
 
                     // Send all players the angle and velocity of the received shot 
                     Broadcast("throw", angle, velocity);
-                    
+
+                    player.BananasThrown++;
+
                     // Work out ourselves where the banana will land
                     Point startPoint = new Point();
                     if (player == player1)
@@ -212,10 +218,19 @@ namespace ServersideGameCode {
                         break;
                 }
 
+                int gamesWon = player.PlayerObject.GetInt("gamesWon", 0);
+                int gamesLost = player.PlayerObject.GetInt("gamesLost", 0);
+                if (player == winningPlayer)
+                    gamesWon++;
+                else
+                    gamesLost++;
+
                 if(!player.PlayerObject.Contains("name"))
                     player.PlayerObject.Set("name", player.Name);
                 player.PlayerObject.Set("level", level);
                 player.PlayerObject.Set("xp", xp);
+                player.PlayerObject.Set("gamesWon", gamesWon);
+                player.PlayerObject.Set("gamesLost", gamesLost);
                 player.PlayerObject.Save();
             }
         }
@@ -231,6 +246,30 @@ namespace ServersideGameCode {
         {
             if(!gameFinished)
                 Broadcast("userLeft", player.Id);
+
+            UpdateStats(player);
+        }
+
+        // Update the players stats
+        private void UpdateStats(Player player)
+        {
+            TimeSpan thisTime = DateTime.Now.Subtract(startTime);
+            uint allTime = player.PlayerObject.GetUInt("totalTime", 0);
+            player.PlayerObject.Set("totalTime", (uint)(allTime + thisTime.Seconds));
+
+            int gamePlays = player.PlayerObject.GetInt("gamesPlayed", 0);
+            player.PlayerObject.Set("gamesPlayed", gamePlays + 1);
+
+            if (!gameFinished)
+            {
+                int gamesQuit = player.PlayerObject.GetInt("gamesQuit", 0);
+                player.PlayerObject.Set("gamesQuit", gamesQuit + 1);
+            }
+
+            int bananasThrown = player.PlayerObject.GetInt("bananasThrown", 0);
+            player.PlayerObject.Set("bananasThrown", bananasThrown + player.BananasThrown);
+
+            player.PlayerObject.Save();
         }
 
         // Position players correctly
