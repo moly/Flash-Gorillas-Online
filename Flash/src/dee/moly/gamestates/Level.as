@@ -95,12 +95,16 @@
 		// error message display
 		private var errorMessage:CharChain;
 		
-		public function Level(connection:Connection, client:Client, kongregate:*, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, playerNumber:int, myName:String, opponentName:String) {
+		// is the game private
+		private var isPrivate:Boolean;
+		
+		public function Level(connection:Connection, client:Client, kongregate:*, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, playerNumber:int, myName:String, opponentName:String, isPrivate:Boolean) {
 			
 			this.connection = connection;
 			this.client = client;
 			this.kongregate = kongregate;
 			this.playerNumber = playerNumber;
+			this.isPrivate = isPrivate;
 			
 			// add server message handlers
 			connection.addMessageHandler("throw", onReceivedThrow);
@@ -346,7 +350,7 @@
 					playerTurn = 3 - playerTurn;
 					if (player1Score + player2Score >= PLAY_TO_POINTS) {
 						connection.disconnect();
-						gotoState(new ScoreOverview(client, kongregate, playerNumber, player1NameText.text, player2NameText.text, player1Score, player2Score));
+						gotoState(new ScoreOverview(client, kongregate, isPrivate, playerNumber, player1NameText.text, player2NameText.text, player1Score, player2Score));
 					}else{
 						newGame();
 					}

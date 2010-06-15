@@ -20,7 +20,7 @@ package dee.moly.gamestates {
 		private var player2Name:CharChain = new CharChain("", 232, 178, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		private var player1Score:CharChain = new CharChain("", 400, 162, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		private var player2Score:CharChain = new CharChain("", 400, 178, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private var experienceGained:CharChain = new CharChain("", 300, 200, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private var experienceGained:CharChain = new CharChain("", 300, 210, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		private var pressToContinue:CharChain = new CharChain("Press any key to continue", 220, 300, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		
 		// player.io client reference
@@ -32,7 +32,10 @@ package dee.moly.gamestates {
 		// experience gained
 		private var experienceGain:int;
 		
-		public function ScoreOverview(client:Client, kongregate:*, playerNumber:int, player1Name:String, player2Name:String, player1Score:int, player2Score:int) {
+		// is the game private
+		private var isPrivate:Boolean;
+		
+		public function ScoreOverview(client:Client, kongregate:*, isPrivate:Boolean, playerNumber:int, player1Name:String, player2Name:String, player1Score:int, player2Score:int) {
 			
 			this.client = client;
 			this.kongregate = kongregate;
@@ -40,6 +43,7 @@ package dee.moly.gamestates {
 			this.player2Name.text = player2Name;
 			this.player1Score.text = String(player1Score);
 			this.player2Score.text = String(player2Score);
+			this.isPrivate = isPrivate;
 			
 			// calculate experience gained
 			experienceGain = 0;
@@ -66,7 +70,10 @@ package dee.moly.gamestates {
 			player2Name.draw(canvas);
 			player1Score.draw(canvas);
 			player2Score.draw(canvas);
-			experienceGained.draw(canvas);
+			
+			if(!isPrivate)
+				experienceGained.draw(canvas);
+				
 			pressToContinue.draw(canvas);
 		}
 	
@@ -78,14 +85,15 @@ package dee.moly.gamestates {
 		// calculate how much experience was gained
 		private function onReceivedData(object:DatabaseObject):void {
 			
-			var level:int = object.level;
+			var level:int = object.level || 0;
+			var xp:int = object.xp || 0;
 			while (true) {
-				if (experienceGain >= 100 + (level * 100))
+				if (experienceGain + xp >= 100 + (level * 100))
                         level++;
                     else
                 break;
 			}
-			experienceGained.text = "Experience gained: " + experienceGain + "   Current Level: " + level + level > object.level ? "^" : "-";
+			experienceGained.text = "Experience gained: " + experienceGain + "   Current Level: " + level + (level > (object.level || 0) ? "^" : "");
 			experienceGained.centre();
 		}
 	}

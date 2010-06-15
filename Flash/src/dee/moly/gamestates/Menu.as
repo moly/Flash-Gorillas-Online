@@ -79,7 +79,7 @@
 					
 				// private game
 				case 50:
-				
+					gotoState(new PrivateGame(client, kongregate));
 					break;
 				
 				// view stats
@@ -122,12 +122,13 @@
 			}
 		
 			// if there are no open rooms, create a new one
-			client.multiplayer.createJoinRoom("", "GorillasServer", true, { }, {name:myName}, onJoinedRoom, onJoinError);
+			client.multiplayer.createJoinRoom("", "GorillasServer", true, {privy:"no"}, {name:myName}, onJoinedRoom, onJoinError);
 			playerNumber = 1;
 		}
 		
 		// not successfully retrieved rooms
 		private function onRetrieveRoomsError(error:PlayerIOError):void {
+			
 			trace(error);
 			findRoom();
 		}
@@ -141,13 +142,15 @@
 		
 		// not successfully joined a room
 		private function onJoinError(error:PlayerIOError):void {
+			
 			trace(error);
+			findRoom();
 		}
 		
 		// start a new game
 		private function onGameStarted(message:Message, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, opponentName:String):void {
 			
-			gotoState(new Level(connection, client, kongregate, buildingCoordinates, player1Positions, player2Positions, windSpeeds, playerNumber, myName, opponentName));
+			gotoState(new Level(connection, client, kongregate, buildingCoordinates, player1Positions, player2Positions, windSpeeds, playerNumber, myName, opponentName, false));
 		}
 		
 	}

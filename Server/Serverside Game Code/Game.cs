@@ -33,7 +33,7 @@ namespace ServersideGameCode {
         private const int PLAY_TO_POINTS = 3;
 
         // Time limit for player input
-        private const int TURN_TIME_LIMIT = 15;
+        private const int TURN_TIME_LIMIT = 20;
         private int currentTimer;
 
         // Has the game finished
@@ -42,9 +42,17 @@ namespace ServersideGameCode {
         // Time the game started
         private DateTime startTime;
 
+        // If it's a private game, don't award experience
+        private bool isPrivate;
+
 		public override void GameStarted()
         {
 			Console.WriteLine("Game is started: " + RoomId);
+
+            if (RoomData["privy"] == "no")
+                isPrivate = false;
+            else
+                isPrivate = true;
 
             canvas = new Bitmap(640,350);
 
@@ -189,7 +197,7 @@ namespace ServersideGameCode {
                         // Next players turn
                         playerTurn = playerTurn == player1 ? player2 : player1;
                         currentTimer = TURN_TIME_LIMIT;
-                    }, (int)(banana.Time * 1000));// must add explosion/dance time
+                    }, (int)(banana.Time * 1000) + (result == Banana.HIT_GORILLA_ONE || result == Banana.HIT_GORILLA_TWO ? 3400 : 1000));
 
                     RefreshDebugView();
 
@@ -206,6 +214,9 @@ namespace ServersideGameCode {
             // Calculate experince and level gains
             foreach (Player player in Players)
             {
+                if (player.Name.StartsWith("Guest"))
+                    continue;
+
                 int level = player.PlayerObject.GetInt("level", 0);
                 int xp = player.PlayerObject.GetInt("xp", 0);
 
@@ -227,8 +238,12 @@ namespace ServersideGameCode {
 
                 if(!player.PlayerObject.Contains("name"))
                     player.PlayerObject.Set("name", player.Name);
-                player.PlayerObject.Set("level", level);
-                player.PlayerObject.Set("xp", xp);
+
+                if (!isPrivate)
+                {
+                    player.PlayerObject.Set("level", level);
+                    player.PlayerObject.Set("xp", xp);
+                }
                 player.PlayerObject.Set("gamesWon", gamesWon);
                 player.PlayerObject.Set("gamesLost", gamesLost);
                 player.PlayerObject.Save();
@@ -253,6 +268,9 @@ namespace ServersideGameCode {
         // Update the players stats
         private void UpdateStats(Player player)
         {
+            if (player.Name.StartsWith("Guest"))
+                return;
+
             TimeSpan thisTime = DateTime.Now.Subtract(startTime);
             uint allTime = player.PlayerObject.GetUInt("totalTime", 0);
             player.PlayerObject.Set("totalTime", (uint)(allTime + thisTime.Seconds));

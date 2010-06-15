@@ -85,7 +85,7 @@
 		// successfully connected to player.io
 		private function onConnected(client:Client):void {
 			this.client = client;
-			//client.multiplayer.developmentServer = "localhost:8184";
+			client.multiplayer.developmentServer = "localhost:8184";
 		}
 		
 		// not successfully connected to player.io

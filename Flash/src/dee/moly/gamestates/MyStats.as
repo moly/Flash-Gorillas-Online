@@ -22,6 +22,7 @@ package dee.moly.gamestates {
 		private var stat7:CharChain = new CharChain("Games quit: ", stat6.x, stat6.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		private var stat8:CharChain = new CharChain("Bananas thrown: ", stat7.x, stat7.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		private var stat9:CharChain = new CharChain("Total time played: ", stat8.x, stat8.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const pressToGoBack:CharChain = new CharChain("Press x to go back", 250, 320, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		
 		// player.io client reference
 		private var client:Client;
@@ -75,6 +76,11 @@ package dee.moly.gamestates {
 			stat4.draw(canvas);
 			stat5.draw(canvas);
 			stat6.draw(canvas);
+			stat7.draw(canvas);
+			stat8.draw(canvas);
+			stat9.draw(canvas);
+			
+			pressToGoBack.draw(canvas);
 		}
 	}
 }

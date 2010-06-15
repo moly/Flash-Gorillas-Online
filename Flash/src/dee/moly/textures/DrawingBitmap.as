@@ -125,7 +125,6 @@
 			setPixel32(x - px, y + py, colour);
 			setPixel32(x - px, y - py, colour);
 			setPixel32(x + px, y - py, colour);
-			
 		}
 		
 	}
