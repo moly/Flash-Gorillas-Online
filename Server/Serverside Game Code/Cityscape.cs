@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-namespace ServersideGameCode{
-
-    class Cityscape{
-		
+namespace ServersideGameCode
+{
+    class Cityscape
+    {	
         // screen width and height
         public const int SCREEN_WIDTH = 640;
         public const int SCREEN_HEIGHT = 350;
@@ -46,36 +46,43 @@ namespace ServersideGameCode{
         private int currentCityscape;
 
         private List<List<List<int>>> buildingCoordinates;
-        public List<List<List<int>>> BuildingCoordinates{
+        public List<List<List<int>>> BuildingCoordinates
+        {
             get { return buildingCoordinates; }
         }
 
         private List<int> windSpeeds;
-        public int WindSpeed {
+        public int WindSpeed 
+        {
             get { return windSpeeds[currentCityscape]; }
         }
-        public List<int> AllWindSpeeds{
+        public List<int> AllWindSpeeds
+        {
             get { return windSpeeds; }
         }
 
         private List<Point> player1Positions;
-        public Point Player1Position {
+        public Point Player1Position
+        {
             get { return player1Positions[currentCityscape]; }
         }
-        public List<Point> AllPlayer1Positions{
+        public List<Point> AllPlayer1Positions
+        {
             get { return player1Positions; }
         }
 
         private List<Point> player2Positions;
-        public Point Player2Position{
+        public Point Player2Position
+        {
             get { return player2Positions[currentCityscape]; }
         }
-        public List<Point> AllPlayer2Positions{
+        public List<Point> AllPlayer2Positions
+        {
             get { return player2Positions; }
         }
 
-		public Cityscape() {
-
+		public Cityscape()
+        {
             random = new Random();
             buildingCoordinates = new List<List<List<int>>>();
             windSpeeds = new List<int>();
@@ -84,21 +91,23 @@ namespace ServersideGameCode{
             currentCityscape = 0;
 		}
 		
-		public void Draw(Graphics g) {
+		public void Draw(Graphics g) 
+        {
             g.DrawImage(texture, 0, 0);
 		}
 
         // move to the next cityscape
-        public void NextCityscape(){
+        public void NextCityscape()
+        {
             currentCityscape++;
             SetCityscape(currentCityscape);
         }
 		
 		// generate random sky lines
-		public void BuildSkylines(int numberOfSkylines) {
-			
-            for(int i = 0; i < numberOfSkylines; ++i){
-		        
+		public void BuildSkylines(int numberOfSkylines) 
+        {	
+            for(int i = 0; i < numberOfSkylines; ++i)
+            {    
 			    int currentBuildingHeight = 0;
 			    int currentBuildingWidth = 0;
 			    int drawingXLocation = 2;
@@ -109,8 +118,8 @@ namespace ServersideGameCode{
 
                 int slopeState = random.Next(6);
     			
-			    switch (slopeState) {
-    				
+			    switch (slopeState)
+                {	
 				    case 0: 
 					    //Upward slopeState
 					    currentHeightBase = 15;                 	
@@ -132,10 +141,10 @@ namespace ServersideGameCode{
 					    break;
 			    }
     			
-			    while(drawingXLocation <= SCREEN_WIDTH - HEIGHT_TREND){
-    	
-				    switch(slopeState) {
-    					
+			    while(drawingXLocation <= SCREEN_WIDTH - HEIGHT_TREND)
+                {
+				    switch(slopeState)
+                    {    					
 					    case 0:
 						    // This is an upward slope.  Gently increase the base height for this next building	
 						    currentHeightBase = currentHeightBase + HEIGHT_TREND;
@@ -150,10 +159,13 @@ namespace ServersideGameCode{
 					    case 3:
 					    case 4:
 						    //Which side of the screen are we on?
-						    if(drawingXLocation > (SCREEN_WIDTH / 2)){
+						    if(drawingXLocation > (SCREEN_WIDTH / 2))
+                            {
 							    //West side of the screen.  Aggressively change the slope downward
 							    currentHeightBase = currentHeightBase - 2 * HEIGHT_TREND;
-						    }else{
+						    }
+                            else
+                            {
 							    //East side of the screen.  Aggressively change the slope upward
 							    currentHeightBase = currentHeightBase + 2 * HEIGHT_TREND;
 						    }
@@ -163,7 +175,9 @@ namespace ServersideGameCode{
 						    if(drawingXLocation > SCREEN_WIDTH / 2){
 							    //West side.  Aggressively change the slope upward.
 							    currentHeightBase = currentHeightBase + 2 * HEIGHT_TREND;
-						    }else{
+						    }
+                            else
+                            {
 							    //East side.  Aggressively bring the base height down on this iteration.
 							    currentHeightBase = currentHeightBase - 2 * HEIGHT_TREND;
 						    }
@@ -202,8 +216,8 @@ namespace ServersideGameCode{
 		}
 		
         // set the current cityscape
-        public void SetCityscape(int cityscapeNumber){
-			
+        public void SetCityscape(int cityscapeNumber)
+        {	
 			uint currentBuildingColour;
 			int currentBuildingHeight = 0;
 			int currentBuildingWidth = 0;
@@ -216,11 +230,12 @@ namespace ServersideGameCode{
 
             currentCityscape = cityscapeNumber;
 
-			for(int i = 0; i < buildingCoordinates[cityscapeNumber].Count; ++i) {
-				
+			for(int i = 0; i < buildingCoordinates[cityscapeNumber].Count; ++i)
+            {	
 				currentBuildingColour = (uint)random.Next(3);
 
-				switch(currentBuildingColour){
+				switch(currentBuildingColour)
+                {
 					case 0:
 						currentBuildingColour = BUILDING_RED;
 						break;
@@ -237,7 +252,9 @@ namespace ServersideGameCode{
 				
 				if(i != buildingCoordinates[cityscapeNumber].Count - 1){
 					currentBuildingWidth = buildingCoordinates[cityscapeNumber][i + 1][0] - drawingXLocation - BUILDING_SEPARATION;
-				}else {
+				}
+                else
+                {
 					currentBuildingWidth = SCREEN_WIDTH - drawingXLocation - BUILDING_SEPARATION;
 				}
 				
@@ -245,13 +262,16 @@ namespace ServersideGameCode{
 				
 				int windowDrawingXLocation = drawingXLocation + 3;
 				
-				while(windowDrawingXLocation < drawingXLocation + currentBuildingWidth - 5){	
-		
+				while(windowDrawingXLocation < drawingXLocation + currentBuildingWidth - 5)
+                {	
 					for(int topToWindowDistance = currentBuildingHeight - 3; topToWindowDistance >= 10; topToWindowDistance -= WINDOW_HEIGHT_SEPARATION){
 						
-						if(random.Next(3) <= 1){
+						if(random.Next(3) <= 1)
+                        {
 							currentWindowColour = LIT_WINDOW_COLOUR;					
-						}else{
+						}
+                        else
+                        {
 							currentWindowColour = UNLIT_WINDOW_COLOUR;
 						}
 						g.FillRectangle(new SolidBrush(Color.FromArgb((int)currentWindowColour)), windowDrawingXLocation, horizonLine - topToWindowDistance, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -266,8 +286,8 @@ namespace ServersideGameCode{
 		}
 
 		// put the gorillas on either the second or third building from either end
-		private Point PlaceGorilla(int playerNumber, List<List<int>> buildingCoordinates) {
-
+		private Point PlaceGorilla(int playerNumber, List<List<int>> buildingCoordinates)
+        {
 			int xAdj = 15;
 			int yAdj = 29;
             int bNum = 0;
@@ -285,14 +305,16 @@ namespace ServersideGameCode{
 		}
 
         // Check for a collision
-        public bool IsColliding(Point point){
+        public bool IsColliding(Point point)
+        {
             if (point.Y < 0 || point.Y >= SCREEN_HEIGHT || point.X < 0 || point.X >= SCREEN_WIDTH)
                 return false;
             return texture.GetPixel(point.X, point.Y).A != 0;
         }
 		
 		// explode a piece of the cityscape
-		public void CreateSmallExplosion(int x, int y) {
+		public void CreateSmallExplosion(int x, int y)
+        {
             for (int i = 0; i <= 7; ++i)
                 DrawCircle(x, y, i, Color.Transparent);
 		}
@@ -306,11 +328,12 @@ namespace ServersideGameCode{
 		*/
 
 		// decide a random wind speed/direction for each cityscape
-		private int SetWindSpeed() {
-			
+		private int SetWindSpeed() 
+        {	
 			int wind = random.Next(-5, 6); //int(Math.random() * 11) - 5;
 			
-			if (random.Next(3) == 2) {
+			if (random.Next(3) == 2) 
+            {
 				if (wind > 0)
 					wind += random.Next(11);
 				else
@@ -321,8 +344,8 @@ namespace ServersideGameCode{
 		}
 
 		// draw a line along the bottom of the screen relative to the wind's strength
-		private void DrawWindLine() {
-
+		private void DrawWindLine()
+        {
             int wind = windSpeeds[currentCityscape];
 
 			if (wind == 0)
@@ -330,14 +353,17 @@ namespace ServersideGameCode{
 			
 			int windLine = wind * 3 * (SCREEN_WIDTH / 320);
 		
-			if (wind > 0) {
+			if (wind > 0)
+            {
 				for (int px = SCREEN_WIDTH / 2; px <= (SCREEN_WIDTH / 2) + windLine; px++)
 					texture.SetPixel(px, SCREEN_HEIGHT - 5, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
                 texture.SetPixel(SCREEN_WIDTH / 2 + windLine - 1, SCREEN_HEIGHT - 6, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
                 texture.SetPixel(SCREEN_WIDTH / 2 + windLine - 2, SCREEN_HEIGHT - 7, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
                 texture.SetPixel(SCREEN_WIDTH / 2 + windLine - 1, SCREEN_HEIGHT - 4, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
                 texture.SetPixel(SCREEN_WIDTH / 2 + windLine - 2, SCREEN_HEIGHT - 3, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
-			}else {
+			}
+            else 
+            {
 				for (int px = SCREEN_WIDTH / 2; px >= (SCREEN_WIDTH / 2) + windLine; px--)
                     texture.SetPixel(px, SCREEN_HEIGHT - 5, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
                 texture.SetPixel(SCREEN_WIDTH / 2 + windLine + 1, SCREEN_HEIGHT - 6, Color.FromArgb(unchecked((int)WIND_LINE_COLOUR)));
@@ -349,8 +375,8 @@ namespace ServersideGameCode{
 		}
 
         // Draw a circle on the texture bitmap
-        private void DrawCircle(int x, int y, int radius, Color colour){
-
+        private void DrawCircle(int x, int y, int radius, Color colour)
+        {
             int px, py, xRadius, yRadius, xChange, yChange;
 			int ellipseError, twoASquare, twoBSquare, stoppingX, stoppingY;
 			
@@ -369,13 +395,15 @@ namespace ServersideGameCode{
 			stoppingX = twoBSquare * xRadius;
 			stoppingY = 0;
 			
-			while (stoppingX >= stoppingY){
+			while (stoppingX >= stoppingY)
+            {
 				Plot4EllipsePoints(x, y, px, py, colour);
 				py++;
 				stoppingY += twoASquare;
 				ellipseError += yChange;
 				yChange += twoASquare;
-				if ((2 * ellipseError + xChange) > 0){
+				if ((2 * ellipseError + xChange) > 0)
+                {
 					px--;
 					stoppingX -= twoBSquare;
 					ellipseError += xChange;
@@ -391,30 +419,29 @@ namespace ServersideGameCode{
 			stoppingX = 0;
 			stoppingY = twoASquare * yRadius;
 			
-			while (stoppingX <= stoppingY){
-				
+			while (stoppingX <= stoppingY)
+            {	
 				Plot4EllipsePoints(x, y, px, py, colour);
 				px++;
 				stoppingX += twoBSquare;
 				ellipseError += xChange;
 				xChange += twoBSquare;
-				if ((2 * ellipseError + yChange) > 0){
+				if ((2 * ellipseError + yChange) > 0)
+                {
 					py--;
 					stoppingY -= twoASquare;
 					ellipseError += yChange;
 					yChange += twoASquare;
 				}
 			}
-		
 		}
 		
-		private void Plot4EllipsePoints(int x, int y, int px, int py, Color colour){
-			
+		private void Plot4EllipsePoints(int x, int y, int px, int py, Color colour)
+        {	
 			texture.SetPixel(x + px, y + py, colour);
 			texture.SetPixel(x - px, y + py, colour);
 			texture.SetPixel(x - px, y - py, colour);
-			texture.SetPixel(x + px, y - py, colour);
-			
+			texture.SetPixel(x + px, y - py, colour);	
 		}
     }
 }

@@ -98,7 +98,7 @@
 		// is the game private
 		private var isPrivate:Boolean;
 		
-		public function Level(connection:Connection, client:Client, kongregate:*, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, playerNumber:int, myName:String, opponentName:String, isPrivate:Boolean) {
+		public function Level(connection:Connection, client:Client, kongregate:*, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, playerNumber:int, myName:String, opponentName:String, player1Clothes:ByteArray, player2Clothes:ByteArray, player1Level:int, player2Level:int, isPrivate:Boolean) {
 			
 			this.connection = connection;
 			this.client = client;
@@ -115,8 +115,8 @@
 			gorilla1 = new Gorilla();
 			gorilla2 = new Gorilla();
 			
-			player1NameText = new CharChain(playerNumber == 1 ? myName : opponentName, 0, 3);
-			player2NameText = new CharChain(playerNumber == 2 ? myName : opponentName, Main.SCREEN_WIDTH - ((playerNumber == 2 ? myName : opponentName).length * 8) - 8, 3);
+			player1NameText = new CharChain((playerNumber == 1 ? myName : opponentName) + " - Lvl " + player1Level, 0, 3);
+			player2NameText = new CharChain("Lvl " + player2Level + " - " + (playerNumber == 2 ? myName : opponentName), Main.SCREEN_WIDTH - ((playerNumber == 2 ? myName : opponentName).length * 8) - (56 + player2Level.toString().length), 3);
 			
 			player1Score = 0;
 			player2Score = 0;
@@ -376,10 +376,8 @@
 					velocityText.x = 520 * (playerTurn - 1);
 					sun.reset();
 					state = ANGLE_INPUT;
-					break;
-					
-			}
-						
+					break;		
+			}	
 		}
 		
 		// throw a banana

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace ServersideGameCode{
-
-    class Banana{
-
+namespace ServersideGameCode
+{
+    class Banana
+    {
         // A texture for debugging
         private Bitmap texture;
 
@@ -18,13 +18,14 @@ namespace ServersideGameCode{
 
         // How long the banana took to fly
         private float time;
-        public float Time {
+        public float Time
+        {
             get { return (time * 10) / 30; }
         }
 
         // Throw a banana
-        public int Launch(float angle, int velocity, float gravity, float windSpeed, Point startPoint, Cityscape cityscape, Player player1, Player player2){
-
+        public int Launch(float angle, int velocity, float gravity, float windSpeed, Point startPoint, Cityscape cityscape, Player player1, Player player2)
+        {
             texture = new Bitmap(640, 350);
 
             angle = (float)(angle / 180 * 3.142);
@@ -35,13 +36,14 @@ namespace ServersideGameCode{
             Point position = new Point();
             time = 0;
             
-            while (true){
-
+            while (true)
+            {
                 position.X = (int)(startPoint.X + (velocityX * time) + (.5 * (windSpeed / 5) * (time * time)));
                 position.Y = (int)(startPoint.Y + ((-1 * (velocityY * time)) + (.5 * gravity * (time * time))));
                 time += 0.1f;
 
-                if (cityscape.IsColliding(position)) {
+                if (cityscape.IsColliding(position)) 
+                {
                     cityscape.CreateSmallExplosion(position.X, position.Y);
                     return HIT_BUILDING;
                 }
@@ -61,7 +63,8 @@ namespace ServersideGameCode{
         }
 
         // Draw the texture
-        public void Draw(Graphics g){
+        public void Draw(Graphics g)
+        {
             if (texture == null)
                 return;
 

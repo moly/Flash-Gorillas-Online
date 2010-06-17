@@ -35,6 +35,7 @@ namespace ServersideGameCode {
         // Time limit for player input
         private const int TURN_TIME_LIMIT = 20;
         private int currentTimer;
+        private Timer timer;
 
         // Has the game finished
         private bool gameFinished;
@@ -106,29 +107,19 @@ namespace ServersideGameCode {
             byte[] player1Positions = PlayerPositionsToByteArray(cityscape.AllPlayer1Positions);
             byte[] player2Positions = PlayerPositionsToByteArray(cityscape.AllPlayer2Positions);
             byte[] windSpeeds = WindSpeedsToByteArray(cityscape.AllWindSpeeds);
+            byte[] player1Clothes = ClothingToByteArray(player1.PlayerObject.GetInt("hat", 0), player1.PlayerObject.GetInt("shirt", 0), player1.PlayerObject.GetInt("trousers", 0));
+            byte[] player2Clothes = ClothingToByteArray(player2.PlayerObject.GetInt("hat", 0), player2.PlayerObject.GetInt("shirt", 0), player2.PlayerObject.GetInt("trousers", 0));
+            int player1Level = player1.PlayerObject.GetInt("level", 0);
+            int player2Level = player2.PlayerObject.GetInt("level", 0);
 
-            player1.Send("start", buildingCoordinates, player1Positions, player2Positions, windSpeeds, player2.Name);
-            player2.Send("start", buildingCoordinates, player1Positions, player2Positions, windSpeeds, player1.Name);
+            player1.Send("start", buildingCoordinates, player1Positions, player2Positions, windSpeeds, player2.Name, player1Clothes, player2Clothes, player1Level, player2Level);
+            player2.Send("start", buildingCoordinates, player1Positions, player2Positions, windSpeeds, player1.Name, player1Clothes, player2Clothes, player1Level, player2Level);
 
             // Set up a time limit for players to take a shot
-            currentTimer = TURN_TIME_LIMIT;
-            AddTimer(delegate
-            {
-                if (currentTimer == 5000)
-                    return;
-
-                currentTimer--;
-                if (currentTimer <= 0)
-                {
-                    Broadcast("timeOut");
-                    playerTurn = playerTurn == player1 ? player2 : player1;
-                    currentTimer = TURN_TIME_LIMIT;
-                }
-            }, 1000);
+            StartCountdownTimer();
 
             Visible = false;
             RefreshDebugView();
-
         }
 
 		// This method is called when a player sends a message into the server code
@@ -146,6 +137,9 @@ namespace ServersideGameCode {
                     // If it's not actually their turn, do nothing
                     if (player != playerTurn)
                         return;
+
+                    // Stop the countdown
+                    timer.Stop();
 
                     // Get the angle and velocity from the message
                     int angle = message.GetInt(0);
@@ -174,17 +168,16 @@ namespace ServersideGameCode {
                     {
                         player2.Score++;
                     }
-                    
+
                     if (result == Banana.HIT_GORILLA_TWO)
                     {
                         player1.Score++;
                     }
 
-                    currentTimer = 5000;
-
                     if (player1.Score + player2.Score >= PLAY_TO_POINTS)
                     {
                         EndGame();
+                        return;
                     }
                     else if(result == Banana.HIT_GORILLA_ONE || result == Banana.HIT_GORILLA_TWO)
                     {
@@ -196,7 +189,7 @@ namespace ServersideGameCode {
                     {
                         // Next players turn
                         playerTurn = playerTurn == player1 ? player2 : player1;
-                        currentTimer = TURN_TIME_LIMIT;
+                        StartCountdownTimer();
                     }, (int)(banana.Time * 1000) + (result == Banana.HIT_GORILLA_ONE || result == Banana.HIT_GORILLA_TWO ? 3400 : 1000));
 
                     RefreshDebugView();
@@ -268,8 +261,12 @@ namespace ServersideGameCode {
         // Update the players stats
         private void UpdateStats(Player player)
         {
+            // Don't bother saving for guests
             if (player.Name.StartsWith("Guest"))
                 return;
+
+            if (!player.PlayerObject.Contains("name"))
+                player.PlayerObject.Set("name", player.Name);
 
             TimeSpan thisTime = DateTime.Now.Subtract(startTime);
             uint allTime = player.PlayerObject.GetUInt("totalTime", 0);
@@ -384,6 +381,37 @@ namespace ServersideGameCode {
             }
 
             return byteArray;
+        }
+
+        // Convert clothing to a byte array
+        private byte[] ClothingToByteArray(int hat, int shirt, int trousers)
+        {
+            byte[] byteArray = new byte[12];
+            for (int i = 0; i < 3; ++i)
+            {
+                byteArray[i * 4] = (byte)((i == 0 ? hat : i == 1 ? shirt : trousers) >> 24);
+                byteArray[(i * 4) + 1] = (byte)((i == 0 ? hat : i == 1 ? shirt : trousers) >> 16);
+                byteArray[(i * 4) + 2] = (byte)((i == 0 ? hat : i == 1 ? shirt : trousers) >> 8);
+                byteArray[(i * 4) + 3] = (byte)(i == 0 ? hat : i == 1 ? shirt : trousers);
+            }
+
+            return byteArray;
+        }
+
+        // Start the timer for a player taking a turn
+        private void StartCountdownTimer()
+        {
+            currentTimer = TURN_TIME_LIMIT;
+            timer = AddTimer(delegate
+            {
+                currentTimer--;
+                if (currentTimer <= 0)
+                {
+                    Broadcast("timeOut");
+                    playerTurn = playerTurn == player1 ? player2 : player1;
+                    currentTimer = TURN_TIME_LIMIT;
+                }
+            }, 1000);
         }
 
 		// During development, it's very usefull to be able to cause certain events

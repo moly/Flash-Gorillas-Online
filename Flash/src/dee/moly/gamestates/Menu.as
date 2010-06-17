@@ -148,9 +148,9 @@
 		}
 		
 		// start a new game
-		private function onGameStarted(message:Message, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, opponentName:String):void {
+		private function onGameStarted(message:Message, buildingCoordinates:ByteArray, player1Positions:ByteArray, player2Positions:ByteArray, windSpeeds:ByteArray, opponentName:String, player1Clothes:ByteArray, player2Clothes:ByteArray, player1Level:int, player2Level:int):void {
 			
-			gotoState(new Level(connection, client, kongregate, buildingCoordinates, player1Positions, player2Positions, windSpeeds, playerNumber, myName, opponentName, false));
+			gotoState(new Level(connection, client, kongregate, buildingCoordinates, player1Positions, player2Positions, windSpeeds, playerNumber, myName, opponentName, player1Clothes, player2Clothes, player1Level, player2Level, false));
 		}
 		
 	}
