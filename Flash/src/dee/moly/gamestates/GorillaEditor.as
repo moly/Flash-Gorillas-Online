@@ -1,7 +1,7 @@
 package dee.moly.gamestates {
 	
 	import dee.moly.gameobjects.CharChain;
-	import dee.moly.textures.ClothingDatabase;
+	import dee.moly.textures.clothing.ClothingDatabase;
 	import dee.moly.textures.GorillaTex;
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;
@@ -88,6 +88,11 @@ package dee.moly.gamestates {
 			if(e.keyCode == Keyboard.RIGHT){
 				clothes.nextShirt();
 				shirtType.text = "Shirt: " + clothes.currentShirtName;
+			}
+			
+			if(e.keyCode == Keyboard.DOWN){
+				clothes.nextTrousers();
+				trouserType.text = "Trousers: " + clothes.currentTrousersName;
 			}
 		}
 	}

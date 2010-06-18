@@ -116,7 +116,7 @@
 			gorilla2 = new Gorilla();
 			
 			player1NameText = new CharChain((playerNumber == 1 ? myName : opponentName) + " - Lvl " + player1Level, 0, 3);
-			player2NameText = new CharChain("Lvl " + player2Level + " - " + (playerNumber == 2 ? myName : opponentName), Main.SCREEN_WIDTH - ((playerNumber == 2 ? myName : opponentName).length * 8) - (56 + player2Level.toString().length), 3);
+			player2NameText = new CharChain("Lvl " + player2Level + " - " + (playerNumber == 2 ? myName : opponentName), Main.SCREEN_WIDTH - ((playerNumber == 2 ? myName : opponentName).length * 8) - (64 + player2Level.toString().length), 3);
 			
 			player1Score = 0;
 			player2Score = 0;

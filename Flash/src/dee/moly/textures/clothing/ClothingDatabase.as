@@ -1,4 +1,5 @@
-package dee.moly.textures {
+package dee.moly.textures.clothing {
+	
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	
@@ -156,28 +157,40 @@ package dee.moly.textures {
 		// fill up the hats collection
 		private function populateHats():void {
 			
-			hatCollection = new Array();
 			hatTextures = new Array();
-			hatCollection.push(new ClothingItem("none", Blank, 0));
-			hatCollection.push(new ClothingItem("Top Hat", TopHat, 1));
+			hatCollection = [new ClothingItem("None", Blank, 0),
+								new ClothingItem("Top Hat", TopHat, 1),
+								new ClothingItem("Zombie", ZombieHead, 2),
+								new ClothingItem("Timebot", ChronoHead, 3),
+								new ClothingItem("Lobster", LobsterHead, 4),
+								new ClothingItem("Black Hair", SuperHair, 5),
+								];
 		}
 		
 		// fill up the shirts collection
 		private function populateShirts():void {
 			
-			shirtCollection = new Array();
 			shirtTextures = new Array();
-			shirtCollection.push(new ClothingItem("none", Blank, 0));
-			shirtCollection.push(new ClothingItem("Tuxedo", TuxShirt, 1));
+			shirtCollection = [new ClothingItem("None", Blank, 0),
+								new ClothingItem("Tuxedo", TuxShirt, 1),
+								new ClothingItem("Zombie", ZombieBody, 2),
+								new ClothingItem("Timebot", ChronoBody, 3),
+								new ClothingItem("Lobster", LobsterBody, 4),
+								new ClothingItem("Super Hero", SuperShirt, 5),
+								];
 		}
 		
 		// fill up the trouser collection
 		private function populateTrousers():void {
 			
-			trouserCollection = new Array();
 			trouserTextures = new Array();
-			trouserCollection.push(new ClothingItem("none", Blank, 0));
-			trouserCollection.push(new ClothingItem("Tuxedo", TuxTrousers, 1));
+			trouserCollection = [new ClothingItem("None", Blank, 0),
+									new ClothingItem("Tuxedo", TuxTrousers, 1),
+									new ClothingItem("Zombie", ZombieLegs, 2),
+									new ClothingItem("Timebot", ChronoLegs, 3),
+									new ClothingItem("Lobster", LobsterLegs, 4),
+									new ClothingItem("Super Hero", SuperTrousers, 5),
+									];
 		}
 	}
 }

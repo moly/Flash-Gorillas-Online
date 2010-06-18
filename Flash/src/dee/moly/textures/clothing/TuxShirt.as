@@ -1,4 +1,4 @@
-package dee.moly.textures {
+package dee.moly.textures.clothing {
 	
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
