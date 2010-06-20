@@ -2,6 +2,7 @@
 	
 	import dee.moly.gameobjects.Banana;
 	import dee.moly.gameobjects.CharChain;
+	import dee.moly.gameobjects.ChatBubble;
 	import dee.moly.gameobjects.Cityscape;
 	import dee.moly.gameobjects.Gorilla;
 	import dee.moly.AI.ProjectileEstimator;
@@ -10,6 +11,7 @@
 	import flash.events.KeyboardEvent;
 	import dee.moly.gameobjects.Sun;
 	import flash.events.TimerEvent;
+	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
@@ -32,6 +34,8 @@
 		private var gorilla2:Gorilla;
 		
 		// names
+		private var player1Name:String;
+		private var player2Name:String;
 		private var player1NameText:CharChain;
 		private var player2NameText:CharChain;
 		
@@ -50,6 +54,17 @@
 		
 		// the input to add to
 		private var currentInput:CharChain;
+		
+		// chatbox
+		private var chatText:CharChain;
+		private var chatInput:CharChain;
+		
+		// is chatbox open
+		private var chatOpen:Boolean;
+		
+		// chat bubbles
+		private var player1ChatBubble:ChatBubble;
+		private var player2ChatBubble:ChatBubble;
 		
 		// which players turn it is
 		private var playerTurn:int;
@@ -110,13 +125,16 @@
 			connection.addMessageHandler("throw", onReceivedThrow);
 			connection.addMessageHandler("timeOut", onTimeOut);
 			connection.addMessageHandler("userLeft", onUserLeft);
+			connection.addMessageHandler("chat", onReceivedChat);
 			connection.addDisconnectHandler(onDisconnected);
 			
 			gorilla1 = new Gorilla();
 			gorilla2 = new Gorilla();
 			
-			player1NameText = new CharChain((playerNumber == 1 ? myName : opponentName) + " - Lvl " + player1Level, 0, 3);
-			player2NameText = new CharChain("Lvl " + player2Level + " - " + (playerNumber == 2 ? myName : opponentName), Main.SCREEN_WIDTH - ((playerNumber == 2 ? myName : opponentName).length * 8) - (64 + player2Level.toString().length), 3);
+			player1Name = playerNumber == 1 ? myName : opponentName;
+			player2Name = playerNumber == 2 ? myName : opponentName;
+			player1NameText = new CharChain(player1Name + " - Lvl " + player1Level, 0, 3);
+			player2NameText = new CharChain("Lvl " + player2Level + " - " + player2Name, Main.SCREEN_WIDTH - ((playerNumber == 2 ? myName : opponentName).length * 8) - (64 + player2Level.toString().length), 3);
 			
 			player1Score = 0;
 			player2Score = 0;
@@ -129,6 +147,12 @@
 			
 			velocityText = new CharChain("Velocity:", 0, 33);
 			velocityInput = new CharChain("", 0, 33, CharChain.SOLID, CharChain.NUMERIC);
+			
+			chatText = new CharChain("Chat:", 0, Main.SCREEN_HEIGHT - 12);
+			chatInput = new CharChain("", chatText.x + (chatText.length * 8) + 8, chatText.y, CharChain.SOLID, CharChain.ALPHANUMERIC, 0xFFFFFF, 28);
+			
+			player1ChatBubble = new ChatBubble();
+			player2ChatBubble = new ChatBubble();
 			
 			sun = new Sun();
 			
@@ -163,8 +187,9 @@
 			
 			angleInput.text = "";
 			velocityInput.text = "";
-			currentInput = angleInput;
-			currentInput.x = (520 * (playerTurn - 1)) + 58;
+			if(!chatOpen)
+				currentInput = angleInput;
+			angleInput.x = (520 * (playerTurn - 1)) + 58;
 			angleText.x = 520 * (playerTurn - 1);
 			velocityText.x = 520 * (playerTurn - 1);
 			
@@ -259,7 +284,7 @@
 		override public function draw(canvas:BitmapData):void {
 			
 			canvas.fillRect(canvas.rect, 0xFF0000AD);
-			
+			//canvas.colorTransform(canvas.rect, new ColorTransform(0.999, 0.999, 0.999));
 			player1NameText.draw(canvas);
 			player2NameText.draw(canvas);
 			
@@ -292,9 +317,17 @@
 			
 			sun.draw(canvas);
 			
+			player1ChatBubble.draw(canvas);
+			player2ChatBubble.draw(canvas);
+			
 			// if we've been disconnected, draw an error message
 			if(state == DISCONNECTED)
 				errorMessage.draw(canvas);
+			
+			if(chatOpen){
+				chatText.draw(canvas);
+				chatInput.draw(canvas);
+			}
 		}
 		
 		// put the input into the right places
@@ -306,17 +339,40 @@
 				gotoState(new Menu(client, kongregate));
 			}
 			
-			if (state == BANANA_THROWN || playerTurn != playerNumber)
+			// t
+			if (e.keyCode == 84 && !chatOpen){
+				chatOpen = true;
+				currentInput = chatInput;
+				return;
+			}
+			
+			if ((state == BANANA_THROWN || playerTurn != playerNumber) && !chatOpen)
 				return;
 			
 			currentInput.addChar(e.charCode);
 			
-			if (e.keyCode == Keyboard.ENTER && currentInput.text != "")
-				nextStep();
+			if (e.keyCode == Keyboard.ENTER && currentInput.text != "") {
+				if (currentInput == chatInput){
+					connection.send(currentInput.text);
+					if (playerNumber == 1)
+						player1ChatBubble.create(currentInput.text, gorilla1.x, gorilla1.y);
+					else
+						player2ChatBubble.create(currentInput.text, gorilla2.x, gorilla2.y);
+					chatOpen = false;
+					currentInput.text = "";
+					currentInput = (state == ANGLE_INPUT ? angleInput : velocityInput);
+				}else{
+					nextStep();
+				}
+			}
 				
 			if (e.keyCode == Keyboard.BACKSPACE)
 				currentInput.backspace();
-			
+				
+			if (e.keyCode == Keyboard.ESCAPE || (e.keyCode == Keyboard.ENTER && currentInput.text != "" && currentInput == chatInput)){
+				chatOpen = false;
+				currentInput = (state == ANGLE_INPUT ? angleInput : velocityInput);
+			}
 		}
 		
 		// move on to the next step of the level
@@ -350,7 +406,7 @@
 					playerTurn = 3 - playerTurn;
 					if (player1Score + player2Score >= PLAY_TO_POINTS) {
 						connection.disconnect();
-						gotoState(new ScoreOverview(client, kongregate, isPrivate, playerNumber, player1NameText.text, player2NameText.text, player1Score, player2Score));
+						gotoState(new ScoreOverview(client, kongregate, isPrivate, playerNumber, player1Name, player2Name, player1Score, player2Score));
 					}else{
 						newGame();
 					}
@@ -370,8 +426,9 @@
 					
 					angleInput.text = "";
 					velocityInput.text = "";
-					currentInput = angleInput;
-					currentInput.x = (520 * (playerTurn - 1)) + 58;
+					if(!chatOpen)
+						currentInput = angleInput;
+					angleInput.x = (520 * (playerTurn - 1)) + 58;
 					angleText.x = 520 * (playerTurn - 1);
 					velocityText.x = 520 * (playerTurn - 1);
 					sun.reset();
@@ -407,6 +464,9 @@
 		// someone took too long to take their turn
 		private function onTimeOut(message:Message):void {
 			
+			if (playerTurn == playerNumber) {
+				
+			}
 			state = BUILDING_HIT;
 			nextStep();
 		}
@@ -430,6 +490,15 @@
 			errorMessage = new CharChain("You have been disconnected from the server. Press any key to return to the menu.", 0, 70);
 			errorMessage.centre();
 			state = DISCONNECTED;
+		}
+		
+		// received a chat message
+		private function onReceivedChat(message:Message, text:String):void {
+			
+			if (playerNumber == 1)
+				player2ChatBubble.create(text, gorilla2.x, gorilla2.y);
+			else
+				player1ChatBubble.create(text, gorilla1.x, gorilla1.y);
 		}
 	}
 }

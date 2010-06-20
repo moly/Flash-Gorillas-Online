@@ -14,8 +14,8 @@ package dee.moly.textures.clothing {
 			super(12, 14, true, 0x00000000);
 			
 			// draw head
-			fillRect(new Rectangle(2, 6, 8, 7), 0xFFFD330F);
-			fillRect(new Rectangle(1, 8, 10, 3), 0xFFFD330F);
+			fillRect(new Rectangle(2, 6, 8, 7), 0xFFF40000);
+			fillRect(new Rectangle(1, 8, 10, 3), 0xFFF40000);
 			
 			// draw eyes/brow
 			fillRect(new Rectangle(3, 8, 6, 1), 0x000000AD);
@@ -27,13 +27,13 @@ package dee.moly.textures.clothing {
 			}
 			
 			// neck
-			fillRect(new Rectangle(3, 13, 6, 1), 0xFFFD330F);
+			fillRect(new Rectangle(3, 13, 6, 1), 0xFFF40000);
 			
 			// antenna
-			fillRect(new Rectangle(4, 1, 1, 2), 0xFFFD330F);
-			fillRect(new Rectangle(3, 2, 1, 4), 0xFFFD330F);
-			fillRect(new Rectangle(9, 1, 1, 2), 0xFFFD330F);
-			fillRect(new Rectangle(8, 2, 1, 4), 0xFFFD330F);
+			fillRect(new Rectangle(4, 1, 1, 2), 0xFFF40000);
+			fillRect(new Rectangle(3, 2, 1, 4), 0xFFF40000);
+			fillRect(new Rectangle(9, 1, 1, 2), 0xFFF40000);
+			fillRect(new Rectangle(8, 2, 1, 4), 0xFFF40000);
 		}
 	}
 }

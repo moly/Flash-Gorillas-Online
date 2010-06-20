@@ -31,29 +31,29 @@ package dee.moly.textures.clothing {
 			fillRect(new Rectangle(8, 8, 12, 4), 0xFF3F48CC);
 			
 			// embelm
-			fillRect(new Rectangle(11, 3, 7, 1), 0xFFFD330F);
-			fillRect(new Rectangle(10, 4, 2, 1), 0xFFFD330F);
+			fillRect(new Rectangle(11, 3, 7, 1), 0xFFF40000);
+			fillRect(new Rectangle(10, 4, 2, 1), 0xFFF40000);
 			setPixel32(12, 4, 0xFFFFC90E);
-			fillRect(new Rectangle(13, 4, 6, 1), 0xFFFD330F);
-			fillRect(new Rectangle(10, 5, 3, 1), 0xFFFD330F);
+			fillRect(new Rectangle(13, 4, 6, 1), 0xFFF40000);
+			fillRect(new Rectangle(10, 5, 3, 1), 0xFFF40000);
 			fillRect(new Rectangle(13, 5, 4, 1), 0xFFFFC90E);
-			fillRect(new Rectangle(17, 5, 2, 1), 0xFFFD330F);
-			fillRect(new Rectangle(11, 6, 7, 1), 0xFFFD330F);
-			setPixel32(12, 7, 0xFFFD330F);
+			fillRect(new Rectangle(17, 5, 2, 1), 0xFFF40000);
+			fillRect(new Rectangle(11, 6, 7, 1), 0xFFF40000);
+			setPixel32(12, 7, 0xFFF40000);
 			fillRect(new Rectangle(13, 7, 2, 1), 0xFFFFC90E);
-			fillRect(new Rectangle(15, 7, 2, 1), 0xFFFD330F);
-			fillRect(new Rectangle(13, 8, 3, 1), 0xFFFD330F);
-			setPixel32(14, 9, 0xFFFD330F);
+			fillRect(new Rectangle(15, 7, 2, 1), 0xFFF40000);
+			fillRect(new Rectangle(13, 8, 3, 1), 0xFFF40000);
+			setPixel32(14, 9, 0xFFF40000);
 			
 			// cape
-			fillRect(new Rectangle(6, 1, 5, 1), 0xFFFD330F);
-			fillRect(new Rectangle(17, 1, 5, 1), 0xFFFD330F);
-			fillRect(new Rectangle(0, 9, 1, 5), 0xFFFD330F);
-			fillRect(new Rectangle(1, 11, 1, 3), 0xFFFD330F);
-			setPixel32(2, 12, 0xFFFD330F);
-			fillRect(new Rectangle(5, 6, 1, 3), 0xFFFD330F);
-			fillRect(new Rectangle(6, 8, 2, 3), 0xFFFD330F);
-			setPixel32(7, 11, 0xFFFD330F);
+			fillRect(new Rectangle(6, 1, 5, 1), 0xFFF40000);
+			fillRect(new Rectangle(17, 1, 5, 1), 0xFFF40000);
+			fillRect(new Rectangle(0, 9, 1, 5), 0xFFF40000);
+			fillRect(new Rectangle(1, 11, 1, 3), 0xFFF40000);
+			setPixel32(2, 12, 0xFFF40000);
+			fillRect(new Rectangle(5, 6, 1, 3), 0xFFF40000);
+			fillRect(new Rectangle(6, 8, 2, 3), 0xFFF40000);
+			setPixel32(7, 11, 0xFFF40000);
 		}
 	}
 }

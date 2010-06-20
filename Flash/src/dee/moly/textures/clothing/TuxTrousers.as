@@ -11,7 +11,6 @@ package dee.moly.textures.clothing {
 	public class TuxTrousers extends BitmapData{
 		
 		public function TuxTrousers() {
-			
 			super(28, 10, true, 0x00000000);
 			
 			fillRect(new Rectangle(8, 0, 12, 1), 0xFF000000);

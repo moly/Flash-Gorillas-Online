@@ -14,35 +14,35 @@ package dee.moly.textures.clothing {
 			super(28, 14, true, 0x00000000);
 			
 			// arms
-			fillRect(new Rectangle(3, 2, 4, 1), 0xFFFD330F);
-			fillRect(new Rectangle(2, 3, 4, 1), 0xFFFD330F);
-			fillRect(new Rectangle(1, 4, 5, 2), 0xFFFD330F);
-			fillRect(new Rectangle(0, 6, 5, 3), 0xFFFD330F);
-			fillRect(new Rectangle(1, 9, 5, 1), 0xFFFD330F);
-			fillRect(new Rectangle(1, 10, 6, 1), 0xFFFD330F);
-			fillRect(new Rectangle(2, 11, 2, 1), 0xFFFD330F);
-			fillRect(new Rectangle(2, 12, 3, 1), 0xFFFD330F);
-			fillRect(new Rectangle(3, 13, 3, 1), 0xFFFD330F);
-			setPixel32(6, 11, 0xFFFD330F);
+			fillRect(new Rectangle(3, 2, 4, 1), 0xFFF40000);
+			fillRect(new Rectangle(2, 3, 4, 1), 0xFFF40000);
+			fillRect(new Rectangle(1, 4, 5, 2), 0xFFF40000);
+			fillRect(new Rectangle(0, 6, 5, 3), 0xFFF40000);
+			fillRect(new Rectangle(1, 9, 5, 1), 0xFFF40000);
+			fillRect(new Rectangle(1, 10, 6, 1), 0xFFF40000);
+			fillRect(new Rectangle(2, 11, 2, 1), 0xFFF40000);
+			fillRect(new Rectangle(2, 12, 3, 1), 0xFFF40000);
+			fillRect(new Rectangle(3, 13, 3, 1), 0xFFF40000);
+			setPixel32(6, 11, 0xFFF40000);
 			fillRect(new Rectangle(4, 11, 2, 1), 0xFF0000AD);
 			fillRect(new Rectangle(5, 12, 3, 1), 0xFF0000AD);
 			
-			fillRect(new Rectangle(21, 2, 4, 1), 0xFFFD330F);
-			fillRect(new Rectangle(22, 3, 4, 1), 0xFFFD330F);
-			fillRect(new Rectangle(22, 4, 5, 2), 0xFFFD330F);
-			fillRect(new Rectangle(23, 6, 5, 3), 0xFFFD330F);
-			fillRect(new Rectangle(22, 9, 5, 1), 0xFFFD330F);
-			fillRect(new Rectangle(21, 10, 6, 1), 0xFFFD330F);
-			fillRect(new Rectangle(24, 11, 2, 1), 0xFFFD330F);
-			fillRect(new Rectangle(23, 12, 3, 1), 0xFFFD330F);
-			fillRect(new Rectangle(22, 13, 3, 1), 0xFFFD330F);
-			setPixel32(21, 11, 0xFFFD330F);
+			fillRect(new Rectangle(21, 2, 4, 1), 0xFFF40000);
+			fillRect(new Rectangle(22, 3, 4, 1), 0xFFF40000);
+			fillRect(new Rectangle(22, 4, 5, 2), 0xFFF40000);
+			fillRect(new Rectangle(23, 6, 5, 3), 0xFFF40000);
+			fillRect(new Rectangle(22, 9, 5, 1), 0xFFF40000);
+			fillRect(new Rectangle(21, 10, 6, 1), 0xFFF40000);
+			fillRect(new Rectangle(24, 11, 2, 1), 0xFFF40000);
+			fillRect(new Rectangle(23, 12, 3, 1), 0xFFF40000);
+			fillRect(new Rectangle(22, 13, 3, 1), 0xFFF40000);
+			setPixel32(21, 11, 0xFFF40000);
 			fillRect(new Rectangle(22, 11, 2, 1), 0xFF0000AD);
 			fillRect(new Rectangle(20, 12, 3, 1), 0xFF0000AD);
 			
 			// body
-			fillRect(new Rectangle(6, 1, 16, 7), 0xFFFD330F);
-			fillRect(new Rectangle(8, 8, 12, 4), 0xFFFD330F);
+			fillRect(new Rectangle(6, 1, 16, 7), 0xFFF40000);
+			fillRect(new Rectangle(8, 8, 12, 4), 0xFFF40000);
 			
 			// chest
 			fillRect(new Rectangle(9, 7, 3, 1), 0x000000AD);

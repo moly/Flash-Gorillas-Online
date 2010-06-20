@@ -438,16 +438,10 @@ namespace ServersideGameCode
 		
 		private void Plot4EllipsePoints(int x, int y, int px, int py, Color colour)
         {
-            try
-            {
-                texture.SetPixel(x + px, y + py, colour);
-                texture.SetPixel(x - px, y + py, colour);
-                texture.SetPixel(x - px, y - py, colour);
-                texture.SetPixel(x + px, y - py, colour);
-            }
-            catch (Exception e)
-            {
-            }
+            texture.SetPixel(x + px, y + py, colour);
+            texture.SetPixel(x - px, y + py, colour);
+            texture.SetPixel(x - px, y - py, colour);
+            texture.SetPixel(x + px, y - py, colour);
 		}
     }
 }

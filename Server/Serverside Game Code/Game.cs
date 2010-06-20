@@ -119,7 +119,7 @@ namespace ServersideGameCode {
             StartCountdownTimer();
 
             Visible = false;
-            RefreshDebugView();
+            //RefreshDebugView();
         }
 
 		// This method is called when a player sends a message into the server code
@@ -192,8 +192,12 @@ namespace ServersideGameCode {
                         StartCountdownTimer();
                     }, (int)(banana.Time * 1000) + (result == Banana.HIT_GORILLA_ONE || result == Banana.HIT_GORILLA_TWO ? 3400 : 1000));
 
-                    RefreshDebugView();
+                    //RefreshDebugView();
 
+                    break;
+
+                default:
+                    (player == player1 ? player2 : player1).Send("chat", message.Type);
                     break;
             }
         }

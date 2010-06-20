@@ -158,12 +158,15 @@ package dee.moly.textures.clothing {
 		private function populateHats():void {
 			
 			hatTextures = new Array();
-			hatCollection = [new ClothingItem("None", Blank, 0),
+			hatCollection = [new ClothingItem("None", Crown, 0),
 								new ClothingItem("Top Hat", TopHat, 1),
 								new ClothingItem("Zombie", ZombieHead, 2),
 								new ClothingItem("Timebot", ChronoHead, 3),
 								new ClothingItem("Lobster", LobsterHead, 4),
 								new ClothingItem("Black Hair", SuperHair, 5),
+								new ClothingItem("Red Cap", PlumberCap, 6),
+								new ClothingItem("Skull", SkeletonHead, 7),
+								new ClothingItem("Bowler Hat", ClockworkHat, 8),
 								];
 		}
 		
@@ -177,6 +180,9 @@ package dee.moly.textures.clothing {
 								new ClothingItem("Timebot", ChronoBody, 3),
 								new ClothingItem("Lobster", LobsterBody, 4),
 								new ClothingItem("Super Hero", SuperShirt, 5),
+								new ClothingItem("Dungarees", PlumberShirt, 6),
+								new ClothingItem("Skeleton", SkeletonBody, 7),
+								new ClothingItem("Droog", ClockworkShirt, 8),
 								];
 		}
 		
@@ -190,6 +196,9 @@ package dee.moly.textures.clothing {
 									new ClothingItem("Timebot", ChronoLegs, 3),
 									new ClothingItem("Lobster", LobsterLegs, 4),
 									new ClothingItem("Super Hero", SuperTrousers, 5),
+									new ClothingItem("Jeans", PlumberTrousers, 6),
+									new ClothingItem("Skeleton", SkeletonLegs, 7),
+									new ClothingItem("Droog", ClockworkTrousers, 8),
 									];
 		}
 	}
