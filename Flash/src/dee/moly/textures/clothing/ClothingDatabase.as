@@ -211,19 +211,19 @@ package dee.moly.textures.clothing {
 			
 			hatTextures = new Array();
 			hatCollection = [new ClothingItem("None", BlankHat, 0),
-								new ClothingItem("Top Hat", TopHat, 1),
-								new ClothingItem("Zombie", ZombieHead, 2),
-								new ClothingItem("Timebot", ChronoHead, 3),
-								new ClothingItem("Lobster", LobsterHead, 4),
-								new ClothingItem("Black Hair", SuperHair, 5),
-								new ClothingItem("Red Cap", PlumberCap, 6),
-								new ClothingItem("Skull", SkeletonHead, 7),
-								new ClothingItem("Bowler Hat", ClockworkHat, 8),
-								new ClothingItem("Battle Paint", BraveheartHead, 9),
-								new ClothingItem("Robo Helmet", RoboPoliceHelmet, 10),
-								new ClothingItem("Trucker Cap", PokeHat, 11),
 								new ClothingItem("Head Band", RamboHat, 12),
 								new ClothingItem("Bandana", PirateHat, 13),
+								new ClothingItem("Trucker Cap", PokeHat, 11),
+								new ClothingItem("Battle Paint", BraveheartHead, 9),
+								new ClothingItem("Black Hair", SuperHair, 5),
+								new ClothingItem("Red Cap", PlumberCap, 6),
+								new ClothingItem("Bowler Hat", ClockworkHat, 8),
+								new ClothingItem("Lobster", LobsterHead, 4),
+								new ClothingItem("Skull", SkeletonHead, 7),
+								new ClothingItem("Robo Helmet", RoboPoliceHelmet, 10),
+								new ClothingItem("Top Hat", TopHat, 1),
+								new ClothingItem("Timebot", ChronoHead, 3),
+								new ClothingItem("Zombie", ZombieHead, 2),
 								new ClothingItem("Crown", Crown, 20)
 								];
 		}
@@ -233,19 +233,19 @@ package dee.moly.textures.clothing {
 			
 			shirtTextures = new Array();
 			shirtCollection = [new ClothingItem("None", BlankShirt, 0),
-								new ClothingItem("Tuxedo", TuxShirt, 1),
-								new ClothingItem("Zombie", ZombieBody, 2),
-								new ClothingItem("Timebot", ChronoBody, 3),
-								new ClothingItem("Lobster", LobsterBody, 4),
+								new ClothingItem("Tank Top", RamboShirt, 12),
+								new ClothingItem("Stripes", PirateShirt, 13),
+								new ClothingItem("Blue", PokeShirt, 11),
+								new ClothingItem("Tartan", BraveheartShirt, 9),
 								new ClothingItem("Super Hero", SuperShirt, 5),
 								new ClothingItem("Dungarees", PlumberShirt, 6),
-								new ClothingItem("Skeleton", SkeletonBody, 7),
 								new ClothingItem("Droog", ClockworkShirt, 8),
-								new ClothingItem("Tartan", BraveheartShirt, 9),
+								new ClothingItem("Lobster", LobsterBody, 4),
+								new ClothingItem("Skeleton", SkeletonBody, 7),
 								new ClothingItem("Robo Police", RoboPoliceBody, 10),
-								new ClothingItem("Blue", PokeShirt, 11),
-								new ClothingItem("Tank Top", RamboShirt, 12),
-								new ClothingItem("Stripes", PirateShirt, 13)
+								new ClothingItem("Tuxedo", TuxShirt, 1),
+								new ClothingItem("Timebot", ChronoBody, 3),
+								new ClothingItem("Zombie", ZombieBody, 2),							
 								];
 		}
 		
@@ -254,19 +254,19 @@ package dee.moly.textures.clothing {
 			
 			trouserTextures = new Array();
 			trouserCollection = [new ClothingItem("None", BlankTrousers, 0),
-									new ClothingItem("Tuxedo", TuxTrousers, 1),
-									new ClothingItem("Zombie", ZombieLegs, 2),
-									new ClothingItem("Timebot", ChronoLegs, 3),
-									new ClothingItem("Lobster", LobsterLegs, 4),
+									new ClothingItem("Dark Jeans", RamboTrousers, 12),
+									new ClothingItem("Peg Leg", PirateTrousers, 13),
+									new ClothingItem("Jeans/Trainers", PokeTrousers, 11),
+									new ClothingItem("Kilt", BraveheatTrousers, 9),
 									new ClothingItem("Super Hero", SuperTrousers, 5),
 									new ClothingItem("Jeans/Shoes", PlumberTrousers, 6),
-									new ClothingItem("Skeleton", SkeletonLegs, 7),
 									new ClothingItem("Droog", ClockworkTrousers, 8),
-									new ClothingItem("Kilt", BraveheatTrousers, 9),
+									new ClothingItem("Lobster", LobsterLegs, 4),
+									new ClothingItem("Skeleton", SkeletonLegs, 7),
 									new ClothingItem("Robo Police", RoboPoliceLegs, 10),
-									new ClothingItem("Jeans/Trainers", PokeTrousers, 11),
-									new ClothingItem("Dark Jeans", RamboTrousers, 12),
-									new ClothingItem("Peg Leg", PirateTrousers, 13)
+									new ClothingItem("Tuxedo", TuxTrousers, 1),
+									new ClothingItem("Timebot", ChronoLegs, 3),
+									new ClothingItem("Zombie", ZombieLegs, 2),
 									];
 		}
 	}
