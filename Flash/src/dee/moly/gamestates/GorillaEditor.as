@@ -33,6 +33,9 @@ package dee.moly.gamestates {
 		// store our clothing
 		private var clothes:ClothingDatabase;
 		
+		// which piece of clothing we are chosing
+		private var menuItem:int;
+		
 		// player.io client reference
 		private var client:Client;
 		
@@ -44,13 +47,14 @@ package dee.moly.gamestates {
 			this.client = client;
 			this.kongregate = kongregate;
 			
+			menuItem = 3;
 			client.bigDB.loadMyPlayerObject(onReceivedData);
 		}
 		
 		// successfully received data
 		private function onReceivedData(object:DatabaseObject):void {
 			
-			clothes = new ClothingDatabase(object.level || 0, 400, 100, 4);
+			clothes = new ClothingDatabase(object.level || 999, 400, 100, 4);
 			clothes.setClothes(object.hatType || 0, object.shirtType || 0, object.trouserType || 0);
 			
 			hatType.text = "Hat: " + clothes.currentHatName;
@@ -80,20 +84,56 @@ package dee.moly.gamestates {
 			if (e.keyCode == 88 || e.keyCode == 27)
 				gotoState(new Menu(client, kongregate));
 				
-			if(e.keyCode == Keyboard.LEFT){
-				clothes.nextHat();
-				hatType.text = "Hat: " + clothes.currentHatName;
+			if (clothes == null)
+				return;
+			
+			if (e.keyCode == Keyboard.LEFT) {
+				switch(menuItem) {
+					case 0:
+						clothes.previousHat();
+						break;
+					case 1:
+						clothes.previousShirt();
+						break;
+					case 2:
+						clothes.previousTrousers();
+						break;
+					case 3:
+						clothes.previousClothesSet();
+				}
+			}
+				
+			if (e.keyCode == Keyboard.RIGHT) {
+				switch(menuItem) {
+					case 0:
+						clothes.nextHat();
+						break;
+					case 1:
+						clothes.nextShirt();
+						break;
+					case 2:
+						clothes.nextTrousers();
+						break;
+					case 3:
+						clothes.nextClothesSet();
+				}
 			}
 			
-			if(e.keyCode == Keyboard.RIGHT){
-				clothes.nextShirt();
-				shirtType.text = "Shirt: " + clothes.currentShirtName;
+			if (e.keyCode == Keyboard.DOWN) {
+				menuItem++;
+				if (menuItem > 3)
+					menuItem = 0;
+			}
+				
+			if (e.keyCode == Keyboard.UP) {
+				menuItem--;
+				if (menuItem < 0)
+					menuItem = 3;
 			}
 			
-			if(e.keyCode == Keyboard.DOWN){
-				clothes.nextTrousers();
-				trouserType.text = "Trousers: " + clothes.currentTrousersName;
-			}
+			hatType.text = "Hat: " + clothes.currentHatName;
+			shirtType.text = "Shirt: " + clothes.currentShirtName;
+			trouserType.text = "Trousers: " + clothes.currentTrousersName;
 		}
 	}
 }

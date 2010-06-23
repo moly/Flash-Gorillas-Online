@@ -1,5 +1,6 @@
 ﻿package dee.moly.gameobjects {
 	
+	import dee.moly.textures.clothing.ClothingDatabase;
 	import flash.display.BitmapData;
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -29,43 +30,68 @@
 		
 		private var danceStep:int
 		
+		private var clothes:ClothingDatabase;
+		
 		public function get finishedDancing():Boolean {
 			if (danceStep > 8) {
-				texture = down;
+				armsDown();
 				danceStep = 0;
 				return true;
 			}
 			return false;
 		}
 		
+		override public function set x(value:int):void {
+			clothes.x = value;
+			super.x = value;
+		}
+		
+		override public function set y(value:int):void {
+			clothes.y = value;
+			super.y = value;
+		}
+		
 		public function Gorilla() {
 			danceStep = 0;
 			texture = down;
+			clothes = new ClothingDatabase(9999, 0, 0);
 			position = new Point();
+		}
+		
+		public function setClothes(hat:int, shirt:int, trousers:int):void {
+			clothes.setClothes(hat, shirt, trousers);
+		}
+		
+		override public function draw(canvas:BitmapData):void {
+			super.draw(canvas);
+			clothes.draw(canvas);
 		}
 		
 		public function raiseLeftArm():void {
 			texture = left;
+			clothes.armState = GorillaTex.LEFT_ARM;
 		}
 		
 		public function raiseRightArm():void {
 			texture = right;
+			clothes.armState = GorillaTex.RIGHT_ARM;
 		}
 		
 		public function armsDown(e:TimerEvent = null):void {
 			texture = down;
+			clothes.armState = GorillaTex.ARMS_DOWN;
 		}
 		
 		public function swapArms():void {
-			texture = (texture == right) ? left : right;
+			(texture == right) ? raiseLeftArm() : raiseRightArm();
 		}
 		
 		public function throwAnimation():void {
 			
 			if (position.x < Main.SCREEN_WIDTH / 2)
-				texture = left;
+				raiseLeftArm();
 			else if (position.x > Main.SCREEN_WIDTH / 2)
-				texture = right;
+				raiseRightArm();
 				
 			var t:Timer = new Timer(100, 1);
 			t.addEventListener(TimerEvent.TIMER_COMPLETE, armsDown, false, 0, true);
@@ -84,16 +110,13 @@
 			else if (danceStep == 1 || danceStep == 3 || danceStep == 5)
 				armDance2Sound.play();
 			
-			texture = (texture == right || texture == down) ? left : right;
+			(texture == right || texture == down) ? raiseLeftArm() : raiseRightArm();
 			
 			if(danceStep++ < 8){
 				var t:Timer = new Timer(300, 1);
 				t.addEventListener(TimerEvent.TIMER_COMPLETE, danceAnimation, false, 0, true);
 				t.start();
-			}
-			
-		}
-		
+			}	
+		}	
 	}
-
 }

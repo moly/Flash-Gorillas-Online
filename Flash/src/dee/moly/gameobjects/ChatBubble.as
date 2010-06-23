@@ -26,19 +26,20 @@ package dee.moly.gameobjects {
 		// create a new bubble
 		public function create(text:String, x:int, y:int):void {
 			showing = true;
+			timer.stop();
 			
 			texture = new BitmapData((text.length * 8) + 8, 21 + 6, true, 0x00FFFFFF);
 			
 			if(x < Main.SCREEN_WIDTH / 2)
 				position = new Point((x - texture.width) > 5 ? x - texture.width : 5, y - texture.height);
 			else
-				position = new Point((x + texture.width) > Main.SCREEN_WIDTH - 5 ? Main.SCREEN_WIDTH - 5 - (texture.width) : x, y - texture.height);
+				position = new Point(((x - 6) + texture.width) > Main.SCREEN_WIDTH - 5 ? Main.SCREEN_WIDTH - 5 - (texture.width) : x - 6, y - texture.height);
 			
 			texture.fillRect(new Rectangle(0, 0, texture.width, texture.height - 6), 0xFFFFFFFF);
 			texture.fillRect(new Rectangle(x - position.x - 6, texture.height - 6, 6, 2), 0xFFFFFFFF);
 			texture.fillRect(new Rectangle(x - position.x - 4, texture.height - 4, 4, 2), 0xFFFFFFFF);
 			texture.fillRect(new Rectangle(x - position.x - 2, texture.height - 2, 2, 2), 0xFFFFFFFF);	
-				
+		
 			charChain = new CharChain(text, 4, 7, CharChain.NONE, CharChain.ALPHANUMERIC, 0xFF000000);
 			charChain.draw(texture);
 			

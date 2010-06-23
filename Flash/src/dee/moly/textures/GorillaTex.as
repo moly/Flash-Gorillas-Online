@@ -1,6 +1,7 @@
 ﻿package dee.moly.textures {
 	
 	import flash.geom.Rectangle;
+	import flash.display.BitmapData;
 	
 	/**
 	 * the eponymous gorillas
@@ -8,14 +9,13 @@
 	 * @author moly
 	 */
 	
-	public class GorillaTex extends DrawingBitmap{
+	public class GorillaTex extends BitmapData{
 		
 		public static const LEFT_ARM:int = 0;
 		public static const RIGHT_ARM:int = 1;
 		public static const ARMS_DOWN:int = 2;
 		
 		public function GorillaTex(arms:int) {
-			
 			super(28, 30, true, 0x00);
 			
 			// draw head
@@ -50,54 +50,51 @@
 			fillRect(new Rectangle(17, 29, 5, 1), 0xFFFFAD51);
 
 			// chest
-			line(9, 15, 11, 15, 0x000000AD);
+			fillRect(new Rectangle(9, 15, 3, 1), 0x000000AD);
 			setPixel32(12, 14, 0x000000AD);
 			setPixel32(13, 13, 0x000000AD);
-			line(14, 12, 14, 11, 0x000000AD);
+			fillRect(new Rectangle(14, 11, 1, 2), 0x000000AD);
 			setPixel32(15, 13, 0x000000AD);
 			setPixel32(16, 14, 0x000000AD);
-			line(17, 15, 19, 15, 0x000000AD);
+			fillRect(new Rectangle(17, 15, 3, 1), 0x000000AD);
 			
 			// arms
 			if(arms == RIGHT_ARM){
-				line(20, 0, 24, 0, 0xFFFFAD51);
-				line(21, 1, 25, 1, 0xFFFFAD51);
+				fillRect(new Rectangle(20, 0, 5, 1), 0xFFFFAD51);
+				fillRect(new Rectangle(21, 1, 5, 1), 0xFFFFAD51);
 				fillRect(new Rectangle(22, 2, 5, 2), 0xFFFFAD51);
 				fillRect(new Rectangle(23, 4, 5, 3), 0xFFFFAD51);
 				fillRect(new Rectangle(22, 7, 5, 2), 0xFFFFAD51);
-				line(21, 9, 25, 9, 0xFFFFAD51);
-				line(20, 10, 24, 10, 0xFFFFAD51);
+				fillRect(new Rectangle(21, 9, 5, 1), 0xFFFFAD51);
+				fillRect(new Rectangle(20, 10, 5, 1), 0xFFFFAD51);
 			}	
 			if(arms == RIGHT_ARM || arms == ARMS_DOWN){
-				line(3, 10, 7, 10, 0xFFFFAD51);
-				line(2, 11, 6, 11, 0xFFFFAD51);
+				fillRect(new Rectangle(3, 10, 5, 1), 0xFFFFAD51);
+				fillRect(new Rectangle(2, 11, 5, 1), 0xFFFFAD51);
 				fillRect(new Rectangle(1, 12, 5, 2), 0xFFFFAD51);
 				fillRect(new Rectangle(0, 14, 5, 3), 0xFFFFAD51);
 				fillRect(new Rectangle(1, 17, 5, 2), 0xFFFFAD51);
-				line(2, 19, 6, 19, 0xFFFFAD51);
-				line(3, 20, 7, 20, 0xFFFFAD51);
+				fillRect(new Rectangle(2, 19, 5, 1), 0xFFFFAD51);
+				fillRect(new Rectangle(3, 20, 5, 1), 0xFFFFAD51);
 			}
 			if (arms == LEFT_ARM) {
-				line(3, 0, 7, 0, 0xFFFFAD51);
-				line(2, 1, 6, 1, 0xFFFFAD51);
+				fillRect(new Rectangle(3, 0, 5, 1), 0xFFFFAD51);
+				fillRect(new Rectangle(2, 1, 5, 1), 0xFFFFAD51);
 				fillRect(new Rectangle(1, 2, 5, 2), 0xFFFFAD51);
 				fillRect(new Rectangle(0, 4, 5, 3), 0xFFFFAD51);
 				fillRect(new Rectangle(1, 7, 5, 2), 0xFFFFAD51);
-				line(2, 9, 6, 9, 0xFFFFAD51);
-				line(3, 10, 7, 10, 0xFFFFAD51);
+				fillRect(new Rectangle(2, 9, 5, 1), 0xFFFFAD51);
+				fillRect(new Rectangle(3, 10, 5, 1), 0xFFFFAD51);
 			}
 			if (arms == LEFT_ARM || arms == ARMS_DOWN) {
-				line(20, 10, 24, 10, 0xFFFFAD51);
-				line(21, 11, 25, 11, 0xFFFFAD51);
+				fillRect(new Rectangle(20, 10, 5, 1), 0xFFFFAD51);
+				fillRect(new Rectangle(21, 11, 5, 1), 0xFFFFAD51);
 				fillRect(new Rectangle(22, 12, 5, 2), 0xFFFFAD51);
 				fillRect(new Rectangle(23, 14, 5, 3), 0xFFFFAD51);
 				fillRect(new Rectangle(22, 17, 5, 2), 0xFFFFAD51);
-				line(21, 19, 25, 19, 0xFFFFAD51);
-				line(20, 20, 24, 20, 0xFFFFAD51);
+				fillRect(new Rectangle(21, 19, 5, 1), 0xFFFFAD51);
+				fillRect(new Rectangle(20, 20, 5, 1), 0xFFFFAD51);
 			}
-					
 		}
-		
 	}
-
 }

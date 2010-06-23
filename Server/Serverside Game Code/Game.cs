@@ -283,6 +283,7 @@ namespace ServersideGameCode {
             {
                 int gamesQuit = player.PlayerObject.GetInt("gamesQuit", 0);
                 player.PlayerObject.Set("gamesQuit", gamesQuit + 1);
+                gameFinished = true;
             }
 
             int bananasThrown = player.PlayerObject.GetInt("bananasThrown", 0);

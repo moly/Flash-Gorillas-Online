@@ -129,6 +129,7 @@
 			connection.addDisconnectHandler(onDisconnected);
 			
 			gorilla1 = new Gorilla();
+			gorilla1.setClothes(1, 1, 1);
 			gorilla2 = new Gorilla();
 			
 			player1Name = playerNumber == 1 ? myName : opponentName;

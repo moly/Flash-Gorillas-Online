@@ -61,7 +61,6 @@
 			r = 0;
 			position = new Point();
 			texture = left;
-			
 		}
 		
 		// move the banana
@@ -88,9 +87,10 @@
 			
 			startPos = startPoint;
 			time = 0;
-			
 		}
 		
+		override public function draw(canvas:BitmapData):void {
+			canvas.copyPixels(texture, texture.rect, position.subtract(new Point(3, 3)), null, null, true);
+		}
 	}
-
 }

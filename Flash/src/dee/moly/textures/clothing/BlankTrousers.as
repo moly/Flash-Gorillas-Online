@@ -7,9 +7,9 @@ package dee.moly.textures.clothing {
 	 * @author moly
 	 */
 	
-	public class Blank extends BitmapData{
+	public class BlankTrousers extends BitmapData{
 		
-		public function Blank() {
+		public function BlankTrousers() {
 			super(1, 1, true, 0x00000000);
 		}
 	}
