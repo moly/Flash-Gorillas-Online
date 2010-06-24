@@ -87,6 +87,9 @@
 		private static const BUILDING_HIT:int = 5;
 		private static const DISCONNECTED:int = 6;
 		
+		// block input if needed
+		private var blockInput:Boolean;
+		
 		// time limit to take a turn
 		private static const TURN_TIME_LIMIT:int = 15000;
 		private var currentTime:Number;
@@ -194,6 +197,7 @@
 			angleInput.x = (520 * (playerTurn - 1)) + 58;
 			angleText.x = 520 * (playerTurn - 1);
 			velocityText.x = 520 * (playerTurn - 1);
+			blockInput = false;
 			
 			scoreText.text = player1Score + ">Score<" + player2Score;
 			
@@ -351,7 +355,8 @@
 			if ((state == BANANA_THROWN || playerTurn != playerNumber) && !chatOpen)
 				return;
 			
-			currentInput.addChar(e.charCode);
+			if(currentInput == chatInput || !blockInput)
+				currentInput.addChar(e.charCode);
 			
 			if (e.keyCode == Keyboard.ENTER && currentInput.text != "") {
 				if (currentInput == chatInput){
@@ -363,7 +368,7 @@
 					chatOpen = false;
 					currentInput.text = "";
 					currentInput = (state == ANGLE_INPUT ? angleInput : velocityInput);
-				}else{
+				}else {
 					nextStep();
 				}
 			}
@@ -398,7 +403,9 @@
 				
 					if (playerTurn == 2)
 						angle = 180 - angle;
-				
+					
+					blockInput = true;
+						
 					connection.send("throw", angle, velocity);
 					
 					break;
@@ -434,6 +441,7 @@
 					angleText.x = 520 * (playerTurn - 1);
 					velocityText.x = 520 * (playerTurn - 1);
 					sun.reset();
+					blockInput = false;
 					state = ANGLE_INPUT;
 					break;		
 			}	
@@ -445,14 +453,16 @@
 			if (playerTurn == 1){
 				var startPoint:Point = new Point(gorilla1.x, gorilla1.y - 7);
 				gorilla1.throwAnimation();
+				var alt:Boolean = gorilla1.isAsh;
 			}
 				
 			if (playerTurn == 2){
 				startPoint = new Point(gorilla2.x + 25, gorilla2.y - 7);
 				gorilla2.throwAnimation();
+				alt = gorilla2.isAsh;
 			}
 			
-			banana.launch(angle, velocity, GRAVITY, cityscape.windSpeed, startPoint, 1);
+			banana.launch(angle, velocity, GRAVITY, cityscape.windSpeed, startPoint, alt);
 			currentTime = TURN_TIME_LIMIT;
 			state = BANANA_THROWN;
 		}

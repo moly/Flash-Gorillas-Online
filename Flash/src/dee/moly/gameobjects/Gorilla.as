@@ -51,6 +51,10 @@
 			super.y = value;
 		}
 		
+		public function get isAsh():Boolean {
+			return clothes.currentHatName == "Trucker Cap" && clothes.currentShirtName == "Blue" && clothes.currentTrousersName == "Jeans/Trainers";
+		}
+		
 		public function Gorilla() {
 			danceStep = 0;
 			texture = down;
@@ -60,7 +64,6 @@
 		
 		public function setClothes(hat:int, shirt:int, trousers:int):void {
 			clothes.setClothes(hat, shirt, trousers);
-			trace(hat + " " + shirt + " " + trousers);
 		}
 		
 		override public function draw(canvas:BitmapData):void {

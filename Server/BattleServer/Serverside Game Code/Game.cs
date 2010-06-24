@@ -28,6 +28,9 @@ namespace ServersideGameCode {
         // A throwable banana
         private Banana banana;
 
+        // Is the banana moving
+        private bool bananaInMotion;
+
         // Constants
         private const float GRAVITY = 9.8f;
         private const int PLAY_TO_POINTS = 3;
@@ -63,6 +66,7 @@ namespace ServersideGameCode {
             cityscape.SetCityscape(0);
 
             banana = new Banana();
+            bananaInMotion = false;
 
             gameFinished = false;
 
@@ -78,7 +82,6 @@ namespace ServersideGameCode {
 		// This method is called whenever a player joins the game
 		public override void UserJoined(Player player) 
         {
-
             if (player1 == null)
             {
                 player1 = player;
@@ -135,8 +138,10 @@ namespace ServersideGameCode {
                 case "throw":
                     
                     // If it's not actually their turn, do nothing
-                    if (player != playerTurn)
+                    if (player != playerTurn || bananaInMotion)
                         return;
+
+                    bananaInMotion = true;
 
                     // Stop the countdown
                     timer.Stop();
@@ -189,6 +194,7 @@ namespace ServersideGameCode {
                     {
                         // Next players turn
                         playerTurn = playerTurn == player1 ? player2 : player1;
+                        bananaInMotion = false;
                         StartCountdownTimer();
                     }, (int)(banana.Time * 1000) + (result == Banana.HIT_GORILLA_ONE || result == Banana.HIT_GORILLA_TWO ? 3400 : 1000));
 
@@ -243,7 +249,7 @@ namespace ServersideGameCode {
                 }
                 player.PlayerObject.Set("gamesWon", gamesWon);
                 player.PlayerObject.Set("gamesLost", gamesLost);
-                player.PlayerObject.Save();
+                //player.PlayerObject.Save();
             }
         }
 

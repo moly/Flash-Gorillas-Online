@@ -4,7 +4,7 @@
 	import flash.geom.Rectangle;
 	
 	/**
-	 * textures for the banana
+	 * Textures for the banana
 	 * @author moly
 	 */
 	
@@ -16,7 +16,6 @@
 		public static const DOWN:int = 3;
 		
 		public function BananaTex(direction:int) {
-			
 			super(7, 7, true, 0x000000AD);
 			
 			switch(direction) {
