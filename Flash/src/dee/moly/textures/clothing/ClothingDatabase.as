@@ -36,6 +36,17 @@ package dee.moly.textures.clothing {
 			arms = value;
 		}
 		
+		// current clothes numbers
+		public function get currentHatNumber():int {
+			return currentHat;
+		}
+		public function get currentShirtNumber():int {
+			return currentShirt;
+		}
+		public function get currentTrousersNumber():int {
+			return currentTrousers;
+		}
+		
 		// names of current clothing
 		public function get currentHatName():String {
 			return hatCollection[currentHat].level <= playerLevel ? hatCollection[currentHat].name : "Requires level " + hatCollection[currentHat].level;

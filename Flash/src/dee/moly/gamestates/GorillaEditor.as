@@ -22,7 +22,7 @@ package dee.moly.gamestates {
 		private var hatType:CharChain = new CharChain("Hat:", 120, 105);
 		private var shirtType:CharChain = new CharChain("Shirt:", hatType.x, hatType.y + 48);
 		private var trouserType:CharChain = new CharChain("Trousers:", shirtType.x, shirtType.y + 48);
-		private static const pressToGoBack:CharChain = new CharChain("Press x to save and exit", 220, 320);
+		private var pressToGoBack:CharChain = new CharChain("Press x to save and exit", 220, 320);
 		
 		// gorilla
 		private static const gorillaTex:GorillaTex = new GorillaTex(GorillaTex.ARMS_DOWN);
@@ -42,6 +42,9 @@ package dee.moly.gamestates {
 		// kongregate api reference
 		private var kongregate:*;
 		
+		// stop input if needed
+		private var blockInput:Boolean;
+		
 		public function GorillaEditor(client:Client, kongregate:*) {
 			
 			this.client = client;
@@ -55,7 +58,7 @@ package dee.moly.gamestates {
 		private function onReceivedData(object:DatabaseObject):void {
 			
 			clothes = new ClothingDatabase(object.level || 999, 400, 100, 4);
-			clothes.setClothes(object.hatType || 0, object.shirtType || 0, object.trouserType || 0);
+			clothes.setClothes(object.hat || 0, object.shirt || 0, object.trousers || 0);
 			
 			hatType.text = "Hat: " + clothes.currentHatName;
 			shirtType.text = "Shirt: " + clothes.currentShirtName;
@@ -80,9 +83,16 @@ package dee.moly.gamestates {
 		
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
+			if (blockInput)
+				return;
+			
 			// x or esc
-			if (e.keyCode == 88 || e.keyCode == 27)
-				gotoState(new Menu(client, kongregate));
+			if (e.keyCode == 88 || e.keyCode == 27) {
+				client.multiplayer.createJoinRoom("", "CostumeServer", true, { }, { hat:clothes.currentHatNumber, shirt:clothes.currentShirtNumber, trousers:clothes.currentTrousersNumber }, onJoinedRoom);
+				pressToGoBack.text = "Saving...";
+				pressToGoBack.centre();
+				blockInput = true;
+			}
 				
 			if (clothes == null)
 				return;
@@ -134,6 +144,11 @@ package dee.moly.gamestates {
 			hatType.text = "Hat: " + clothes.currentHatName;
 			shirtType.text = "Shirt: " + clothes.currentShirtName;
 			trouserType.text = "Trousers: " + clothes.currentTrousersName;
+		}
+		
+		// successfully joined a room
+		private function onJoinedRoom(connection:Connection):void {
+			connection.addMessageHandler("saved", function(message:Message):void{ gotoState(new Menu(client, kongregate)); });
 		}
 	}
 }

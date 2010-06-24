@@ -1,0 +1,14 @@
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\bin\Release\GorillasServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\bin\Release\GorillasServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\bin\Release\Player.IO GameLibrary.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\bin\Release\Player.IO GameLibrary.xml
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\obj\Release\GorillasServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\obj\Release\GorillasServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\bin\Release\BattleServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\bin\Release\BattleServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\obj\Release\BattleServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\obj\Release\BattleServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\bin\Release\Player.IO GameLibrary.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\bin\Release\Player.IO GameLibrary.xml

@@ -1,0 +1,20 @@
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\bin\Debug\Test Server.exe
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\bin\Debug\Test Server.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\bin\Debug\Player.IO Development Server.exe
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\obj\Debug\Test Server.exe
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\obj\Debug\Test Server.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\bin\Debug\BattleServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\.NET Libraries\Test Server Project\bin\Debug\BattleServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\obj\Debug\Test Server.exe
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\obj\Debug\Test Server.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\bin\Debug\Test Server.exe
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\bin\Debug\Test Server.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\bin\Debug\BattleServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\bin\Debug\Player.IO Development Server.exe
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\bin\Debug\BattleServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\.NET Libraries\Test Server Project\obj\Debug\ResolveAssemblyReference.cache

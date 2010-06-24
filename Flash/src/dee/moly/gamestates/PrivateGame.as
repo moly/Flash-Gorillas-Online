@@ -76,7 +76,7 @@ package dee.moly.gamestates {
 				
 			// create room
 			if (e.keyCode == 49){
-				client.multiplayer.createJoinRoom(myName, "public", false, { privy:"yes" }, { name:myName }, onJoinedRoom, onJoinedError);
+				client.multiplayer.createJoinRoom(myName, "BattleServer", false, { privy:"yes" }, { name:myName }, onJoinedRoom, onJoinedError);
 				informationText.text = "Waiting for opponent...";
 				informationText.centre();
 				blockInput = true;

@@ -1,0 +1,14 @@
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\bin\Debug\GorillasServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\bin\Debug\GorillasServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\obj\Debug\GorillasServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\Serverside Game Code\obj\Debug\GorillasServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\bin\Debug\BattleServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\bin\Debug\BattleServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\obj\Debug\BattleServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\obj\Debug\BattleServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\BattleServer\Serverside Game Code\bin\Debug\Player.IO GameLibrary.dll

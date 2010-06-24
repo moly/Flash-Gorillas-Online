@@ -1,0 +1,14 @@
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\bin\Debug\CostumeServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\bin\Debug\CostumeServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\obj\Debug\CostumeServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\obj\Debug\CostumeServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\Serverside Game Code\bin\Debug\CostumeServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\Serverside Game Code\bin\Debug\CostumeServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\Serverside Game Code\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\Serverside Game Code\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\Serverside Game Code\obj\Debug\CostumeServer.dll
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\Serverside Game Code\obj\Debug\CostumeServer.pdb
+C:\Users\Ishmael\Documents\FlashDevelop\Flash-Gorillas Online\Server\CostumeServer\Serverside Game Code\bin\Debug\Player.IO GameLibrary.dll

@@ -106,7 +106,7 @@
 			informationText.text = "Finding an opponent...";
 			informationText.centre();
 			
-			client.multiplayer.listRooms("GorillasServer", { }, 200, 0, onRetrievedRooms, onRetrieveRoomsError);
+			client.multiplayer.listRooms("BattleServer", { }, 200, 0, onRetrievedRooms, onRetrieveRoomsError);
 		}
 		
 		// successfully retrieved rooms
@@ -122,7 +122,7 @@
 			}
 		
 			// if there are no open rooms, create a new one
-			client.multiplayer.createJoinRoom("", "GorillasServer", true, {privy:"no"}, {name:myName}, onJoinedRoom, onJoinError);
+			client.multiplayer.createJoinRoom("", "BattleServer", true, {privy:"no"}, {name:myName}, onJoinedRoom, onJoinError);
 			playerNumber = 1;
 		}
 		

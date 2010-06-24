@@ -60,6 +60,7 @@
 		
 		public function setClothes(hat:int, shirt:int, trousers:int):void {
 			clothes.setClothes(hat, shirt, trousers);
+			trace(hat + " " + shirt + " " + trousers);
 		}
 		
 		override public function draw(canvas:BitmapData):void {
