@@ -3,6 +3,7 @@ package dee.moly.textures.clothing {
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import dee.moly.textures.*;
+	import playerio.DatabaseObject;
 	
 	/**
 	 * Manages optional clothing for the gorilla
@@ -30,6 +31,9 @@ package dee.moly.textures.clothing {
 		private var currentShirt:int;
 		private var currentTrousers:int;
 		
+		// player object
+		private var playerObject:DatabaseObject;
+		
 		// arm state
 		private var arms:int = GorillaTex.ARMS_DOWN;
 		public function set armState(value:int):void {
@@ -49,17 +53,25 @@ package dee.moly.textures.clothing {
 		
 		// names of current clothing
 		public function get currentHatName():String {
-			return hatCollection[currentHat].level <= playerLevel ? hatCollection[currentHat].name : "Requires level " + hatCollection[currentHat].level;
+			return hatCollection[currentHat].name;
 		}
 		public function get currentShirtName():String {
-			return shirtCollection[currentShirt].level <= playerLevel ? shirtCollection[currentShirt].name : "Requires level " + shirtCollection[currentShirt].level;
+			return shirtCollection[currentShirt].name;
 		}
 		public function get currentTrousersName():String {
-			return trouserCollection[currentTrousers].level <= playerLevel ? trouserCollection[currentTrousers].name : "Requires level " + trouserCollection[currentTrousers].level;
+			return trouserCollection[currentTrousers].name;
 		}
 		
-		// players level
-		private var playerLevel:int;
+		// whether or not the current item is unlocked
+		public function get currentHatUnlocked():Boolean {
+			return hatCollection[currentHat].requirements();
+		}
+		public function get currentShirtUnlocked():Boolean {
+			return shirtCollection[currentShirt].requirements();
+		}
+		public function get currentTrousersUnlocked():Boolean {
+			return trouserCollection[currentTrousers].requirements();
+		}
 		
 		// position/scale matrix
 		private var hatMatrix:Matrix;
@@ -79,9 +91,9 @@ package dee.moly.textures.clothing {
 			trouserMatrix.ty = value + (20 * trouserMatrix.a);
 		}
 		
-		public function ClothingDatabase(playerLevel:int, x:int, y:int, scale:int = 1) {
+		public function ClothingDatabase(x:int, y:int, scale:int = 1, playerObject:DatabaseObject = null) {
 			
-			this.playerLevel = playerLevel;
+			this.playerObject = playerObject;
 			
 			hatMatrix = new Matrix(scale, 0, 0, scale, x + (8 * scale), y - (5 * scale));
 			shirtMatrix = new Matrix(scale, 0, 0, scale, x, y);// + (8 * scale));
@@ -115,9 +127,11 @@ package dee.moly.textures.clothing {
 		// go to next hat
 		public function nextHat():void {
 			
-			currentHat++;
-			if (currentHat > hatCollection.length - 1)
-				currentHat = 0;
+			do{
+				currentHat++;
+				if (currentHat > hatCollection.length - 1)
+					currentHat = 0;
+			}while (currentHatUnlocked == false);
 				
 			setTextures();
 		}
@@ -125,19 +139,23 @@ package dee.moly.textures.clothing {
 		// go to previous hat
 		public function previousHat():void {
 			
-			currentHat--;
-			if (currentHat < 0)
-				currentHat = hatCollection.length - 1;
-				
+			do{
+				currentHat--;
+				if (currentHat < 0)
+					currentHat = hatCollection.length - 1;
+			}while (currentHatUnlocked == false);
+			
 			setTextures();
 		}
 		
 		// go to next shirt
 		public function nextShirt():void {
 			
-			currentShirt++;
-			if (currentShirt > shirtCollection.length - 1)
-				currentShirt = 0;
+			do{
+				currentShirt++;
+				if (currentShirt > shirtCollection.length - 1)
+					currentShirt = 0;
+			}while (currentShirtUnlocked == false);
 				
 			setTextures();
 		}
@@ -145,9 +163,11 @@ package dee.moly.textures.clothing {
 		// go to previous shirt
 		public function previousShirt():void {
 			
-			currentShirt--;
-			if (currentShirt < 0)
-				currentShirt = shirtCollection.length - 1;
+			do{
+				currentShirt--;
+				if (currentShirt < 0)
+					currentShirt = shirtCollection.length - 1;
+			}while (currentShirtUnlocked == false);
 				
 			setTextures();
 		}
@@ -155,9 +175,11 @@ package dee.moly.textures.clothing {
 		// go to next trousers
 		public function nextTrousers():void {
 			
-			currentTrousers++;
-			if (currentTrousers > trouserCollection.length - 1)
-				currentTrousers = 0;
+			do{
+				currentTrousers++;
+				if (currentTrousers > trouserCollection.length - 1)
+					currentTrousers = 0;
+			}while (currentTrousersUnlocked == false);
 				
 			setTextures();
 		}
@@ -165,9 +187,11 @@ package dee.moly.textures.clothing {
 		// go to previous trousers
 		public function previousTrousers():void {
 			
-			currentTrousers--;
-			if (currentTrousers < 0)
-				currentTrousers = trouserCollection.length - 1;
+			do{
+				currentTrousers--;
+				if (currentTrousers < 0)
+					currentTrousers = trouserCollection.length - 1;
+			}while (currentTrousersUnlocked == false);
 				
 			setTextures();
 		}
@@ -175,28 +199,32 @@ package dee.moly.textures.clothing {
 		// go to next matching clothes set
 		public function nextClothesSet():void {
 			
-			currentHat++;
-			if (currentHat > hatCollection.length - 1 || currentHat > shirtCollection.length - 1 || currentHat > trouserCollection.length - 1)
-				currentHat = 0;
+			do{
+				currentHat++;
+				if (currentHat > hatCollection.length - 1 || currentHat > shirtCollection.length - 1 || currentHat > trouserCollection.length - 1)
+					currentHat = 0;
 				
-			currentShirt = currentHat;
-			currentTrousers = currentHat;
-			
+				currentShirt = currentHat;
+				currentTrousers = currentHat;
+			}while (currentHatUnlocked == false && currentShirtUnlocked == false && currentTrousersUnlocked == false);
+				
 			setTextures();
 		}
 		
 		// go to next matching clothes set
 		public function previousClothesSet():void {
 			
-			currentHat--;
-			if (currentHat < 0)
-				currentHat = trouserCollection.length - 1;
+			do{
+				currentHat--;
+				if (currentHat < 0)
+					currentHat = trouserCollection.length - 1;
 			
-			if (currentHat > hatCollection.length - 1 || currentHat > shirtCollection.length - 1 || currentHat > trouserCollection.length - 1)
-				currentHat = 0;
+				if (currentHat > hatCollection.length - 1 || currentHat > shirtCollection.length - 1 || currentHat > trouserCollection.length - 1)
+					currentHat = 0;
 				
-			currentShirt = currentHat;
-			currentTrousers = currentHat;
+				currentShirt = currentHat;
+				currentTrousers = currentHat;
+			}while (currentHatUnlocked == false && currentShirtUnlocked == false && currentTrousersUnlocked == false);
 			
 			setTextures();
 		}
@@ -221,21 +249,21 @@ package dee.moly.textures.clothing {
 		private function populateHats():void {
 			
 			hatTextures = new Array();
-			hatCollection = [new ClothingItem("None", BlankHat, 0),
-								new ClothingItem("Head Band", RamboHat, 12),
-								new ClothingItem("Bandana", PirateHat, 13),
-								new ClothingItem("Trucker Cap", PokeHat, 11),
-								new ClothingItem("Battle Paint", BraveheartHead, 9),
-								new ClothingItem("Black Hair", SuperHair, 5),
-								new ClothingItem("Red Cap", PlumberCap, 6),
-								new ClothingItem("Bowler Hat", ClockworkHat, 8),
-								new ClothingItem("Lobster", LobsterHead, 4),
-								new ClothingItem("Skull", SkeletonHead, 7),
-								new ClothingItem("Robo Helmet", RoboPoliceHelmet, 10),
-								new ClothingItem("Top Hat", TopHat, 1),
-								new ClothingItem("Timebot", ChronoHead, 3),
-								new ClothingItem("Zombie", ZombieHead, 2),
-								new ClothingItem("Crown", Crown, 20)
+			hatCollection = [new ClothingItem("None", BlankHat, function():Boolean { return true;} ),
+								new ClothingItem("Head Band", RamboHat, function():Boolean { return (playerObject.level || 0) >= 1;} ),
+								new ClothingItem("Bandana", PirateHat, function():Boolean { return (playerObject.level || 0) >= 2;} ),
+								new ClothingItem("Trucker Cap", PokeHat, function():Boolean { return (playerObject.level || 0) >= 3;} ),
+								new ClothingItem("Battle Paint", BraveheartHead, function():Boolean { return (playerObject.level || 0) >= 4;} ),
+								new ClothingItem("Black Hair", SuperHair, function():Boolean { return (playerObject.level || 0) >= 5;} ),
+								new ClothingItem("Red Cap", PlumberCap, function():Boolean { return (playerObject.level || 0) >= 6;} ),
+								new ClothingItem("Bowler Hat", ClockworkHat, function():Boolean { return (playerObject.level || 0) >= 7;} ),
+								new ClothingItem("Lobster", LobsterHead, function():Boolean { return (playerObject.level || 0) >= 8;} ),
+								new ClothingItem("Skull", SkeletonHead, function():Boolean { return (playerObject.level || 0) >= 9;} ),
+								new ClothingItem("Robo Helmet", RoboPoliceHelmet, function():Boolean { return (playerObject.level || 0) >= 10;} ),
+								new ClothingItem("Top Hat", TopHat, function():Boolean { return (playerObject.level || 0) >= 11;} ),
+								new ClothingItem("Timebot", ChronoHead, function():Boolean { return (playerObject.totalTime || 0) > 5000;} ),
+								new ClothingItem("Zombie", ZombieHead, function():Boolean { return (playerObject.isZombie || playerObject.name.indexOf("z") != -1);} ),
+								new ClothingItem("Crown", Crown, function():Boolean { return playerObject.isOnLeaderBoards || false;} )
 								];
 		}
 		
@@ -243,20 +271,20 @@ package dee.moly.textures.clothing {
 		private function populateShirts():void {
 			
 			shirtTextures = new Array();
-			shirtCollection = [new ClothingItem("None", BlankShirt, 0),
-								new ClothingItem("Tank Top", RamboShirt, 12),
-								new ClothingItem("Stripes", PirateShirt, 13),
-								new ClothingItem("Blue", PokeShirt, 11),
-								new ClothingItem("Tartan", BraveheartShirt, 9),
-								new ClothingItem("Super Hero", SuperShirt, 5),
-								new ClothingItem("Dungarees", PlumberShirt, 6),
-								new ClothingItem("Droog", ClockworkShirt, 8),
-								new ClothingItem("Lobster", LobsterBody, 4),
-								new ClothingItem("Skeleton", SkeletonBody, 7),
-								new ClothingItem("Robo Police", RoboPoliceBody, 10),
-								new ClothingItem("Tuxedo", TuxShirt, 1),
-								new ClothingItem("Timebot", ChronoBody, 3),
-								new ClothingItem("Zombie", ZombieBody, 2),							
+			shirtCollection = [new ClothingItem("None", BlankShirt, function():Boolean { return true;} ),
+								new ClothingItem("Tank Top", RamboShirt, function():Boolean { return (playerObject.level || 0) >= 1;} ),
+								new ClothingItem("Stripes", PirateShirt, function():Boolean { return (playerObject.level || 0) >= 2;} ),
+								new ClothingItem("Blue", PokeShirt, function():Boolean { return (playerObject.level || 0) >= 3;} ),
+								new ClothingItem("Tartan", BraveheartShirt, function():Boolean { return (playerObject.level || 0) >= 4;} ),
+								new ClothingItem("Super Hero", SuperShirt, function():Boolean { return (playerObject.level || 0) >= 5;} ),
+								new ClothingItem("Dungarees", PlumberShirt, function():Boolean { return (playerObject.level || 0) >= 6;} ),
+								new ClothingItem("Droog", ClockworkShirt, function():Boolean { return (playerObject.level || 0) >= 7;} ),
+								new ClothingItem("Lobster", LobsterBody, function():Boolean { return (playerObject.level || 0) >= 8;} ),
+								new ClothingItem("Skeleton", SkeletonBody, function():Boolean { return (playerObject.level || 0) >= 9;} ),
+								new ClothingItem("Robo Police", RoboPoliceBody, function():Boolean { return (playerObject.level || 0) >= 10;} ),
+								new ClothingItem("Tuxedo", TuxShirt, function():Boolean { return (playerObject.level || 0) >= 11;} ),
+								new ClothingItem("Timebot", ChronoBody, function():Boolean { return (playerObject.totalTime || 0) > 5000;} ),
+								new ClothingItem("Zombie", ZombieBody, function():Boolean { return (playerObject.isZombie || playerObject.name.indexOf("z") != -1);} ),							
 								];
 		}
 		
@@ -264,20 +292,20 @@ package dee.moly.textures.clothing {
 		private function populateTrousers():void {
 			
 			trouserTextures = new Array();
-			trouserCollection = [new ClothingItem("None", BlankTrousers, 0),
-									new ClothingItem("Dark Jeans", RamboTrousers, 12),
-									new ClothingItem("Peg Leg", PirateTrousers, 13),
-									new ClothingItem("Jeans/Trainers", PokeTrousers, 11),
-									new ClothingItem("Kilt", BraveheatTrousers, 9),
-									new ClothingItem("Super Hero", SuperTrousers, 5),
-									new ClothingItem("Jeans/Shoes", PlumberTrousers, 6),
-									new ClothingItem("Droog", ClockworkTrousers, 8),
-									new ClothingItem("Lobster", LobsterLegs, 4),
-									new ClothingItem("Skeleton", SkeletonLegs, 7),
-									new ClothingItem("Robo Police", RoboPoliceLegs, 10),
-									new ClothingItem("Tuxedo", TuxTrousers, 1),
-									new ClothingItem("Timebot", ChronoLegs, 3),
-									new ClothingItem("Zombie", ZombieLegs, 2),
+			trouserCollection = [new ClothingItem("None", BlankTrousers, function():Boolean { return true;} ),
+									new ClothingItem("Dark Jeans", RamboTrousers, function():Boolean { return (playerObject.level || 0) >= 1;} ),
+									new ClothingItem("Peg Leg", PirateTrousers, function():Boolean { return (playerObject.level || 0) >= 2;} ),
+									new ClothingItem("Jeans/Trainers", PokeTrousers, function():Boolean { return (playerObject.level || 0) >= 3;} ),
+									new ClothingItem("Kilt", BraveheatTrousers, function():Boolean { return (playerObject.level || 0) >= 4;} ),
+									new ClothingItem("Super Hero", SuperTrousers, function():Boolean { return (playerObject.level || 0) >= 5;} ),
+									new ClothingItem("Jeans/Shoes", PlumberTrousers, function():Boolean { return (playerObject.level || 0) >= 6;} ),
+									new ClothingItem("Droog", ClockworkTrousers, function():Boolean { return (playerObject.level || 0) >= 7;} ),
+									new ClothingItem("Lobster", LobsterLegs, function():Boolean { return (playerObject.level || 0) >= 8;} ),
+									new ClothingItem("Skeleton", SkeletonLegs, function():Boolean { return (playerObject.level || 0) >= 9;} ),
+									new ClothingItem("Robo Police", RoboPoliceLegs, function():Boolean { return (playerObject.level || 0) >= 10;} ),
+									new ClothingItem("Tuxedo", TuxTrousers, function():Boolean { return (playerObject.level || 0) >= 11;} ),
+									new ClothingItem("Timebot", ChronoLegs, function():Boolean { return (playerObject.totalTime || 0) > 5000;} ),
+									new ClothingItem("Zombie", ZombieLegs, function():Boolean { return (playerObject.isZombie || playerObject.name.indexOf("z") != -1);} ),
 									];
 		}
 	}
@@ -289,11 +317,11 @@ class ClothingItem {
 	
 	public var name:String;
 	public var texture:Class;
-	public var level:int;
+	public var requirements:Function;
 	
-	public function ClothingItem(name:String, texture:Class, level:int) {
+	public function ClothingItem(name:String, texture:Class, requirements:Function) {
 		this.name = name;
 		this.texture = texture;
-		this.level = level;
+		this.requirements = requirements;
 	}
 }

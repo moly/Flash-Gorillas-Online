@@ -50,14 +50,16 @@ package dee.moly.gamestates {
 			this.client = client;
 			this.kongregate = kongregate;
 			
-			menuItem = 3;
+			menuItem = 0;
 			client.bigDB.loadMyPlayerObject(onReceivedData);
 		}
 		
 		// successfully received data
 		private function onReceivedData(object:DatabaseObject):void {
 			
-			clothes = new ClothingDatabase(object.level || 999, 400, 100, 4);
+			object.name = "Guezt";
+			object.level = 3;
+			clothes = new ClothingDatabase(400, 100, 4, object);
 			clothes.setClothes(object.hat || 0, object.shirt || 0, object.trousers || 0);
 			
 			hatType.text = "Hat: " + clothes.currentHatName;
@@ -67,7 +69,7 @@ package dee.moly.gamestates {
 		
 		override public function draw(canvas:BitmapData):void {
 			
-			canvas.fillRect(canvas.rect, 0xFF0000AB);
+			canvas.fillRect(canvas.rect, 0xFF0000AD);
 			
 			canvas.draw(gorillaTex, gorillaMatrix);
 			
