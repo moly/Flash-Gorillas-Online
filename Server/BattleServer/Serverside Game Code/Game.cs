@@ -172,11 +172,15 @@ namespace ServersideGameCode {
                     if (result == Banana.HIT_GORILLA_ONE)
                     {
                         player2.Score++;
+                        if (playerTurn == player2 && player2.IsZombie)
+                            player1.PlayerObject.Set("zombieUnlocked", true);
                     }
 
                     if (result == Banana.HIT_GORILLA_TWO)
                     {
                         player1.Score++;
+                        if (playerTurn == player1 && player1.IsZombie)
+                            player2.PlayerObject.Set("zombieUnlocked", true);
                     }
 
                     if (player1.Score + player2.Score >= PLAY_TO_POINTS)
@@ -217,8 +221,8 @@ namespace ServersideGameCode {
             // Calculate experince and level gains
             foreach (Player player in Players)
             {
-                if (player.Name.StartsWith("Guest"))
-                    continue;
+                //if (player.Name.StartsWith("Guest"))
+                    //continue;
 
                 int level = player.PlayerObject.GetInt("level", 0);
                 int xp = player.PlayerObject.GetInt("xp", 0);
@@ -238,9 +242,6 @@ namespace ServersideGameCode {
                     gamesWon++;
                 else
                     gamesLost++;
-
-                if(!player.PlayerObject.Contains("name"))
-                    player.PlayerObject.Set("name", player.Name);
 
                 if (!isPrivate)
                 {
@@ -272,8 +273,8 @@ namespace ServersideGameCode {
         private void UpdateStats(Player player)
         {
             // Don't bother saving for guests
-            if (player.Name.StartsWith("Guest"))
-                return;
+            //if (player.Name.StartsWith("Guest"))
+                //return;
 
             if (!player.PlayerObject.Contains("name"))
                 player.PlayerObject.Set("name", player.Name);

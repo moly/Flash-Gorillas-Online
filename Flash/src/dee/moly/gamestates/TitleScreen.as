@@ -116,7 +116,5 @@
 			if(client != null)
 				gotoState(new Menu(client, kongregate));
 		}
-		
 	}
-
 }

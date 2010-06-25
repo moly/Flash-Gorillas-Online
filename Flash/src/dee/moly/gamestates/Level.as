@@ -235,12 +235,16 @@
 				
 					if (banana.hasCollidedWith(gorilla1)) {
 						cityscape.createBigExplosion(gorilla1.x, gorilla1.y);
+						if (playerTurn == 2 && gorilla2.isZombie)
+							gorilla1.setClothes(13, 13, 13);
 						player2Score++;
 						state = GORILLA1_HIT;
 					}
 				
 					if (banana.hasCollidedWith(gorilla2)) {
 						cityscape.createBigExplosion(gorilla2.x, gorilla2.y);
+						if (playerTurn == 1 && gorilla1.isZombie)
+							gorilla2.setClothes(13, 13, 13);
 						player1Score++;
 						state = GORILLA2_HIT;
 					}
@@ -416,7 +420,7 @@
 					if (player1Score + player2Score >= PLAY_TO_POINTS) {
 						connection.disconnect();
 						gotoState(new ScoreOverview(client, kongregate, isPrivate, playerNumber, player1Name, player2Name, player1Score, player2Score));
-					}else{
+					}else {
 						newGame();
 					}
 					break;
@@ -450,19 +454,27 @@
 		// throw a banana
 		private function throwBanana(angle:int, velocity:int):void {
 			
+			var bananaTexture:int = 0;
+			
 			if (playerTurn == 1){
 				var startPoint:Point = new Point(gorilla1.x, gorilla1.y - 7);
 				gorilla1.throwAnimation();
-				var alt:Boolean = gorilla1.isAsh;
+				if (gorilla1.isAsh)
+					bananaTexture = 1;
+				if (gorilla1.isZombie)
+					bananaTexture = 2;
 			}
 				
 			if (playerTurn == 2){
 				startPoint = new Point(gorilla2.x + 25, gorilla2.y - 7);
 				gorilla2.throwAnimation();
-				alt = gorilla2.isAsh;
+				if (gorilla2.isAsh)
+					bananaTexture = 1;
+				if (gorilla2.isZombie)
+					bananaTexture = 2;
 			}
 			
-			banana.launch(angle, velocity, GRAVITY, cityscape.windSpeed, startPoint, alt);
+			banana.launch(angle, velocity, GRAVITY, cityscape.windSpeed, startPoint, bananaTexture);
 			currentTime = TURN_TIME_LIMIT;
 			state = BANANA_THROWN;
 		}

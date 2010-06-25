@@ -55,10 +55,14 @@
 			return clothes.currentHatName == "Trucker Cap" && clothes.currentShirtName == "Blue" && clothes.currentTrousersName == "Jeans/Trainers";
 		}
 		
+		public function get isZombie():Boolean {
+			return clothes.currentHatName == "Zombie" && clothes.currentShirtName == "Zombie" && clothes.currentTrousersName == "Zombie";
+		}
+		
 		public function Gorilla() {
 			danceStep = 0;
 			texture = down;
-			clothes = new ClothingDatabase(9999, 0, 0);
+			clothes = new ClothingDatabase(0, 0);
 			position = new Point();
 		}
 		

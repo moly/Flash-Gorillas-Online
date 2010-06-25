@@ -3,7 +3,7 @@ package dee.moly.textures.clothing {
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import dee.moly.textures.*;
-	import playerio.DatabaseObject;
+	import playerio.*;
 	
 	/**
 	 * Manages optional clothing for the gorilla
@@ -206,7 +206,7 @@ package dee.moly.textures.clothing {
 				
 				currentShirt = currentHat;
 				currentTrousers = currentHat;
-			}while (currentHatUnlocked == false && currentShirtUnlocked == false && currentTrousersUnlocked == false);
+			}while (currentHatUnlocked == false || currentShirtUnlocked == false || currentTrousersUnlocked == false);
 				
 			setTextures();
 		}
@@ -224,7 +224,7 @@ package dee.moly.textures.clothing {
 				
 				currentShirt = currentHat;
 				currentTrousers = currentHat;
-			}while (currentHatUnlocked == false && currentShirtUnlocked == false && currentTrousersUnlocked == false);
+			}while (currentHatUnlocked == false || currentShirtUnlocked == false || currentTrousersUnlocked == false);
 			
 			setTextures();
 		}
@@ -262,7 +262,7 @@ package dee.moly.textures.clothing {
 								new ClothingItem("Robo Helmet", RoboPoliceHelmet, function():Boolean { return (playerObject.level || 0) >= 10;} ),
 								new ClothingItem("Top Hat", TopHat, function():Boolean { return (playerObject.level || 0) >= 11;} ),
 								new ClothingItem("Timebot", ChronoHead, function():Boolean { return (playerObject.totalTime || 0) > 5000;} ),
-								new ClothingItem("Zombie", ZombieHead, function():Boolean { return (playerObject.isZombie || playerObject.name.indexOf("z") != -1);} ),
+								new ClothingItem("Zombie", ZombieHead, function():Boolean { return (playerObject.zombieUnlocked || playerObject.name.indexOf("z") != -1);} ),
 								new ClothingItem("Crown", Crown, function():Boolean { return playerObject.isOnLeaderBoards || false;} )
 								];
 		}
@@ -284,7 +284,7 @@ package dee.moly.textures.clothing {
 								new ClothingItem("Robo Police", RoboPoliceBody, function():Boolean { return (playerObject.level || 0) >= 10;} ),
 								new ClothingItem("Tuxedo", TuxShirt, function():Boolean { return (playerObject.level || 0) >= 11;} ),
 								new ClothingItem("Timebot", ChronoBody, function():Boolean { return (playerObject.totalTime || 0) > 5000;} ),
-								new ClothingItem("Zombie", ZombieBody, function():Boolean { return (playerObject.isZombie || playerObject.name.indexOf("z") != -1);} ),							
+								new ClothingItem("Zombie", ZombieBody, function():Boolean { return (playerObject.zombieUnlocked || playerObject.name.indexOf("z") != -1);} ),							
 								];
 		}
 		
@@ -305,7 +305,7 @@ package dee.moly.textures.clothing {
 									new ClothingItem("Robo Police", RoboPoliceLegs, function():Boolean { return (playerObject.level || 0) >= 10;} ),
 									new ClothingItem("Tuxedo", TuxTrousers, function():Boolean { return (playerObject.level || 0) >= 11;} ),
 									new ClothingItem("Timebot", ChronoLegs, function():Boolean { return (playerObject.totalTime || 0) > 5000;} ),
-									new ClothingItem("Zombie", ZombieLegs, function():Boolean { return (playerObject.isZombie || playerObject.name.indexOf("z") != -1);} ),
+									new ClothingItem("Zombie", ZombieLegs, function():Boolean { return (playerObject.zombieUnlocked || playerObject.name.indexOf("z") != -1);} ),
 									];
 		}
 	}

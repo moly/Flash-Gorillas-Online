@@ -2,6 +2,7 @@
 	
 	import dee.moly.textures.BananaTex;
 	import dee.moly.textures.PokeBallTex;
+	import dee.moly.textures.InfectedBananaTex;
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	
@@ -19,40 +20,29 @@
 		
 		private var velocity:Point;
 		
-		private var left:BitmapData;
-		private var right:BitmapData;
-		private var up:BitmapData;
-		private var down:BitmapData;
+		private var currentTexture:int;
 		
-		private static const mainLeft:BitmapData = new BananaTex(BananaTex.LEFT);
-		private static const mainRight:BitmapData = new BananaTex(BananaTex.RIGHT);
-		private static const mainUp:BitmapData = new BananaTex(BananaTex.UP);
-		private static const mainDown:BitmapData = new BananaTex(BananaTex.DOWN);
+		private static const textures:Array = [[new BananaTex(BananaTex.LEFT),
+												new BananaTex(BananaTex.RIGHT),
+												new BananaTex(BananaTex.UP),
+												new BananaTex(BananaTex.DOWN)],
 		
-		private static const altLeft:BitmapData = new PokeBallTex(BananaTex.LEFT);
-		private static const altRight:BitmapData = new PokeBallTex(BananaTex.RIGHT);
-		private static const altUp:BitmapData = new PokeBallTex(BananaTex.UP);
-		private static const altDown:BitmapData = new PokeBallTex(BananaTex.DOWN);
+												[new PokeBallTex(BananaTex.LEFT),
+												new PokeBallTex(BananaTex.RIGHT),
+												new PokeBallTex(BananaTex.UP),
+												new PokeBallTex(BananaTex.DOWN)],
+												
+												[new InfectedBananaTex(BananaTex.LEFT),
+												new InfectedBananaTex(BananaTex.RIGHT),
+												new InfectedBananaTex(BananaTex.UP),
+												new InfectedBananaTex(BananaTex.DOWN)]];
 		
 		private var r:int;
 		public function set rotation(value:int):void {
 			
 			r = value;
 			
-			switch(r % 4) {
-				case 0:
-					texture = left;
-					break;
-				case 1:
-					texture = right;
-					break;
-				case 2:
-					texture = up;
-					break;
-				case 3:
-					texture = down;
-					break;
-			}
+			texture = textures[currentTexture][r % 4];
 		}
 		
 		public function get rotation():int {
@@ -77,7 +67,7 @@
 		}
 		
 		// start the banana moving
-		public function launch(angle:Number, velocity:int, gravity:Number, windSpeed:Number, startPoint:Point, altTexture:Boolean):void {
+		public function launch(angle:Number, velocity:int, gravity:Number, windSpeed:Number, startPoint:Point, textureNum:int):void {
 			
 			this.gravity = gravity;
 			this.windSpeed = windSpeed;
@@ -89,19 +79,8 @@
 			startPos = startPoint;
 			time = 0;
 			
-			if (altTexture) {
-				left = altLeft;
-				right = altRight;
-				up = altUp;
-				down = altDown;
-			}else {
-				left = mainLeft;
-				right = mainRight;
-				up = mainUp;
-				down = mainDown;
-			}
-			
-			texture = left;
+			currentTexture = textureNum;
+			texture = textures[currentTexture][0];
 		}
 		
 		override public function draw(canvas:BitmapData):void {
