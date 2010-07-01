@@ -88,7 +88,7 @@ package dee.moly.gamestates {
 			var level:int = object.level || 0;
 			var xp:int = object.xp || 0;
 			while (true) {
-				if (experienceGain + xp >= 100 + (level * 100))
+				if (experienceGain + xp >= nextLevelXp(level))
                         level++;
                     else
                 break;
@@ -96,6 +96,15 @@ package dee.moly.gamestates {
 			experienceGained.text = "Experience gained: " + experienceGain + "   Current Level: " + level + (level > (object.level || 0) ? "^" : "");
 			experienceGained.centre();
 		}
+		
+		// Calculate xp for next level
+		private function nextLevelXp(level:int):int{
+            var xp:int = 0;
+            for (var i:int = 0; i < level + 2; i++)
+                xp += i * 100;
+
+            return xp;
+        }
 	}
 
 }

@@ -44,7 +44,7 @@ namespace ServersideGameCode
         // Whether or not the player is currently a zombie
         public bool IsZombie
         {
-            get { return PlayerObject.GetInt("hat", 0) == 13 && PlayerObject.GetInt("shirt", 0) == 13 && PlayerObject.GetInt("trousers", 0) == 13; }
+            get { return PlayerObject.GetInt("hat", 0) == 17 && PlayerObject.GetInt("shirt", 0) == 17 && PlayerObject.GetInt("trousers", 0) == 17; }
         }
 
         // Number of bananas this player has thrown

@@ -230,7 +230,7 @@ namespace ServersideGameCode {
                 xp += (player == winningPlayer ? 100 : 0) + (player.Score * 15);
                 while (true)
                 {
-                    if (xp >= 100 + (level * 100))
+                    if (xp >= NextLevelXp(level))
                         level++;
                     else
                         break;
@@ -252,6 +252,16 @@ namespace ServersideGameCode {
                 player.PlayerObject.Set("gamesLost", gamesLost);
                 //player.PlayerObject.Save();
             }
+        }
+
+        // Calculate the xp needed for the next level
+        private int NextLevelXp(int level)
+        {
+            int xp = 0;
+            for (int i = 0; i < level + 2; i++)
+                xp += i * 100;
+
+            return xp;
         }
 
         // Prevent more than two people joining a game

@@ -100,7 +100,6 @@
 			var drawingXLocation:int = 0;
 			var horizonLine:int = Main.SCREEN_HEIGHT - 15;
 			var currentWindowColour:uint;
-			var currentHeightBase:int;
 			
 			texture = new DrawingBitmap(Main.SCREEN_WIDTH, Main.SCREEN_HEIGHT, true, 0x00);
 			

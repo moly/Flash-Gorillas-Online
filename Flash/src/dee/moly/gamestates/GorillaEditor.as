@@ -57,8 +57,7 @@ package dee.moly.gamestates {
 		// successfully received data
 		private function onReceivedData(object:DatabaseObject):void {
 			
-			object.name = "Guezt";
-			object.level = 3;
+			object.name = kongregate.services.getUsername();
 			clothes = new ClothingDatabase(400, 100, 4, object);
 			clothes.setClothes(object.hat || 0, object.shirt || 0, object.trousers || 0);
 			
@@ -90,7 +89,7 @@ package dee.moly.gamestates {
 			
 			// x or esc
 			if (e.keyCode == 88 || e.keyCode == 27) {
-				client.multiplayer.createJoinRoom("", "CostumeServer", true, { }, { hat:clothes.currentHatNumber, shirt:clothes.currentShirtNumber, trousers:clothes.currentTrousersNumber }, onJoinedRoom);
+				client.multiplayer.createJoinRoom("", "CostumeServer", true, { }, { name:kongregate.services.getUsername(), hat:clothes.currentHatNumber, shirt:clothes.currentShirtNumber, trousers:clothes.currentTrousersNumber }, onJoinedRoom, onJoinedError);
 				pressToGoBack.text = "Saving...";
 				pressToGoBack.centre();
 				blockInput = true;
@@ -151,6 +150,12 @@ package dee.moly.gamestates {
 		// successfully joined a room
 		private function onJoinedRoom(connection:Connection):void {
 			connection.addMessageHandler("saved", function(message:Message):void{ gotoState(new Menu(client, kongregate)); });
+		}
+		
+		// not successfully joined a room
+		private function onJoinedError(error:PlayerIOError):void {
+			trace(error);
+			client.multiplayer.createJoinRoom("", "CostumeServer", true, { }, { name:kongregate.services.getUsername(), hat:clothes.currentHatNumber, shirt:clothes.currentShirtNumber, trousers:clothes.currentTrousersNumber }, onJoinedRoom, onJoinedError);
 		}
 	}
 }

@@ -45,7 +45,7 @@ package dee.moly.gamestates {
 			var xp:int = object.xp || 0;
 			stat1.text = stat1.text.concat(level);
 			stat2.text = stat2.text.concat(xp);
-			var xpToNext:int = (((level + 1) * 100) + 100) - xp;
+			var xpToNext:int = nextLevelXp(level) - xp;
 			stat3.text = stat3.text.concat(xpToNext);
 			stat4.text = stat4.text.concat(object.gamesWon || 0);
 			stat5.text = stat5.text.concat(object.gamesLost || 0);
@@ -58,6 +58,15 @@ package dee.moly.gamestates {
 			// experience
 			// experience to next level
 		}
+		
+		// Calculate xp for next level
+		private function nextLevelXp(level:int):int{
+            var xp:int = 0;
+            for (var i:int = 0; i < level + 2; i++)
+                xp += i * 100;
+
+            return xp;
+        }
 		
 		override public function onKeyDown(e:KeyboardEvent):void {
 			
