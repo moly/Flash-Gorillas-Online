@@ -5,7 +5,7 @@
 	import dee.moly.gameobjects.ChatBubble;
 	import dee.moly.gameobjects.Cityscape;
 	import dee.moly.gameobjects.Gorilla;
-	import dee.moly.AI.ProjectileEstimator;
+	import dee.moly.ai.ProjectileEstimator;
 	import dee.moly.textures.DrawingBitmap;
 	import flash.display.BitmapData;
 	import flash.events.KeyboardEvent;

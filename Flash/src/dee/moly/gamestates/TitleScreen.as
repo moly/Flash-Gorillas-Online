@@ -80,7 +80,7 @@
 			if(!kongregate.services.isGuest())
 				PlayerIO.quickConnect.kongregateConnect(stage, "flash-gorillas-online-1nrdveekuspcredhsoew", kongregate.services.getUserId(), kongregate.services.getGameAuthToken(), onConnected, onConnectionError);
 			else
-				PlayerIO.connect(stage, "flash-gorillas-online-1nrdveekuspcredhsoew", "public", "Guest" + int(Math.random() * 9999), "", onConnected, onConnectionError);
+				PlayerIO.connect(stage, "flash-gorillas-online-1nrdveekuspcredhsoew", "public", "Guest" + int(Math.random() * 999999), "", onConnected, onConnectionError);
 		}
 		
 		// successfully connected to player.io

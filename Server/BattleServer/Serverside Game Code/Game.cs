@@ -49,6 +49,9 @@ namespace ServersideGameCode {
         // If it's a private game, don't award experience
         private bool isPrivate;
 
+        // Has the game started yet
+        private bool gameStarted;
+
 		public override void GameStarted()
         {
 			Console.WriteLine("Game is started: " + RoomId);
@@ -69,6 +72,7 @@ namespace ServersideGameCode {
             bananaInMotion = false;
 
             gameFinished = false;
+            gameStarted = false;
 
             PreloadPlayerObjects = true;
 		}
@@ -101,6 +105,7 @@ namespace ServersideGameCode {
         // Start a new game
         private void StartGame()
         {
+            gameStarted = true;
             startTime = System.DateTime.Now;
 
             playerTurn = player1;
@@ -296,7 +301,7 @@ namespace ServersideGameCode {
             int gamePlays = player.PlayerObject.GetInt("gamesPlayed", 0);
             player.PlayerObject.Set("gamesPlayed", gamePlays + 1);
 
-            if (!gameFinished)
+            if (gameStarted && !gameFinished)
             {
                 int gamesQuit = player.PlayerObject.GetInt("gamesQuit", 0);
                 player.PlayerObject.Set("gamesQuit", gamesQuit + 1);

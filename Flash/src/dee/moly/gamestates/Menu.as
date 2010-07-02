@@ -18,9 +18,10 @@
 		//text
 		private static const menuItem1:CharChain = new CharChain("1. Quick Game", 200, 80, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		private static const menuItem2:CharChain = new CharChain("2. Private Game", menuItem1.x, menuItem1.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const menuItem3:CharChain = new CharChain("3. View Stats", menuItem2.x, menuItem2.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const menuItem4:CharChain = new CharChain("4. Edit Gorilla", menuItem3.x, menuItem3.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
-		private static const menuItem5:CharChain = new CharChain("5. View Leaderboards", menuItem4.x, menuItem4.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const menuItem3:CharChain = new CharChain("3. Single Player Game", menuItem2.x, menuItem2.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const menuItem4:CharChain = new CharChain("4. View Stats", menuItem3.x, menuItem3.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const menuItem5:CharChain = new CharChain("5. Edit Gorilla", menuItem4.x, menuItem4.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
+		private static const menuItem6:CharChain = new CharChain("6. View Leaderboards", menuItem5.x, menuItem5.y + 16, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		private var informationText:CharChain = new CharChain("", 0, 225, CharChain.NONE, CharChain.ALPHANUMERIC, 0xA8A8A8);
 		
 		// player.io client reference
@@ -60,12 +61,23 @@
 			menuItem3.draw(canvas);
 			menuItem4.draw(canvas);
 			menuItem5.draw(canvas);
+			menuItem6.draw(canvas);
 			
 			informationText.draw(canvas);
 		}
 		
 		// decide valid input and such
 		override public function onKeyDown(e:KeyboardEvent):void {
+			
+			// x or escape
+			if (e.keyCode == 88 || e.keyCode == 27) {
+				if (connection.connected) {
+					blockInput = false;
+					informationText.text = "";
+					connection.disconnect();
+					connection.removeMessageHandler("start", onGameStarted);
+				}
+			}
 			
 			if (blockInput)
 				return;
@@ -82,18 +94,23 @@
 					gotoState(new PrivateGame(client, kongregate));
 					break;
 				
-				// view stats
+				// single player game
 				case 51:
+					client.bigDB.loadMyPlayerObject(onPlayerObjectLoaded);
+					break;
+					
+				// view stats
+				case 52:
 					gotoState(new MyStats(client, kongregate));
 					break;
 				
 				// edit gorilla
-				case 52:
+				case 53:
 					gotoState(new GorillaEditor(client, kongregate));
 					break;
 					
 				// view leaderboards
-				case 53:
+				case 54:
 					gotoState(new Leaderboards(client, kongregate));
 					break;
 			}
@@ -131,6 +148,12 @@
 			
 			trace(error);
 			findRoom();
+		}
+		
+		// successfully loaded playeronject
+		private function onPlayerObjectLoaded(object:DatabaseObject):void {
+			
+			gotoState(new BotLevel(client, kongregate, myName, (object.hat || 0), (object.shirt || 0), (object.trousers || 0)));
 		}
 		
 		// successfully joined a room
