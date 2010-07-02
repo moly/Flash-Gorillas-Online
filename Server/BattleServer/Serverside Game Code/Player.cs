@@ -59,6 +59,7 @@ namespace ServersideGameCode
         public Player() : base()
         {
             texture = GorillaTexture.Create(new Bitmap(28, 30));
+            bananasThrown = 0;
             score = 0;
         }
         

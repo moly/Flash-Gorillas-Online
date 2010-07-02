@@ -87,13 +87,13 @@ package dee.moly.gamestates {
 			
 			var level:int = object.level || 0;
 			var xp:int = object.xp || 0;
-			while (true) {
-				if (experienceGain + xp >= nextLevelXp(level))
-                        level++;
-                    else
-                break;
-			}
-			experienceGained.text = "Experience gained: " + experienceGain + "   Current Level: " + level + (level > (object.level || 0) ? "^" : "");
+			//while (true) {
+				//if (experienceGain + xp >= nextLevelXp(level))
+                  //      level++;
+                    //else
+                //break;
+			//}
+			experienceGained.text = "Experience gained: " + experienceGain + "   Current Level: " + level + (nextLevelXp(level - 1) > xp - experienceGain ? "^" : "");
 			experienceGained.centre();
 		}
 		

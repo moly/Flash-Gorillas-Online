@@ -45,8 +45,8 @@
 			canvas = new BitmapData(640, 350, false, 0xFF000000);
 			addChild(new Bitmap(canvas));
 			
-			currentState = new MochiPreloader(stage);
-			
+			//currentState = new MochiPreloader(stage);
+			currentState = new TitleScreen(stage);
 			previousTime = getTimer();
 			addEventListener(Event.ENTER_FRAME, update);
 			

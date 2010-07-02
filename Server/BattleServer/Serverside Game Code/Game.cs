@@ -291,7 +291,7 @@ namespace ServersideGameCode {
             //if (player.Name.StartsWith("Guest"))
                 //return;
 
-            if (!player.PlayerObject.Contains("name"))
+            if (!player.PlayerObject.Contains("name") && player.Name != null)
                 player.PlayerObject.Set("name", player.Name);
 
             TimeSpan thisTime = DateTime.Now.Subtract(startTime);
