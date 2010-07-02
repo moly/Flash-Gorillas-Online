@@ -1,9 +1,11 @@
 ﻿package {
 	
+	import dee.moly.gamestates.MochiPreloader;
 	import dee.moly.gamestates.TitleScreen;
 	import dee.moly.gamestates.GameState;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -17,7 +19,7 @@
 	 */
 
 	[SWF(width = "640", height = "350", frameRate = "30")]
-	public class Main extends Sprite {
+	public dynamic class Main extends MovieClip {
 		
 		// screen width/height
 		public static const SCREEN_WIDTH:int = 640;
@@ -43,7 +45,7 @@
 			canvas = new BitmapData(640, 350, false, 0xFF000000);
 			addChild(new Bitmap(canvas));
 			
-			currentState = new TitleScreen(stage);
+			currentState = new MochiPreloader(stage);
 			
 			previousTime = getTimer();
 			addEventListener(Event.ENTER_FRAME, update);

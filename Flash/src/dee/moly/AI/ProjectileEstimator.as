@@ -1,4 +1,4 @@
-package dee.moly.AI {
+package dee.moly.ai {
 	
 	/**
 	 * Basic AI for firing projectiles. Starts with a random guess and improves
